@@ -15,9 +15,7 @@ import sys
 import socket
 import uuid as uuid_module
 from flask import Flask, render_template, jsonify, request, redirect, url_for
-from flask_limiter import Limiter
 
-# MongoEngine runs on pymongo so both should be fine
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required
@@ -40,42 +38,14 @@ from PIL import Image
 # Flask Configuration
 #----------------------------------------------------------
 
-np.random.seed(9)
-
-# change to match computer, somewhere not in static
-UPLOAD_FOLDER = './files/img/'
-UPLOAD_FOLDER2 = './files/thumb/'
-ALLOWED_EXTENSIONS = set(['png','tiff','tif','jpg','jpeg','JPG','TIFF','TIF','PNG'])
-
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "freakingsecretkey"
-# secret key has some issues with weird characters since the url sends only unicode as args
-# and for comparison sake, need to keep the secret key something w/o weird characters
-# app.config['SECRET_KEY'] = '\x9ek\xdbS7\xc0k$\xac\x96 \x03W\x84\xb7\x1b\xec\xa0\xe0\xe32\\\x06\x9d'
-app.config['MONGO_DBNAME'] = 'eye-learning-files'
+# host mongo locally
 app.config['MONGODB_SETTINGS'] = {
     'db': 'eye-learning-files'
 }
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['UPLOAD_FOLDER2'] = UPLOAD_FOLDER2
-
-limiter = Limiter(app, global_limits=["1 per 1 second"])
-
 db = MongoEngine(app)
-mongo = PyMongo(app)
-
-HOST = 'localhost'    # The remote host
-PORT = 50007              # The same port as used by the server
-s = None
-
-# image serving is somewhat broken at the moment ^.^ due to not recognizing paths
-app.config['MEDIA_FOLDER'] = './files/thumb/'
-
-@app.route('/files/thumb/')
-def download_file(filename):
-    return send_from_directory(MEDIA_FOLDER, filename, as_attachment=True)
 
 #----------------------------------------------------------
 # Flask-Security and MongoEngine Setup
@@ -95,67 +65,12 @@ class User(db.Document, UserMixin):
     confirmed_at = db.DateTimeField()
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
-# Generic entry class, per image uploaded
-# uid: uid of uploader; 0 if guest
-# uuid: filename of image
-# datetime: time of upload
-# diag: diagnosis of image
-class Entry(db.Document):
-    uid = db.StringField(max_length=40)
-    uuid = db.StringField(max_length=255)
-    datetime = db.DateTimeField()
-    diag = db.FloatField()
-
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
 
-#----------------------------------------------------------
-# API Key
-#----------------------------------------------------------
-
-from functools import wraps
-from flask import request, abort
-
-# The actual decorator function
-def require_appkey(view_function):
-    @wraps(view_function)
-    # the new, post-decoration function. Note *args and **kwargs here.
-    def decorated_function(*args, **kwargs):
-        if request.args.get('key') and unicode(request.args.get('key')) == unicode(app.config['SECRET_KEY']):
-            return view_function(*args, **kwargs)
-        else:
-            abort(401)
-    return decorated_function
-
-
-def check_appkey():
-    appkey = request.args.get('key')
-
-#----------------------------------------------------------
-# Image Manipulation Section
-#----------------------------------------------------------
-
-# separates file extension and checks if is an image file
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-# b64: base64 encoded string
-# return: decoded version of b64
-def decodeB64(b64):
-    str = b64.replace('data:image/png;base64,', '') #replace tag
-    decoded = base64.b64decode(str)
-    return decoded
-
-# imgData: raw image data in string form
-# return: PIL object containing the image
-def encodePIL(imgData):
-    str = cStringIO.StringIO()
-    str.write(imgData)
-    img = Image.open(str)
-    return img
+# MIGHT WANT TO JUST EDIT THIS ONE
 
 # uid: uid of uploader
 # uuid: filename of image
@@ -173,48 +88,6 @@ def dbwrite(uid, uuid, diag):
     # entryId = str(entryId)
     # MongoEngine doesn't seem to support inserted IDs
     return uuid
-
-# file: FileStorage object or PIL Image that as a save() function
-# postcondition: img saved in UPLOAD_FOLDER as uuid.png
-# return: fullpath to image file, and uuid (unique) filename for file
-thumb_size = 128, 128
-def saveImg(file):
-    uuid = str(uuid_module.uuid4())
-    filename = uuid + ".png"
-    filename_thumb = uuid + "_thumb.png"
-    fullpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(fullpath)
-    img = Image.open(fullpath)
-    img.thumbnail(thumb_size)
-    img.save(os.path.join(app.config['UPLOAD_FOLDER2'], filename_thumb))
-    return (fullpath,filename[:-4])
-
-# filepath: full path string to image file machine learning algorithm will analyze
-# s: socket connection to machine learning algorithm
-# data: string of estimate 0-4 for image grade
-# return: response from machine learning algorithm over socket connection
-def getDiagRequest(filepath):
-    for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
-        af, socktype, proto, canonname, sa = res
-        try:
-            s = socket.socket(af, socktype, proto)
-        except socket.error as msg:
-            s = None
-            continue
-        try:
-            s.connect(sa)
-        except socket.error as msg:
-            s.close()
-            s = None
-            continue
-        break
-    if s is None:
-        print('could not open socket')
-        return "' Err!'"
-    s.sendall(filepath)
-    data = s.recv(1024)
-    s.close()
-    return repr(data)
 
 # file: image file sent by client
 # uid: user ID of the current user
@@ -237,42 +110,6 @@ def processImage(file, uid):
 @app.route("/docs")
 def docs():
     return app.send_static_file('dist/index.html')
-
-# gets image data from client and processes it
-@app.route("/api/v1/uploadImage", methods=['POST'])
-def uploadImage():
-    file = request.files['file'] # in the .js element is referred to as 'file'
-    #filename = request.form['filename'] # separated since b64
-    if (flask_security.core.current_user.is_authenticated):
-        uid = flask_security.core.current_user.get_id()
-    else:
-        uid = '0' # placeholder for anonymous
-    # place holders for no/bad file upload
-    diag = '-Err1'
-    entryID = '-Err1'
-    if file and allowed_file(file.filename):
-        diag,entryID = processImage(file, uid)
-    return jsonify(grade=diag[1:-1],uid=uid,database_id=entryID)
-
-# gets b64 image data from client and processes it
-@app.route("/api/v1/uploadImageB64", methods=['POST'])
-def uploadImageB64():
-    file = request.form['file'] # in the .js element is referred to as 'file'
-    filename = request.form['filename'] # separated since b64
-    if (flask_security.core.current_user.is_authenticated):
-        uid = flask_security.core.current_user.get_id()
-    else:
-        uid = 0 # placeholder for anonymous
-    print(uid)
-    # place holders for no/bad file upload
-    diag = '-Err1'
-    entryID = '-Err1'
-    if file and allowed_file(filename):
-        filename = secure_filename(filename) #werkzeug thing
-        file = decodeB64(file)
-        img = encodePIL(file)
-        diag,entryID = processImage(img, uid)
-    return jsonify(grade=diag[1:-1],uid=uid,database_id=entryID)
 
 # signs user up, given valid credentials and no repeat
 # of username
@@ -307,6 +144,8 @@ def signin():
 def logout():
     flask_security.utils.logout_user()
     return render_template('logoutsuccess.html')
+
+# COULD ADAPT FOR USR LISTS
 
 # locate all the thumbnails uploaded by the user
 # since images is a login-required page, won't worry
@@ -355,8 +194,7 @@ def index():
     return render_template('home.html')
 
 #----------------------------------------------------------
-# Start Application with SSL
+# Start Application
 #----------------------------------------------------------
 if __name__ == "__main__":
-    context = ('./SSL/theia.crt','./SSL/theia.key')
-    app.run(host='0.0.0.0', port=5001, debug=True, ssl_context=context)
+    app.run(host='0.0.0.0', port=5001, debug=True)
