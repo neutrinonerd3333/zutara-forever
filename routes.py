@@ -28,6 +28,8 @@ app.config['MONGODB_SETTINGS'] = {
     'db': 'zutara-forever'
 }
 
+app.config['SECRET_KEY'] = "secretkey"
+
 db = MongoEngine(app)
 
 #----------------------------------------------------------
