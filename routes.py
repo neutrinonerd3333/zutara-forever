@@ -168,7 +168,6 @@ def images():
     return render_template('images.html', imgs=imgs, datetime=datetime, diag=diag, n=n)
 
 @app.route("/", methods=['GET','POST'])
-@require_appkey
 def index():
     return render_template('home.html')
 
