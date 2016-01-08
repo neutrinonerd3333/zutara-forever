@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}
+User Login
+{% endblock %}
+
+{% block content %}
+<section id="wrapper">
+<article>
+{% if not (current_user.is_authenticated) %}
+    <div class="register-container">
+            <div> <!--I'll add in email, other information later. For sake of simplicity, only username and pw right now.-->
+                <div>Please enter your username.</div>
+            </div>
+            <div>
+                <div>Please enter your password.</div>
+            </div>
+        </div>
+        <div class="register-container">
+            <form action="/signin" method="POST" onsubmit="return signin(this)">
+                <div class="register">
+                    <input type="text" name="uid" placeholder="Username">
+                    <input type="password" name="password" placeholder="Password">
+                    <br>
+                    <input type="submit" value="Login">
+                </div>
+            </form>
+        </div>
+<div class="errormsg">{{ message }}</div> <!--For error messages-->
+{% endif %}
+    
+{% if (current_user.is_authenticated) %}
+    You have successfully logged in! Click <a href='/'>here</a> to return to home.
+{% endif %}
+</article>
+</section>
+{% endblock %}

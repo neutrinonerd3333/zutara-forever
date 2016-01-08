@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}
+Account Registration Page
+{% endblock %}
+
+{% block content %}
+<section id="wrapper">
+    <article>
+        <div class="register-container">
+            <div>
+                <div>Enter your email.</div>
+            </div>
+            <div>
+                <div>Enter your first name.</div>
+            </div>
+            <div>
+                <div>Enter your last name.</div>
+            </div>
+            <div>
+                <div>Select a username.</div>
+            </div>
+            <div>
+                <div>Select a username.</div>
+            </div>
+        </div>
+        <div class="register-container">
+            <form action="/signup" method="POST" onsubmit="return signup(this)">
+                <div class="register">
+                    <input type="text" name="uid" placeholder="Username">
+                    <!--<label for="uid">Note: Username must contain between 4 and 12 characters.</label>-->
+                    <input type="password" name="password" placeholder="Password">
+                    <br>
+                    <input type="submit" value="Register">
+                </div>
+            </form>
+        </div>
+    </article>
+</section>
+{% endblock %}

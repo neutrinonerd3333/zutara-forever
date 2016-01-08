@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8>
+<meta name="viewport" content="width=620">
+<title>Instant DR Demo</title>
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
+<!--the bootstrap is just a mess .____. and it doesn't even seem to be used-->
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}"> <!--fonts, themes, containers-->
+    
+</head>
+<body>
+<div class="container">
+    <div class="header">
+	   <h1><a href="/">Catalist (THIS WILL BE RESIGNED!!)</a></h1>       
+    <p class="lead">{% block title %}{% endblock %}</p>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='useraccount.js') }}"></script>
+    <div class="login-container">
+        <div>
+        <a target="_blank" href="http://6148.io">MIT 6.148</a> | 
+        {% if not (current_user.is_authenticated) %}<a href="/login">Login</a> | <a href="/egister">Register</a>{% endif %}
+        {% if current_user.is_authenticated %}<a href="/logout">Logout</a>
+        </div>
+        <div>Hi {{ current_user.get_id() }}!</div>
+        {% endif %}
+    </div>
+</div>
+
+{% block content %}
+{% endblock %}
+    
+</body>
+</html>
