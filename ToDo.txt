@@ -6,4 +6,4 @@ Front End:
 
 Back End:
 	Basic Flask/Mongo functionality
-	Figure out AJAX
+	Figure out AJAX (live editing functionality)
