@@ -6,13 +6,7 @@ from __future__ import division, print_function
 from datetime import datetime
 from glob import glob
 import numpy as np
-import hashlib
-from OpenSSL import SSL
-import re
 
-import os
-import sys
-import socket
 import uuid as uuid_module
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 
@@ -21,18 +15,7 @@ from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required
 import flask.ext.security as flask_security
 
-from pymongo import MongoClient
-from flask.ext.pymongo import PyMongo
-from flask.ext.pymongo import ObjectId
-
-from werkzeug import secure_filename
-#from flask.ext.cors import CORS
-
-import base64
 import json
-from bson.json_util import dumps
-import cStringIO
-from PIL import Image
 
 #----------------------------------------------------------
 # Flask Configuration
@@ -42,7 +25,7 @@ app = Flask(__name__)
 
 # host mongo locally
 app.config['MONGODB_SETTINGS'] = {
-    'db': 'eye-learning-files'
+    'db': 'zutara-forever'
 }
 
 db = MongoEngine(app)
@@ -56,6 +39,7 @@ class Role(db.Document, RoleMixin):
     description = db.StringField(max_length=255)
 
 # Generic User class
+# can have any or none of these attributes
 class User(db.Document, UserMixin):
     firstname = db.StringField(max_length=40)
     lastname = db.StringField(max_length=40)
@@ -106,14 +90,9 @@ def processImage(file, uid):
 # User Interaction Section
 #----------------------------------------------------
 
-# sends swagger ui rendered page from dist/swagger.json documentation
-@app.route("/docs")
-def docs():
-    return app.send_static_file('dist/index.html')
-
 # signs user up, given valid credentials and no repeat
 # of username
-@app.route("/api/v1/signup", methods=['POST'])
+@app.route("/signup", methods=['POST'])
 def signup():
     id = request.form['uid']
     pw = request.form['password']
@@ -124,7 +103,7 @@ def signup():
     return render_template('home.html')
 
 # signs user in, given valid credentials
-@app.route("/api/v1/signin", methods=['POST'])
+@app.route("/signin", methods=['POST'])
 def signin():
     id = request.form['uid']
     pw = request.form['password']
@@ -140,7 +119,7 @@ def signin():
     return render_template('./security/login_user.html', message=message)
 
 # logs out current user and clears Remember Me cookie
-@app.route("/api/v1/logout", methods=['POST'])
+@app.route("/logout", methods=['POST'])
 def logout():
     flask_security.utils.logout_user()
     return render_template('logoutsuccess.html')
@@ -171,16 +150,16 @@ def findUserImgs(uid):
         filenames.append(filename)
     return datetime, diag, filenames
 
-@app.route("/api/v1/login")
+@app.route("/login")
 def login():
     return render_template('./security/login_user.html')
 
 # this route takes the user to the registration page
-@app.route("/api/v1/register")
+@app.route("/register")
 def register():
     return render_template('register.html')
 
-@app.route("/api/v1/images", methods=['GET'])
+@app.route("/images", methods=['GET'])
 @flask_security.login_required
 def images():
     #login-required so current_user MUST exist
