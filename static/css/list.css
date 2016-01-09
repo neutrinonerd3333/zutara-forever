@@ -70,7 +70,6 @@ form creation interface).
 */
 .list li:last-child input {
     background-color: rgba(255, 255, 255, 0.1);
-    value: "click here to add";
 }
 
 .list input:hover, .list input:focus {
