@@ -9,12 +9,12 @@ Account Registration Page
         <div class="register-container">
             <form action="/signup" method="POST" onsubmit="return signup(this)">
                 <div class="register">
-                    <input type="email" id="email" name="email" placeholder="Email" required>
-                    <label for="email">Please enter your email.</label>
-                    <input type="text" id="uid" name="uid" placeholder="Username" required>
-                    <label for="uid">Note: Username must be between 4 and 12 characters.</label>
-                    <input type="password" id="password" name="password" placeholder="Password" required>
-                    <label for="password">Note: Password must be between 4 and 12 characters, and contain at least 1 number.</label>
+                    <input type="email" class="inputField" name="email" placeholder="Email" required>
+                    <div class="inputLabel">Please enter your email.</div>
+                    <input type="text" class="inputField" name="uid" placeholder="Username" required>
+                    <div class="inputLabel">Note: Username must be between 4 and 12 characters.</div>
+                    <input type="password" class="inputField" name="password" placeholder="Password" required>
+                    <div class="inputLabel">Note: Password must be between 4 and 12 characters, and contain at least 1 number.</div>
                     <br>
                     <input type="submit" value="Register">
                 </div>
