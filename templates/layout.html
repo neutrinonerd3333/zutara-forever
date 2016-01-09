@@ -2,18 +2,16 @@
 <html lang="en">
 <head>
 <meta charset=utf-8>
-<meta name="viewport" content="width=620">
-<title>Instant DR Demo</title>
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
-<!--the bootstrap is just a mess .____. and it doesn't even seem to be used-->
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}"> <!--fonts, themes, containers-->
+<title>Catalist</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
     
 </head>
 <body>
 <div class="container">
     <div class="header">
-	   <h1><a href="/">Catalist (REDESIGNED OTL!!)</a></h1>       
-    <p class="lead">{% block title %}{% endblock %}</p>
+	   <h1><a href="/">Catalist</a></h1>    
+        <!--title block is an optional bit, like a header to each page-->
+    <p>{% block title %}{% endblock %}</p>
     </div>
     <script type="text/javascript" src="{{ url_for('static', filename='useraccount.js') }}"></script>
     <div class="login-container">

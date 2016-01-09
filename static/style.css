@@ -1,52 +1,45 @@
-html
-{
+@font-face {
+    font-family: Ubuntu;
+    src: url("./fonts/Ubuntu-L.ttf");
+}
+html {
     min-height: 100%;
 }
-body
-/*I can't stand the font*/
-{
-    font-family: "Trebuchet MS", Helvetica, Arial, sans-serif;
-    font-size: 1em;
+body {
+    font-family: Ubuntu;
+    font-size: 12pt; /* 1 em will become 12px everywhere else */
     margin: 0 0 0 0;
-    background: #fff;
-    background: -moz-linear-gradient(top, #b7df2d 0%, #e3f5ab 15%, #fff 20%);
-    /* FF3.6-15 */
-    
-    background: -webkit-linear-gradient(top, #b7df2d 0%, #e3f5ab 15%, #fff 20%);
-    /* Chrome10-25,Safari5.1-6 */
-    
-    background: linear-gradient(to bottom, #b7df2d 0%, #e3f5ab 15%, #fff 20%);
-    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    background: #fff; /* default white (overflow will become white too) */
+    background-image: url("./img/bg.jpg");
+    background-position: left top;
     background-repeat: no-repeat;
 }
-a,
 h1,
+h1 a,
 h2 {
-    color: #030;
+    color: #ccf;
 }
 h1,
 h2 {
-    font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', sans-serif;
+    /*font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', sans-serif;*/
+    
+    font-family: Ubuntu;
     margin: 0;
     font-weight: normal;
 }
-h1 {
-    border-bottom: 2px solid #030;
+h1 a:hover {
+    color: #99f;
 }
-/*FINALLY FOUND THIS STUPID LINE*/
-
 h2 {
     font-size: 1.2em;
 }
 a {
     text-decoration: none;
+    color: #99f;
 }
 a:hover {
-    color: #339933
+    color: #66f;
 }
-/*I want a nice background for header eventually*/
-/*for nav bar at the moment*/
-
 .login-container {
     margin: 1em 1em 0 0;
     position: absolute;
@@ -56,7 +49,7 @@ a:hover {
 .login-container div {
     padding: 4px;
     text-align: right;
-    font-size: 0.8em;
+    font-size: 1em;
 }
 .register-container {
     width: 250px;
@@ -64,7 +57,7 @@ a:hover {
     float: left;
     padding: 4px;
 }
-.register-container div div{
+.register-container div div {
     text-align: right;
     font-size: .9em;
     height: 2em;
@@ -75,7 +68,7 @@ a:hover {
     padding: 3px 10px 3px 10px;
     font-size: 12px;
     border-radius: 10px;
-    border-color: #e3f5ab;
+    border-color: #99f;
     border-style: solid;
     border: 1;
 }
@@ -86,17 +79,16 @@ a:hover {
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-    
     display: block;
     text-align: left;
     height: 1.5em;
     width: 90px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.5);
 }
 input[type="email"]:focus,
 input[type="text"]:focus,
 input[type="password"]:focus {
-    background-color: #e3f5ab;
+    background-color: rgba(200, 200, 255, 0.5);
     outline: none;
 }
 input[type="submit"],
@@ -104,13 +96,13 @@ input[type="button"] {
     text-align: center;
     height: 30px;
     width: 100px;
-    background-color: #e3f5ab;
+    background-color: rgba(200, 200, 255, 0.5);
     outline: 0;
     color: #999;
 }
 input[type="submit"]:hover,
 input[type="button"]:hover {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
 }
 .errormsg {
