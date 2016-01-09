@@ -32,6 +32,7 @@
     background-color: rgba(255, 255, 255, 0);
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 1em;
     /*
     #tony-note: absolute positioning makes all the li's
     overlap--probably not desired behavior ^_^
