@@ -1,11 +1,17 @@
 {% extends "layout.html" %}
+{% block title %}
+the Future of Lists
+{% endblock %}
 
 
 {% block content %}
-<section id="wrapper">
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='list.css') }}">
 
+<section id="wrapper">
     <article>
-        hii
+        <div class="list">
+            <input type="text">
+        </div>
     </article>
 </section>
 {% endblock %}

@@ -22,7 +22,6 @@ h2 {
 h1,
 h2 {
     /*font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', sans-serif;*/
-    
     font-family: Ubuntu;
     margin: 0;
     font-weight: normal;
@@ -35,10 +34,10 @@ h2 {
 }
 a {
     text-decoration: none;
-    color: #99f;
+    color: #66f;
 }
 a:hover {
-    color: #66f;
+    color: #99f;
 }
 .login-container {
     margin: 1em 1em 0 0;
@@ -118,126 +117,11 @@ input[type="button"]:hover {
     padding: 0.8em;
     background: grey;
 }
-.entries {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.entries li {
-    margin: 0.8em 1.2em;
-}
-.entries li h2 {
-    margin-left: -1em;
-}
-.add-entry {
-    font-size: 0.9em;
-    border-bottom: 1px solid #ccc;
-}
-.add-entry dl {
-    font-weight: bold;
-}
-.metanav {
-    text-align: right;
-    font-size: 0.8em;
-    padding: 0.3em;
-    margin-bottom: 1em;
-    background: #fafafa;
-}
-.flash {
-    background: #cee5F5;
-    padding: 0.5em;
-    border: 1px solid #aacbe2;
-}
-.error {
-    background: #f0d6d6;
-    padding: 0.5em;
-}
 #wrapper {
     margin: 50px;
 }
 /*page margin 50px*/
 
-#holder {
-    float: left;
-    border: 10px dashed #ccc;
-    width: 512px;
-    min-height: 350px;
-    margin: 0px auto;
-    margin-right: 30px;
-    position: relative;
-    text-align: center;
-    color: #ccc;
-}
-#holder.hover {
-    border: 10px dashed #6EE866;
-}
-#holder img {
-    display: block;
-    margin: 10px auto;
-}
-#holder p {
-    margin: 10px;
-    font-size: 3em;
-}
-#upload {
-    position: absolute;
-    left: 0;
-    top: 70%;
-    width: 100%;
-    display: inline-block;
-    outline: none;
-}
-#upload #clickupload {
-    height: 0;
-    width: 0;
-    outline: inherit;
-}
-#upload #container {
-    border: 3px solid #ccc;
-    border-radius: 10px;
-    padding: 5px;
-    position: absolute;
-    width: 45%;
-    left: 27.5%;
-    display: block;
-    outline: inherit;
-}
-#upload #container:hover {
-    color: #B9E132;
-    border-color: #B9E132;
-}
-#upload label:hover,
-#upload:hover {
-    cursor: pointer;
-}
-#scale {
-    height: 350px;
-}
-#result {
-    font-size: 200%;
-}
-#explaintext p {
-    width: 80%;
-    margin: 1em 0;
-    display: inline-block;
-}
-progress {
-    width: 512px;
-    display: inline-block;
-    position: relative;
-}
-progress::-webkit-progress-bar {
-    width: 400px;
-    height: 30px;
-    display: inline-block;
-    position: relative;
-}
-progress::-moz-progress-bar {
-    width: 400px;
-    height: 30px;
-    display: inline-block;
-    position: relative;
-}
 article {
     min-height: 300px
 }
