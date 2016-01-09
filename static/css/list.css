@@ -68,7 +68,7 @@ the last input box should be special: if clicked it will
 spawn another input box after it (think Google Forms'
 form creation interface).
 */
-.list input:last-child {
+.list li:last-child input {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
