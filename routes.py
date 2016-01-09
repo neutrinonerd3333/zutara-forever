@@ -174,6 +174,18 @@ def index():
     return render_template('home.html')
 
 #----------------------------------------------------------
+# Ajax Routes
+#----------------------------------------------------------
+
+@app.route("/ajax/autocomplete", methods=['GET', 'POST'])
+def autocomplete():
+    word_frag = request.json['fragment']
+    response = jsonify({'completions': ['placeholder0', 'placeholder1']})
+    response.status_code = 200
+    return response
+
+
+#----------------------------------------------------------
 # Start Application
 #----------------------------------------------------------
 if __name__ == "__main__":
