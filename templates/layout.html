@@ -3,7 +3,7 @@
 <head>
 <meta charset=utf-8>
 <title>Catalist</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static/css', filename='style.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
     
 </head>
 <body>
@@ -13,7 +13,7 @@
         <!--title block is an optional bit, like a header to each page-->
     <p>{% block title %}{% endblock %}</p>
     </div>
-    <script type="text/javascript" src="{{ url_for('static/js', filename='useraccount.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/useraccount.js') }}"></script>
     <div class="login-container">
         <div>
         <a target="_blank" href="http://6148.io">MIT 6.148</a> | 

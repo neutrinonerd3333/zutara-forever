@@ -4,15 +4,15 @@
 
 
 {% block content %}
-<link rel=stylesheet type=text/css href="{{ url_for('static/css', filename='list.css') }}">
+
+<link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">
 
 <section id="wrapper">
-    <article>
-        <div class="list">
-            <input type="text">
-            <input type="text">
-            <input type="text">
-        </div>
-    </article>
+    <div class="list">
+        <ul>
+            <li><input type="text"></li>
+        </ul>
+    </div>
 </section>
 {% endblock %}

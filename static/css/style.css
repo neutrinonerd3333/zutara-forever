@@ -1,43 +1,49 @@
 @font-face {
-    font-family: Ubuntu;
+    font-family: 'Cabin', sans-serif;
     src: url("./fonts/Ubuntu-L.ttf");
 }
 html {
     min-height: 100%;
 }
 body {
-    font-family: Ubuntu;
+    font-family: 'Cabin', sans-serif;
     font-size: 12pt; /* 1 em will become 12px everywhere else */
     margin: 0 0 0 0;
     background: #fff; /* default white (overflow will become white too) */
-    background-image: url("./img/bg.jpg");
+    /*background-image: url("./img/bg.jpg");*/
+    background: #8da4d0; /* Old browsers */
+    background: -moz-linear-gradient(top, #8da4d0 0%, #a9aece 12%, #d9bfcb 37%, #d9bfcb 37%, #ffffff 84%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #8da4d0 0%,#a9aece 12%,#d9bfcb 37%,#d9bfcb 37%,#ffffff 84%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #8da4d0 0%,#a9aece 12%,#d9bfcb 37%,#d9bfcb 37%,#ffffff 84%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     background-position: left top;
     background-repeat: no-repeat;
 }
+title {text-align: center;}
 h1,
 h1 a,
 h2 {
-    color: #ccf;
+    color: #eef;
+    font-weight: lighter;
 }
 h1,
 h2 {
     /*font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', sans-serif;*/
-    font-family: Ubuntu;
+    font-family: 'Cabin', sans-serif;
     margin: 0;
     font-weight: normal;
 }
 h1 a:hover {
-    color: #99f;
+    color: #ddf;
 }
 h2 {
     font-size: 1.2em;
 }
 a {
     text-decoration: none;
-    color: #66f;
+    color: #ddf;
 }
 a:hover {
-    color: #99f;
+    color: #eef;
 }
 .login-container {
     margin: 1em 1em 0 0;
