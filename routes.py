@@ -177,11 +177,23 @@ def index():
 # Ajax Routes
 #----------------------------------------------------------
 
-@app.route("/ajax/autocomplete", methods=['GET', 'POST'])
+listtypes = ["contacts", "groceries", "movie", "shopping"]
+listtypes.sort()
+
+# completes a word fragment with a possible list type
+# usage: POST to this route with
+# {"fragment": myfragment}, response is the list of possible
+# completions of *myfragment* drawn from *listtypes*
+@app.route("/ajax/autocomplete", methods=['POST'])
 def autocomplete():
-    word_frag = request.json['fragment']
-    response = jsonify({'completions': ['placeholder0', 'placeholder1']})
-    response.status_code = 200
+    req_json = request.form
+    fragment = req_json["fragment"]
+    completions = []
+    for item in listtypes:
+        l = len(fragment)
+        if item[:l] == fragment:
+            completions.append(item)
+    response = jsonify({'completions': completions})
     return response
 
 
