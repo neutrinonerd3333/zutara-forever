@@ -32,9 +32,13 @@
     background-color: rgba(255, 255, 255, 0);
     margin-left: auto;
     margin-right: auto;
+    /*
+    #tony-note: absolute positioning makes all the li's
+    overlap--probably not desired behavior ^_^
     left: 0;
     right: 0;
     position: absolute;
+    */
     width: 90%;
     height: 1.6em;
 }
@@ -57,6 +61,15 @@
     
     width: 100%;
     font-size: 1em;
+}
+
+/*
+the last input box should be special: if clicked it will
+spawn another input box after it (think Google Forms'
+form creation interface).
+*/
+.list input:last-child {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .list input:hover, .list input:focus {
