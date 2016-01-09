@@ -196,7 +196,6 @@ def autocomplete():
     response = jsonify({'completions': completions})
     return response
 
-
 #----------------------------------------------------------
 # Start Application
 #----------------------------------------------------------

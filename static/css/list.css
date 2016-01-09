@@ -40,7 +40,7 @@
 }
 
 .list input {
-    background-color: rgba(255, 255, 255, 0);
+    background-color: rgba(255, 255, 255, 0.3);
     border: 0;
     border-style: solid;
     border-color: #ccf;
