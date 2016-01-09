@@ -18,7 +18,8 @@ body {
     background-position: left top;
     background-repeat: no-repeat;
 }
-title {text-align: center;}
+h1 {text-align: center;
+    font-weight: 100;}
 h1,
 h1 a,
 h2 {
@@ -57,10 +58,14 @@ a:hover {
     font-size: 1em;
 }
 .register-container {
+    color: #226;
     width: 250px;
     display: inline-block;
     float: left;
     padding: 4px;
+    
+    position: relative;
+    left: 25%
 }
 .register-container div div {
     text-align: right;
@@ -69,13 +74,14 @@ a:hover {
     margin-top: 5px;
 }
 .register input {
+    color: #226;
     margin: 0 0 5px 5px;
     padding: 3px 10px 3px 10px;
     font-size: 12px;
-    border-radius: 10px;
+    border-radius: 0;
     border-color: #99f;
     border-style: solid;
-    border: 1;
+    border: 0;
 }
 .register label {
     font-size: 0.8em;
@@ -89,11 +95,16 @@ input[type="password"] {
     height: 1.5em;
     width: 90px;
     background-color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 11px;
 }
 input[type="email"]:focus,
 input[type="text"]:focus,
-input[type="password"]:focus {
-    background-color: rgba(200, 200, 255, 0.5);
+input[type="password"]:focus,
+input[type="email"]:hover,
+input[type="text"]:hover,
+input[type="password"]:hover
+{
+    background-color: rgba(255, 255, 255, 0.3);
     outline: none;
 }
 input[type="submit"],
@@ -101,7 +112,7 @@ input[type="button"] {
     text-align: center;
     height: 30px;
     width: 100px;
-    background-color: rgba(200, 200, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.3);
     outline: 0;
     color: #999;
 }
