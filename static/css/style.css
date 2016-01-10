@@ -7,8 +7,8 @@ html {
 }
 body {
     font-family: 'Cabin', sans-serif;
-    font-size: 12pt;
-    /* 1 em will become 12px everywhere else */
+    font-size: 20px;
+    /* 1 em will become 20px everywhere else */
     
     margin: 0 0 0 0;
     background: #fff;
@@ -88,7 +88,7 @@ a:hover {
     color: #226;
     margin: 0 0 5px 5px;
     padding: 3px 10px 3px 10px;
-    font-size: 12px;
+    font-size: 16px;
     border-radius: 0;
     border-color: #99f;
     border-style: solid;
@@ -118,9 +118,9 @@ a:hover {
     margin-left: auto;
     margin-right: auto;
 }
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+.register input[type="text"],
+.register input[type="email"],
+.register input[type="password"] {
     display: block;
     text-align: left;
     height: 1.8em;
@@ -128,17 +128,17 @@ input[type="password"] {
     background-color: rgba(255, 255, 255, 0.7);
     margin-bottom: 10px;
 }
-input[type="email"]:focus,
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:hover,
-input[type="text"]:hover,
-input[type="password"]:hover {
+.register input[type="email"]:focus,
+.register input[type="text"]:focus,
+.register input[type="password"]:focus,
+.register input[type="email"]:hover,
+.register input[type="text"]:hover,
+.register input[type="password"]:hover {
     background-color: rgba(255, 255, 255, 0.3);
     outline: none;
 }
-input[type="submit"],
-input[type="button"] {
+.register input[type="submit"],
+.register input[type="button"] {
     text-align: center;
     height: 30px;
     width: 100px;
@@ -151,26 +151,17 @@ input[type="button"] {
     margin-left: auto;
     margin-right: auto;
 }
-input[type="submit"]:hover,
-input[type="button"]:hover {
+.register input[type="submit"]:hover,
+.register input[type="button"]:hover {
     background-color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
-}
-.errormsg {
-    display: block;
 }
 .header {
     margin: 5em 3em 1em 3em;
 }
-.page {
-    margin: 2em auto;
-    width: 35em;
-    border: 5px solid #ccc;
-    padding: 0.8em;
-    background: grey;
-}
 #wrapper {
     margin: 50px;
+    width: auto;
 }
 /*page margin 50px*/
 
