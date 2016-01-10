@@ -224,9 +224,9 @@ def key_save():
     # option ALL
     for x in the_list.contents:
         x.getattr(kvpid)[0] = val
+        x.save()
 
-    # do stuff
-    # save all to db
+    the_list.save()
 
     return jsonify({}) # return a blank 200
 
