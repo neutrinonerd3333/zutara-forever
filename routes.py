@@ -45,7 +45,7 @@ class Role(db.Document, RoleMixin):
 class User(db.Document, UserMixin):
     firstname = db.StringField(max_length=40)
     lastname = db.StringField(max_length=40)
-    uid = db.StringField(max_length=40)
+    uid = db.StringField(max_length=40, unique=True)
     password = db.StringField(max_length=20) # limit length
     active = db.BooleanField(default=True) # set False for user confirmation
     confirmed_at = db.DateTimeField()
@@ -58,14 +58,16 @@ class Catalist(db.Document):
     # we put this class *inside* class Catalist because the
     # schema should be list-dependent but not [list-item]-dependent
     class CatalistEntry(db.DynamicEmbeddedDocument):
-        pass # we'll change this schema as we go along... at least that's how I think this works [txz]
+        entryid = db.StringField(max_length=40, unique=True)
+        # the remaining entries will be of the form "kvpid = [db.StringField, db.StringField]"
+        # where the first entry is the key, the second is the value (kvpid = key-value pair ID)
 
-    listid = db.StringField(max_length=40)
+    listid = db.StringField(max_length=40, unique=True)
     title = db.StringField(max_length=100)
     created = db.DateTimeField(required=True) # when list was created
     last_visited = db.DateTimeField(required=True) # delete lists that haven't been visited for a long time
     # keys = db.ListField(db.StringField(max_length=20))
-    contents = db.ListField(db.EmbeddedDocumentField(CatalistEntry), default=[])
+    contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
 
 # Setup Flask-Security
@@ -193,6 +195,56 @@ def index():
 #----------------------------------------------------------
 # Ajax Routes
 #----------------------------------------------------------
+
+
+@app.route("/ajax/savekey", methods=['POST'])
+def key_save():
+    """
+    mini-API for this view function
+    POST a JS associative array (basically a dict) like so:
+    {
+        listid:  <the list id>,
+        entryid: <entryid of entry>,
+        kvpid: <kvpid of key-val pair>,
+        newvalue: <new value of key>
+    }
+    """
+    req_json = request.form
+    lid = req_json["listid"]
+    eid = req_json["entryid"]
+    val = req_json["newvalue"]
+    the_list = Catalist.get(listid=lid)
+
+    # two options for updating key name: either we update it
+    # for this entry ONLY or update it for ALL entries
+
+    # option ONLY
+    # the_list.contents.get(entryid=eid).getattr(kvpid)[0] = val
+
+    # option ALL
+    for x in the_list.contents:
+        x.getattr(kvpid)[0] = val
+
+    # do stuff
+    # save all to db
+
+    return jsonify({}) # return a blank 200
+
+# maybe merge this with /ajax/savekey and have client pass an extra
+# key-val pair; this would be repeat significantly less code [txz]
+@app.route("/ajax/savevalue", methods=['POST'])
+def value_save():
+    req_json = request.form
+    lid = req_json["listid"]
+    eid = req_json["entryid"]
+    val = req_json["newvalue"]
+    the_list = Catalist.objects(listid=lid)
+
+    the_list.contents.get(entryid=eid).getattr(kvpid)[1] = val
+    the_list.save()
+
+    # do stuff
+    return jsonify({}) # return a 200
 
 listtypes = ["contacts", "groceries", "movie", "shopping"]
 listtypes.sort()
