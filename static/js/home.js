@@ -20,15 +20,24 @@ $(document).ready(function()
     // sharp at the bottom!
     $(".list").on("click", "img", function()
     {
-        $(this).next(".attributes").slideDown(500);
-        $(this).prev(".itemTitle").find("input").css("border-radius","10px 10px 0 0");
-    });
-
-    // upon the "title" li's losing focus, the list of attributes
-    // will slide back up and hide
-    $(".list").on("blur", ".listItem", function()
-    {
-        $(this).find(".attributes").slideUp(500);
-        $(this).find(".itemTitle input").css("border-radius","10px");
+        var file = $(this).attr("src");
+        
+        // if currently up arrow, click should hide attributes and switch
+        // to up arrow
+        if(file==="/static/img/up.svg")
+        {
+            $(this).next(".attributes").slideUp(500);
+            $(this).attr("src","/static/img/down.svg");
+            $(this).prev(".itemTitle").find("input").css("border-radius","10px");
+        }
+        // if currently down arrow, click should show attributes and switch
+        // to up arrow
+        else
+        {
+            $(this).next(".attributes").slideDown(500);
+            $(this).attr("src","/static/img/up.svg");
+            $(this).prev(".itemTitle").find("input").css("border-radius","10px 10px 0 0");
+        }
+        
     });
 });
