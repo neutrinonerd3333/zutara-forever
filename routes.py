@@ -52,15 +52,12 @@ class User(db.Document, UserMixin):
     last_active = db.DateTimeField(required=True) # we want to remove long-inactive users
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
-
-class CatalistEntry(db.DynamicEmbeddedDocument):
-    pass # the user will add key-val pairs
-    # not sure if a key added for one CatalistEntry instance
-    # will be added to *all* CatalistEntry instances; in fact,
-    # probably not ><
-
 # a class for our lists (catalists :P)
 class Catalist(db.Document):
+
+    class CatalistEntry(db.DynamicEmbeddedDocument):
+        pass # we'll change this schema as we go along... at least that's how I think this works [txz]
+
     listid = db.StringField(max_length=40)
     title = db.StringField(max_length=100)
     created = db.DateTimeField(required=True) # when list was created
