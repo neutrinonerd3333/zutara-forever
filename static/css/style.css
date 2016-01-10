@@ -1,12 +1,8 @@
-@font-face {
-    font-family: 'Cabin', sans-serif;
-    src: url("./fonts/Ubuntu-L.ttf");
-}
 html {
     min-height: 100%;
 }
 body {
-    font-family: 'Cabin', sans-serif;
+    font-family: 'Helvetica Neue Light','Cabin', sans-serif;
     font-size: 20px;
     /* 1 em will become 20px everywhere else */
     
@@ -43,8 +39,6 @@ h2 {
 h1,
 h2 {
     /*font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', sans-serif;*/
-    
-    font-family: 'Cabin', sans-serif;
     margin: 0;
     font-weight: normal;
 }
@@ -57,6 +51,7 @@ h2 {
 a {
     text-decoration: none;
     color: #ddf;
+    font-size: 0.8em;
 }
 a:hover {
     color: #eef;
@@ -105,8 +100,12 @@ a:hover {
 .register .inputLabel {
     text-align: center;
     display: none;
-    font-size: 0.8em;
+    font-size: 0.6em;
+    width: 15em;
+    
     margin: -5px 0 5px 0;
+    margin-left: auto;
+    margin-right: auto;
 }
 .register input[type="text"]:focus + label,
 .register input[type="email"]:focus + label,
@@ -157,7 +156,16 @@ a:hover {
     cursor: pointer;
 }
 .header {
-    margin: 5em 3em 1em 3em;
+    margin: 4em 3em 1em 3em;
+    width: auto;
+}
+.header img {
+    display: block;
+
+    margin-left: auto;
+    margin-right: auto;
+    height: 4em;
+    width: auto;
 }
 #wrapper {
     margin: 50px;

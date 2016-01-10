@@ -15,9 +15,8 @@ $(document).ready(function()
         $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Attribute' ></div ><div class='value' ><input type='text' placeholder='Value' ></div> </div>");
     });
 
-    // upon clicking the "V" shaped icon, the list of attributes
-    // will slide down and appear, and the roundish corners become
-    // sharp at the bottom!
+    // clicking the down arrow will show attributes
+    // clicking the up arrow will hide the attributes
     $(".list").on("click", "img", function()
     {
         var file = $(this).attr("src");
