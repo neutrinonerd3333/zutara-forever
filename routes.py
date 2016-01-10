@@ -55,6 +55,8 @@ class User(db.Document, UserMixin):
 # a class for our lists (catalists :P)
 class Catalist(db.Document):
 
+    # we put this class *inside* class Catalist because the
+    # schema should be list-dependent but not [list-item]-dependent
     class CatalistEntry(db.DynamicEmbeddedDocument):
         pass # we'll change this schema as we go along... at least that's how I think this works [txz]
 
