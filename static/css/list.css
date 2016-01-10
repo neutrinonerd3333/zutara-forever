@@ -6,8 +6,10 @@
     height: 60%;
     min-height: 250px;
     
+    /* eh these might be vestiges from testing */
     display: inline-block;
     float: left;
+    
     padding: 20px;
     
     border-radius: 20px;
@@ -16,30 +18,23 @@
     border: 0;
     background-color: rgba(255, 255, 255, 0.3);
     
+    /* centers element on page */
     position: absolute;
     left: 0;
     right: 0;
     margin-left: auto;
     margin-right: auto;
-}
-
-.list ul {
-    
 }
 
 .list li {
+    display: block;
     list-style: none;
     background-color: rgba(255, 255, 255, 0);
-    margin-left: auto;
-    margin-right: auto;
+    margin-right: 5%;
     margin-bottom: 1em;
-    /*
-    #tony-note: absolute positioning makes all the li's
-    overlap--probably not desired behavior ^_^
-    left: 0;
-    right: 0;
-    position: absolute;
-    */
+    /*#tony-note: absolute positioning makes all the li's
+    overlap--probably not desired behavior ^_^*/
+    position: relative;
     width: 90%;
     height: 1.6em;
 }
@@ -55,6 +50,7 @@
    -moz-transition: background .25s ease-in-out;
    -webkit-transition: background .25s ease-in-out;
     
+    display: block;
     min-height: 1.4em;
     height: 100%;
     padding: 4px;
@@ -76,4 +72,23 @@ form creation interface).
 .list input:hover, .list input:focus {
     background-color: rgba(255, 255, 255, 0.5);
     border-bottom: 2px;
+}
+
+/* arrow to expand and show list (like the cars screenie you sent) */
+.list img {
+    display: inline-block;
+    position: absolute;
+    
+    right: 2%;
+    top: .4em;
+    height: 1.4em;
+    width: 1.4em;
+}
+
+/* subsequent list of attributes */
+.list li ul {
+    display: none;
+    position: relative;
+    background-color: rgba(255,255,255,0.5);
+    width: 100%;
 }
