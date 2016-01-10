@@ -4,4 +4,10 @@ $(document).ready(function(){
 	last_item.click(function(){
 		last_item.before('<li><input type="text"></li>');
 	});
+
+	/*
+	$(stuff).focusout(function(){
+		ajax stuff to database
+	});
+	*/
 });
