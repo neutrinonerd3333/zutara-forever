@@ -6,13 +6,13 @@
     margin-right: auto;
     font-size: 18px;
     
-    width: 50%;
+    width: 40%;
     min-width: 400px;
     height: 60%;
     min-height: 400px;
     display: block;
     
-    background-color: #aef;
+    background-color: #CEF;
     border: 0;
     border-radius: 20px;
     padding: 10px;
@@ -28,27 +28,29 @@
     font-size: 16px;
     border: 0;
     outline: none;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.8);
     transition: background .25s ease-in-out;
     -moz-transition: background .25s ease-in-out;
     -webkit-transition: background .25s ease-in-out;
     /* same as 12pt font */
 }
-.list * input:hover,
-.list * input:focus {
+.list * input:hover {
     background-color: rgba(255, 255, 255, 0.5);
+}
+.list * input:focus {
+    background-color: rgba(255, 255, 255, 0.3);
 }
 .list .listTitle {
     width: 100%;
     height: 3em;
-    background-color: rgba(255, 255, 255, 0);
+    background-color: transparent;
     
     margin: 0 0 .5em 0;
 }
 .listTitle input {
     height: 100%;
     width: calc(100% - 2em);
-    background-color: rgba(255, 255, 255, 0);
+    background-color: transparent;
 
     
     padding: 0 1em;
@@ -58,6 +60,9 @@
     
     text-align: center;
     font-size: 1.2em;
+}
+.listTitle input:focus {
+    background-color: rgba(255, 255, 255, 0.8);
 }
 .list .listItem {
     width: 100%;
@@ -94,21 +99,23 @@
     display: block;
     width: 100%;
     height: 2em;
-    background-color: rgba(255, 255, 255, 0);
+    background-color: transparent;
     
     border-radius: 20px 20px 0 0;
     padding: 0;
     margin: 0;
 }
 .itemTitle input {
-    background-color: rgba(255, 255, 255, 0.4);
-    
+    background-color: #ADF;
     padding: 0 1em;
     margin: 0;
     
     border-radius: 20px;
     height: 100%;
     width: calc(100% - 2em);
+}
+.itemTitle input:focus, .itemTitle input:hover {
+    /*color: #666;*/
 }
 .list .listItem .attributes {
     border-radius: 0 0 20px 20px;
