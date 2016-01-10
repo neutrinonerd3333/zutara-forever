@@ -2,55 +2,31 @@ html {
     min-height: 100%;
 }
 body {
-    font-family: 'Helvetica Neue Light','Cabin', sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* font-family: 'Helvetica Neue Light','Cabin', sans-serif; */
     font-size: 20px;
     /* 1 em will become 20px everywhere else */
     
     margin: 0 0 0 0;
-    background: #fff;
-    /* default white (overflow will become white too) */
     /*background-image: url("./img/bg.jpg");*/
     
-    background: #8da4d0;
-    /* Old browsers */
+    background: #05abe0; /* Old browsers */
+    background: -moz-linear-gradient(top, #05abe0 0%, #53cbf1 60%, #87e0fd 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #05abe0 0%,#53cbf1 60%,#87e0fd 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #05abe0 0%,#53cbf1 60%,#87e0fd 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+h1, a {
+    text-align: center;
+    font-weight: lighter;
+    color: #cef;
+    margin: 0;
     
-    background: -moz-linear-gradient(top, #8da4d0 0%, #a9aece 12%, #d9bfcb 37%, #d9bfcb 37%, #ffffff 84%);
-    /* FF3.6-15 */
-    
-    background: -webkit-linear-gradient(top, #8da4d0 0%, #a9aece 12%, #d9bfcb 37%, #d9bfcb 37%, #ffffff 84%);
-    /* Chrome10-25,Safari5.1-6 */
-    
-    background: linear-gradient(to bottom, #8da4d0 0%, #a9aece 12%, #d9bfcb 37%, #d9bfcb 37%, #ffffff 84%);
-    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    
-    background-position: left top;
-    background-repeat: no-repeat;
+    text-decoration: none;
 }
 h1 {
-    text-align: center;
-    font-weight: 100;
-}
-h1,
-h1 a,
-h2 {
-    color: #eef;
-    font-weight: lighter;
-}
-h1,
-h2 {
-    /*font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', sans-serif;*/
-    margin: 0;
-    font-weight: normal;
-}
-h1 a:hover {
-    color: #ddf;
-}
-h2 {
     font-size: 1.2em;
 }
 a {
-    text-decoration: none;
-    color: #ddf;
     font-size: 0.8em;
 }
 a:hover {
@@ -68,7 +44,7 @@ a:hover {
     font-size: 1em;
 }
 .register-container {
-    color: #226;
+    color: #666;
     width: 100%;
     display: block;
     padding: 4px;
@@ -80,7 +56,7 @@ a:hover {
     align-items: center;
 }
 .register input {
-    color: #226;
+    color: #666;
     margin: 0 0 5px 5px;
     padding: 3px 10px 3px 10px;
     font-size: 16px;
@@ -143,7 +119,7 @@ a:hover {
     width: 100px;
     background-color: rgba(255, 255, 255, 0.3);
     outline: 0;
-    color: #999;
+    color: #666;
     position: absolute;
     left: 0;
     right: 0;

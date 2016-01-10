@@ -27,7 +27,7 @@ $(document).ready(function()
         {
             $(this).next(".attributes").slideUp(500);
             $(this).attr("src","/static/img/down.svg");
-            $(this).prev(".itemTitle").find("input").css("border-radius","10px");
+            $(this).prev(".itemTitle").find("input").css("border-radius","20px");
         }
         // if currently down arrow, click should show attributes and switch
         // to up arrow
@@ -35,7 +35,7 @@ $(document).ready(function()
         {
             $(this).next(".attributes").slideDown(500);
             $(this).attr("src","/static/img/up.svg");
-            $(this).prev(".itemTitle").find("input").css("border-radius","10px 10px 0 0");
+            $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
         }
         
     });
