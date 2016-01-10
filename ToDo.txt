@@ -1,9 +1,0 @@
-To Do List for Catalist
-
-Front End:
-	Views/templates
-	Design (Catalist shall be pretty)
-
-Back End:
-	Basic Flask/Mongo functionality
-	Figure out AJAX (live editing functionality)

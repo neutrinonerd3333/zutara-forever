@@ -11,10 +11,35 @@
 
 <section id="wrapper">
     <div class="list">
-        <ul>
-            <li><input type="text"></li>
-            <li><input type="text" value="click here to add" disabled></li>
-        </ul>
+        <div class="listTitle">
+            <input type="text" placeholder="Title">
+        </div>
+        <div class="listItem">
+            <!--list item-->
+            <div class="itemTitle">
+                <input type="text" placeholder="Item">
+            </div>
+            <img src="/static/img/down.svg">
+            <div class="attributes">
+                <!--all item attributes-->
+                <div class="attribute">
+                    <!--single item attribute-->
+                    <div class="key"
+                        ><input type="text" placeholder="Attribute"
+                    ></div
+                    ><div class="value"
+                        ><input type="text" placeholder="Value"
+                    ></div>
+                </div>
+                <div class="lastAttribute">
+                    <input type="text" value=" +" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="lastListItem">
+            <!--id because unique last element-->
+            <input type="text" value=" +" disabled>
+        </div>
     </div>
 </section>
 {% endblock %}
