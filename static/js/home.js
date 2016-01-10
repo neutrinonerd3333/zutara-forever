@@ -1,10 +1,10 @@
 $(document).ready(function()
 {
-    // upon clicking the last li in the list, a new li will be 
-    // formed right above it (so last li remains last)
-    $(".list").on("click", ".addRow", function()
+    // upon clicking the last list item (with a plus sign), a new
+    // list item will automatically be added to the bottom of the list
+    $(".list").on("click", ".lastListItem", function()
     {
-        $(".addRow").before('<div class="attributes"><div class="attribute"><div class="key"><input type="text"></div><div class = "value"><input type="text"></div></div></div>');
+        $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Attribute' ></div ><div class='value' ><input type='text' placeholder='Value' ></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
     });
 
     // upon clicking the "V" shaped icon, the list of attributes
