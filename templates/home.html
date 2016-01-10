@@ -11,14 +11,26 @@
 
 <section id="wrapper">
     <div class="list">
-        <ul>
-            <li><input type="text"><img src="{{ url_for('static', filename='img/down.svg') }}">
-                <ul>
-                    <li><input type="text"></li>
-                </ul>
-            </li>
-            <li><input type="text" value=" +" disabled></li>
-        </ul>
+        <div class="listItem">
+            <!--list item-->
+            <div class="itemTitle"><input type="text"></div>
+            <img src="{{ url_for('static', filename='img/down.svg') }}">
+            <div class="attributes">
+                <!--all item attributes-->
+                <div class="attribute">
+                    <!--single item attribute-->
+                    <div class="key">
+                        <input type="text">
+                    </div>
+                    <div class="value">
+                        <input type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="addRow"> <!--id because unique last element-->
+            <input type="text" value=" +" disabled>
+        </div>
     </div>
 </section>
 {% endblock %}

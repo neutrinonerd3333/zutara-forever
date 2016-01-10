@@ -11,12 +11,9 @@
     float: left;
     
     padding: 20px;
-    
     border-radius: 20px;
-    border-color: #99f;
-    border-style: solid;
     border: 0;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.2);
     
     /* centers element on page */
     position: absolute;
@@ -26,10 +23,9 @@
     margin-right: auto;
 }
 
-.list li {
+.listItem {
     display: block;
-    list-style: none;
-    background-color: rgba(255, 255, 255, 0);
+    background-color: rgba(255, 255, 255, 0.2);
     margin-right: 5%;
     margin-bottom: 1em;
     /*#tony-note: absolute positioning makes all the li's
@@ -37,14 +33,21 @@
     position: relative;
     width: 90%;
     height: 1.6em;
+    
+    border-radius: 10px;
+    border: 0;
+}
+
+.itemTitle {
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px 10px 0 0;
+    border: 0;
 }
 
 .list input {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0);
     border: 0;
-    border-style: solid;
-    border-color: #ccf;
-    border-radius: 5px;
 
     transition: background .25s ease-in-out;
    -moz-transition: background .25s ease-in-out;
@@ -65,7 +68,7 @@ the last input box should be special: if clicked it will
 spawn another input box after it (think Google Forms'
 form creation interface).
 */
-.list li:last-child input {
+.list .addRow input {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -85,10 +88,14 @@ form creation interface).
     width: 1.4em;
 }
 
+.list .attributes{
+    width: 100%;
+    display: hide;
+    position: relative;
+}
 /* subsequent list of attributes */
-.list li ul {
-    display: none;
+.list .attribute {
+    display: hide;
     position: relative;
     background-color: rgba(255,255,255,0.5);
-    width: 100%;
 }
