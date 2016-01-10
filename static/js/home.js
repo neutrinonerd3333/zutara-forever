@@ -6,19 +6,29 @@ $(document).ready(function()
     {
         $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Attribute' ></div ><div class='value' ><input type='text' placeholder='Value' ></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
     });
+    
+    // upon clicking the last item attribute, a new item
+    // attribute entry will be automatically added to the bottom
+    // of the list
+    $(".list").on("click", ".lastAttribute", function()
+    {
+        $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Attribute' ></div ><div class='value' ><input type='text' placeholder='Value' ></div> </div>");
+    });
 
     // upon clicking the "V" shaped icon, the list of attributes
-    // will slide down and appear
+    // will slide down and appear, and the roundish corners become
+    // sharp at the bottom!
     $(".list").on("click", "img", function()
     {
-        $(this).find("attribute").slideDown(500);
-        $(this).find("attribute").attr("display","block");
+        $(this).next(".attributes").slideDown(500);
+        $(this).prev(".itemTitle").find("input").css("border-radius","10px 10px 0 0");
     });
 
     // upon the "title" li's losing focus, the list of attributes
     // will slide back up and hide
-    $(".list").on("blur", "listItem", function()
+    $(".list").on("blur", ".listItem", function()
     {
-        $(this).find("attribute").slideUp(500);
+        $(this).find(".attributes").slideUp(500);
+        $(this).find(".itemTitle input").css("border-radius","10px");
     });
 });
