@@ -206,6 +206,32 @@ def index():
 # Ajax Routes
 #----------------------------------------------------------
 
+@app.route("/ajax/savelist", methods=['POST'])
+def list_save():
+    """
+    request syntax:
+    {
+        title: <thetitle>,
+        contents: [
+            *[title, [*[attrname, attrval]]]
+        ]
+    }
+    """
+    req_json = request.form
+    list_title = req_json["title"]
+    list_contents = req_json["contents"]
+    formatted_list_contents = []
+    for entry in list_contents:
+        temp = CatalistEntry(title=entry[0])
+        keys = [], kvps = []
+        for index, (k, v) in enumerate(entry[1]):
+            keys.append(key)
+            kvps.append(CatalistKVP(kvpid=hash(list_title+str(index)),key=k,value=v))
+        temp.contents = kvps
+        formatted_list_contents.append(temp)
+    newlist = Catalist(title=list_title, contents=formatted_list_contents)
+    newlist.save()
+    return redirect("/list/"+str(newlist.id),code=302)
 
 @app.route("/ajax/savekey", methods=['POST'])
 def key_save():
