@@ -8,13 +8,11 @@ $(document).ready(function()
     // attribute entry will be automatically added to the bottom
     // of the list
     $(".list").on("click", ".lastAttribute", addAttribute);
-
-	/*
-	$(stuff).focusout(function(){
+    
+	$(".list").on("focusout",function(){
 		// skeleton for ajax call
-        $.ajax(stuff)
+        $("#catalist").ajaxSubmit();
 	});
-	*/
 
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes

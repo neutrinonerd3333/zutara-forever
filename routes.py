@@ -226,6 +226,7 @@ def list_save():
     }
     """
     req_json = request.form
+    print(req_json)
     list_title = req_json["title"]
     list_contents = req_json["contents"]
     formatted_list_contents = []
