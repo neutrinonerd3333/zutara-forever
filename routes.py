@@ -266,7 +266,6 @@ def key_save():
         x.save() # this should be taken care of my the_list.save()? leave just in case
 
     the_list.save()
-
     return jsonify({}) # return a blank 200
 
 # maybe merge this with /ajax/savekey and have client pass an extra
