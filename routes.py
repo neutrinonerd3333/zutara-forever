@@ -193,6 +193,11 @@ def images():
     n = len(imgs)
     return render_template('images.html', imgs=imgs, datetime=datetime, diag=diag, n=n)
 
+@app.route("/list/<listid>", methods=['GET'])
+def getlist():
+    # insert some templating stuff to populate list
+    return render_template('home.html')
+
 @app.route("/", methods=['GET','POST'])
 def index():
     return render_template('home.html')
