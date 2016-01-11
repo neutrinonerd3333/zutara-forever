@@ -52,15 +52,20 @@ class User(db.Document, UserMixin):
     last_active = db.DateTimeField(required=True) # we want to remove long-inactive users
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
+class CatalistKVP(db.EmbeddedDocument):
+    # id is implicit in mongoengine, but we want to
+    # share kvpid's across (CatalistEntry)s
+    kvpid = db.StringField(max_length=40, unique=True)
+    key = db.StringField(max_length=40)
+    value = db.StringField(max_length=200)
+
+class CatalistEntry(db.EmbeddedDocument):
+    # entryid = db.StringField(max_length=40, unique=True)
+    title = db.StringField(max_length=80)
+    contents = db.EmbeddedDocumentListField(CatalistKVP)
+
 # a class for our lists (catalists :P)
 class Catalist(db.Document):
-
-    # we put this class *inside* class Catalist because the
-    # schema should be list-dependent but not [list-item]-dependent
-    class CatalistEntry(db.DynamicEmbeddedDocument):
-        entryid = db.StringField(max_length=40, unique=True)
-        # the remaining entries will be of the form "kvpid = [db.StringField, db.StringField]"
-        # where the first entry is the key, the second is the value (kvpid = key-value pair ID)
 
     listid = db.StringField(max_length=40, unique=True)
     title = db.StringField(max_length=100)
