@@ -198,6 +198,7 @@ def getlist():
     return render_template('home.html')
 
 @app.route("/mylists", methods=['GET'])
+@flask_security.login_required
 def userlists():
     return render_template('userlists.html')
 
