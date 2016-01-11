@@ -4,8 +4,7 @@
 
 from __future__ import division, print_function
 from datetime import datetime
-from glob import glob
-import numpy as np
+# from glob import glob
 
 import uuid as uuid_module
 from flask import Flask, render_template, jsonify, request, redirect, url_for
@@ -55,7 +54,7 @@ class User(db.Document, UserMixin):
 class CatalistKVP(db.EmbeddedDocument):
     # id is implicit in mongoengine, but we want to
     # share kvpid's across (CatalistEntry)s
-    kvpid = db.StringField(max_length=40, unique=True)
+    kvpid = db.StringField(max_length=40)
     key = db.StringField(max_length=40)
     value = db.StringField(max_length=200)
 
@@ -206,10 +205,14 @@ def index():
 # Ajax Routes
 #----------------------------------------------------------
 
+
+# DEV NOTE: maybe make this a regular route, not AJAX
 @app.route("/ajax/savelist", methods=['POST'])
 def list_save():
     """
-    request syntax:
+    For saving an entire list.
+
+    syntax:
     {
         title: <thetitle>,
         contents: [
@@ -246,10 +249,10 @@ def key_save():
     }
     """
     req_json = request.form
-    lid = req_json["listid"]
-    eid = req_json["entryid"]
+    # eid = req_json["entryid"] # necessary only for option ONLY (see later)
+    kid = req_json["kvpid"]
     val = req_json["newvalue"]
-    the_list = Catalist.get(listid=lid)
+    the_list = Catalist.get(listid=req_json["listid"])
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
@@ -259,8 +262,8 @@ def key_save():
 
     # option ALL
     for x in the_list.contents:
-        x.getattr(kvpid)[0] = val
-        x.save()
+        x.contents.get(kvpid=kid).key = val
+        x.save() # this should be taken care of my the_list.save()? leave just in case
 
     the_list.save()
 
@@ -271,30 +274,26 @@ def key_save():
 @app.route("/ajax/savevalue", methods=['POST'])
 def value_save():
     req_json = request.form
-    lid = req_json["listid"]
     eid = req_json["entryid"]
     val = req_json["newvalue"]
-    the_list = Catalist.objects(listid=lid)
-
-    the_list.contents.get(entryid=eid).getattr(kvpid)[1] = val
+    the_list = Catalist.objects(listid=req_json["listid"])
+    the_list.contents.get(entryid=eid).contents.get(kvpid=kid).value = val
     the_list.save()
-
-    # do stuff
     return jsonify({}) # return a 200
 
-listtypes = ["contacts", "groceries", "movie", "shopping"]
-listtypes.sort()
+autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
+autocomplete_dict.sort()
 
 # completes a word fragment with a possible list type
 # usage: POST to this route with
 # {"fragment": myfragment}, response is the list of possible
-# completions of *myfragment* drawn from *listtypes*
+# completions of *myfragment* drawn from *autocomplete_dict*
 @app.route("/ajax/autocomplete", methods=['POST'])
 def autocomplete():
     req_json = request.form
     fragment = req_json["fragment"]
     completions = []
-    for item in listtypes:
+    for item in autocomplete_dict:
         l = len(fragment)
         if item[:l] == fragment:
             completions.append(item)
