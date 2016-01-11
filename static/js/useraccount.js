@@ -1,3 +1,18 @@
+/* label animations, upon active */
+$(document).ready(startAnimations);
+
+function startAnimations()
+{
+    $(".inputField").on("focus", function()
+    {
+        $(this).next(".inputLabel").slideDown(300);
+    });
+    $(".inputField").on("blur", function()
+    {
+        $(this).next(".inputLabel").slideUp(300);
+    });
+}
+
 /*  username must be between min and max number of characters long */
 function validate_uid(uid, min, max)
 {

@@ -1,79 +1,147 @@
 .list {
-    font-family: 'Cabin', sans-serif;
-    
-    width: 40%;
-    min-width: 250px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 18px;
+}
+.list {
+    width: 50%;
+    min-width: 400px;
     height: 60%;
-    min-height: 250px;
-    
-    display: inline-block;
-    float: left;
-    padding: 20px;
-    
-    border-radius: 20px;
-    border-color: #99f;
-    border-style: solid;
+    min-height: 400px;
+    display: block;
+    background-color: rgba(255, 255, 255, 0.2);
     border: 0;
-    background-color: rgba(255, 255, 255, 0.3);
-    
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
+    border-radius: 10px;
+    padding: 10px;
 }
-
-.list ul {
-    
-}
-
-.list li {
-    list-style: none;
-    background-color: rgba(255, 255, 255, 0);
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1em;
-    /*
-    #tony-note: absolute positioning makes all the li's
-    overlap--probably not desired behavior ^_^
-    left: 0;
-    right: 0;
-    position: absolute;
-    */
-    width: 90%;
-    height: 1.6em;
-}
-
-.list input {
-    background-color: rgba(255, 255, 255, 0.3);
+.list * input {
+    font-size: 16px;
     border: 0;
-    border-style: solid;
-    border-color: #ccf;
-    border-radius: 5px;
-
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
     transition: background .25s ease-in-out;
-   -moz-transition: background .25s ease-in-out;
-   -webkit-transition: background .25s ease-in-out;
-    
-    min-height: 1.4em;
-    height: 100%;
-    padding: 4px;
-    margin: 2px 0 2px 0;
-    
+    -moz-transition: background .25s ease-in-out;
+    -webkit-transition: background .25s ease-in-out;
+    /* same as 12pt font */
+}
+.list * input:hover,
+.list * input:focus {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.list .listTitle {
     width: 100%;
+    height: 2em;
+    background-color: rgba(255, 255, 255, 0);
+    
+    margin: 0 0 .5em 0;
+}
+.listTitle input {
+    height: 100%;
+    width: calc(100% - 2em);
+    background-color: rgba(255, 255, 255, 0.2);
+
+    
+    padding: 0 1em;
+    outline: none;
+    border: 0;
+    border-radius: 10px;
+    
+    text-align: center;
+    font-weight: bold;
     font-size: 1em;
 }
-
-/*
-the last input box should be special: if clicked it will
-spawn another input box after it (think Google Forms'
-form creation interface).
-*/
-.list li:last-child input {
-    background-color: rgba(255, 255, 255, 0.1);
+.list .listItem {
+    width: 100%;
+    min-height: 2em;
+    background-color: rgba(150, 150, 255, 0);
+    border-radius: 10px;
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 0;
+    position: relative;
 }
-
-.list input:hover, .list input:focus {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-bottom: 2px;
+.listItem img {
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: .3em;
+    top: .3em;
+}
+.list .lastListItem {
+    height: 2em;
+    border-radius: 10px;
+    background-color: rgba(150, 150, 255, 0);
+}
+.list .lastListItem input {
+    width: calc(100% - 2em);
+    height: 100%;
+    border-radius: 10px;
+    padding: 0 1em;
+}
+.list .listItem .itemTitle {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 2em;
+    background-color: rgba(255, 255, 255, 0);
+    
+    border-radius: 10px 10px 0 0;
+    padding: 0;
+    margin: 0;
+}
+.itemTitle input {
+    background-color: rgba(255, 255, 255, 0.4);
+    
+    padding: 0 1em;
+    margin: 0;
+    
+    border-radius: 10px;
+    height: 100%;
+    width: calc(100% - 2em);
+}
+.list .listItem .attributes {
+    border-radius: 0 0 10px 10px;
+    display: none;
+}
+.attribute {
+    width: 100%;
+    height: 2em;
+    display: block;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+.lastAttribute{
+    height: 2em;
+    border-radius: 0 0 10px 10px;
+}
+.lastAttribute input {
+    width: calc(100% - 2em);
+    height: 100%;
+    border-radius: 0 0 10px 10px;
+    padding: 0 1em;
+}
+.key,
+.value {
+    display: inline-block;
+    height: 100%;
+    margin: 0;
+}
+.key {
+    width: 20%;
+}
+.value {
+    width: 80%;
+}
+.key input,
+.value input {
+    float: left;
+    width: calc(100% - 2em);
+    height: 100%;
+    padding: 0 1em;
 }

@@ -7,19 +7,13 @@ User Login
 <section id="wrapper">
 <article>
 {% if not (current_user.is_authenticated) %}
-    <div class="register-container">
-            <div> <!--I'll add in email, other information later. For sake of simplicity, only username and pw right now.-->
-                <div>Please enter your username.</div>
-            </div>
-            <div>
-                <div>Please enter your password.</div>
-            </div>
-        </div>
         <div class="register-container">
             <form action="/signin" method="POST" onsubmit="return signin(this)">
                 <div class="register">
-                    <input type="text" name="uid" placeholder="Username" required>
-                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="text" class="inputField" name="uid" placeholder="Username" required>
+                    <div class="inputLabel">Please enter your username</div>
+                    <input type="password" class="inputField" name="password" placeholder="Password" required>
+                    <div class="inputLabel">Please enter your password</div>
                     <br>
                     <input type="submit" value="Login">
                 </div>
