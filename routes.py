@@ -197,6 +197,10 @@ def getlist():
     # insert some templating stuff to populate list
     return render_template('home.html')
 
+@app.route("/mylists", methods=['GET'])
+def userlists():
+    return render_template('userlists.html')
+
 @app.route("/", methods=['GET','POST'])
 def index():
     return render_template('home.html')

@@ -17,13 +17,13 @@
     <div class="header">
 	   <a href="/"><img src="/static/img/logo.svg"></a>  
         <!--title block is an optional bit, like a header to each page-->
-    <p align="center">{% block title %}{% endblock %}</p>
+    <p align="center"><h1>{% block title %}{% endblock %}</h1></p>
     </div>
     <script type="text/javascript" src="{{ url_for('static', filename='js/useraccount.js') }}"></script>
     <div class="login-container">
         <div>
-        <a target="_blank" href="http://6.148.scripts.mit.edu/2016/">MIT 6.148</a> | 
-        {% if not (current_user.is_authenticated) %}<a href="/login">Login</a> | <a href="/register">Register</a>{% endif %}
+        <a target="_blank" href="http://6.148.scripts.mit.edu/2016/">MIT 6.148 | </a>
+        {% if not (current_user.is_authenticated) %}<a href="/login">Login | </a><a href="/register">Register</a>{% endif %}
         {% if current_user.is_authenticated %}<a href="/logout">Logout</a>
         </div>
         <div>Hi {{ current_user.get_id() }}!</div>
