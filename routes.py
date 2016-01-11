@@ -170,6 +170,7 @@ def images():
     return render_template('images.html', imgs=imgs, datetime=datetime, diag=diag, n=n)
 
 @app.route("/mylists", methods=['GET'])
+@flask_security.login_required
 def userlists():
     return render_template('userlists.html')
 

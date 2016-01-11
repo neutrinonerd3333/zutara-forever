@@ -28,18 +28,17 @@ $(document).ready(function()
             {
                 // find attributes following arrow img
                 var atts = $(this).next(".attributes").find(".attribute");
-                var keys = $(this).next(".attributes").find(".key:input");
-                var vals = $(this).next(".attributes").find(".value:input");
+                // find the input fields under the key and value divs
+                var keys = $(this).next(".attributes").find(".key :input");
+                var vals = $(this).next(".attributes").find(".value :input");
                 
                 for(var i = atts.length-1; i >= 0; i--)
                 {
-                    // get inputs of each attribute
-                    //var key = $(atts[i]).first(".key").val();
-                    //var val = $(atts[i]).first(".value").val();
+                    // get values of each attribute
+                    key = $(keys[i]).val();
+                    value = $(vals[i]).val();
                     // check if whole row empty
-                    console.log(keys[i]);
-                    console.log(vals[i]);
-                    if(!(keys[i] || vals[i]))
+                    if(key.length===0 && value.length===0)
                     {
                         $(atts[i]).remove();
                     }
