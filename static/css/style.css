@@ -43,6 +43,7 @@ h1, a {
 h1 {
     font-size: 1.2em;
     font-weight: lighter;
+    letter-spacing: 0.2 px;
 }
 a {
     font-size: 0.8em;
