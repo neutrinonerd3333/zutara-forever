@@ -18,7 +18,23 @@ body {
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
-h1, h2, a {
+
+.login-container {
+    margin: 1em 1em 0 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #cef;
+    font-weight: lighter;
+    letter-spacing: 0.2px;
+}
+.login-container div {
+    padding: 4px;
+    text-align: right;
+    font-size: 1em;
+}
+
+h1, a {
     text-align: center;
     color: #cef;
     margin: 0;
@@ -28,6 +44,7 @@ h1, h2, a {
 h1 {
     font-size: 1.2em;
     font-weight: lighter;
+    letter-spacing: 0.2px;
 }
 h2, h2 a {
     font-size: 1em;
@@ -43,17 +60,7 @@ a {
 a:hover {
     color: #fff;
 }
-.login-container {
-    margin: 1em 1em 0 0;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-.login-container div {
-    padding: 4px;
-    text-align: right;
-    font-size: 1em;
-}
+
 .register-container {
     color: #666;
     width: 100%;
