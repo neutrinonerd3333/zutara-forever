@@ -108,12 +108,12 @@ def signup():
     try:
         # if user exists, then can't sign up with same username
         user = User.objects.get(uid = unicode(user_id))
-        print("Sorry, that username is taken!")
+        return render_template('register.html', message="Sorry, that username is taken!")
     except mongoengine.DoesNotExist:
         try:
             # if user exists, then can't sign up with same username
             user = User.objects.get(email = unicode(email))
-            print("Sorry, that email is taken! Did you forget your password?")
+            return render_template('register.html', message="Sorry, that email is taken! Did you forget your password?")
         except:
             user_datastore.create_user(uid=user_id, password=pw, last_active = time, email=email)
     # if multiple objects, then something just screwed up
@@ -167,6 +167,13 @@ def getlist(listid):
 @flask_security.login_required
 def userlists():
     return render_template('userlists.html')
+
+# returns name of current user
+def get_id():
+    uid = flask_security.core.current_user.uid
+    return uid
+
+app.jinja_env.globals.update(get_id = get_id)
 
 @app.route("/", methods=['GET','POST'])
 def index():
