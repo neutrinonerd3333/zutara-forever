@@ -10,6 +10,7 @@ import uuid as uuid_module
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 
 from flask.ext.mongoengine import MongoEngine
+from flask.ext.pymongo import PyMongo
 from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required
 import flask.ext.security as flask_security
@@ -30,6 +31,7 @@ app.config['MONGODB_SETTINGS'] = {
 app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
 
 db = MongoEngine(app)
+mongo = PyMongo(app)
 
 #----------------------------------------------------------
 # Flask-Security and MongoEngine Setup
@@ -87,10 +89,11 @@ security = Security(app, user_datastore)
 def signup():
     user_id = request.form['uid']
     pw = request.form['password']
+    time = datetime.utcnow()
     users = mongo.db.users
     user = users.find_one({'uid': unicode(user_id)})
     if user == None: # does not currently exist
-        user_datastore.create_user(uid=user_id, password=pw)
+        user_datastore.create_user(uid=user_id, password=pw, last_active = time)
     return render_template('home.html')
 
 # signs user in, given valid credentials

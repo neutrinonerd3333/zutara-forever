@@ -78,8 +78,6 @@ function signup(form)
     
     formData.append('uid',uid);
     formData.append('password',password);
-    formData.append('firstname',firstname);
-    formData.append('lastname',lastname);
     formData.append('email',email);
     
     var xhr = new XMLHttpRequest();
