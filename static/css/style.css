@@ -28,10 +28,11 @@ body {
     font-weight: lighter;
     letter-spacing: 0.2px;
 }
+
 .login-container div {
     padding: 4px;
     text-align: right;
-    font-size: 1em;
+    font-size: 0.8em;
 }
 
 h1, a {
@@ -54,7 +55,7 @@ h2, h2 a {
     margin-bottom: -2.2em;
 }
 a {
-    font-size: 0.8em;
+    /*font-size: 0.8em;*/
     font-weight: lighter;
 }
 a:hover {
