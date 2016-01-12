@@ -69,8 +69,8 @@ class CatalistEntry(db.EmbeddedDocument):
     title = db.StringField(max_length=80)
     contents = db.EmbeddedDocumentListField(CatalistKVP)
     score = db.IntField(default=0)
-    upvoters = db.ListField(ReferenceField(User))
-    downvoters = db.ListField(ReferenceField(User))
+    upvoters = db.ListField(db.ReferenceField(User))
+    downvoters = db.ListField(db.ReferenceField(User))
 
 # a class for our lists (catalists :P)
 class Catalist(db.Document):
