@@ -11,7 +11,7 @@ Launch your lists to the clouds and beyond.
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
 
 <section id="wrapper">
-    <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
+    <form id="catalist" enctype='jsonForm' action="/ajax/saveitems" method="POST">
     <div class="list">
         <div class="listTitle">
             <input type="text" name="title" placeholder="Title">
@@ -19,7 +19,8 @@ Launch your lists to the clouds and beyond.
         <div class="listItem">
             <!--list item-->
             <div class="itemTitle">
-                <input type="text" name='contents[0]' placeholder="Item">
+                <input type="text" name="contents[][0]" placeholder="Item">
+                <!--<input type="text" name="items[title][]" placeholder="Item">-->
             </div>
             <img src="/static/img/down.svg">
             <div class="attributes">
@@ -27,10 +28,10 @@ Launch your lists to the clouds and beyond.
                 <div class="attribute">
                     <!--single item attribute-->
                     <div class="key"
-                        ><input type="text" name='contents[1][0]' placeholder="Key"
+                        ><input type="text" name="contents[][1][0]" placeholder="Key"
                     ></div
                     ><div class="value"
-                        ><input type="text" name='contents[1][1]' placeholder="Value"
+                        ><input type="text" name="contents[][1][1]" placeholder="Value"
                     ></div
                     ><div class="minus"></div>
                 </div>

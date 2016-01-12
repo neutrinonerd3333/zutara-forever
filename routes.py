@@ -27,7 +27,7 @@ app.config['MONGODB_SETTINGS'] = {
     'db': 'zutara-forever'
 }
 
-app.config['SECRET_KEY'] = "secretkey"
+app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
 
 db = MongoEngine(app)
 
@@ -78,39 +78,6 @@ class Catalist(db.Document):
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
-
-# MIGHT WANT TO JUST EDIT THIS ONE
-
-# uid: uid of uploader
-# uuid: filename of image
-# diag: diagnosis of image
-# postcondition: an Entry containing the datetime, UID, and diagnosis
-# of a given image is saved to collection 'entry'
-# return: entryID, which is randomly assigned, will help connect file and data
-def dbwrite(uid, uuid, diag):
-    time = str(datetime.utcnow())
-    #entry = Entry(uid = uid, uuid = uuid, diag = diag, datetime = time)
-    entry = Entry(uid = uid, uuid = uuid, diag = 2, datetime = time)
-    entry.save()
-    # entryID = .inserted_id
-    # entryId must be a string ObjectId("")
-    # entryId = str(entryId)
-    # MongoEngine doesn't seem to support inserted IDs
-    return uuid
-
-# file: image file sent by client
-# uid: user ID of the current user
-# postcondition: data regarding the image has been saved to mongoDB,
-# and image file has been saved to an upload folder locally
-# return: diagnosis of the given image file, and entryID in db
-def processImage(file, uid):
-    # file is either filestorage (verified as valid image) or img
-    fullpath,uuid = saveImg(file)
-    # blocking socket connection to NN interface [PORT?
-    diag = getDiagRequest(fullpath)
-    entryID = dbwrite(uid, uuid, diag) #save image, uid, diagnosis, date to a database
-    return (diag,entryID)
-
 #----------------------------------------------------
 # User Interaction Section
 #----------------------------------------------------
@@ -149,32 +116,6 @@ def logout():
     flask_security.utils.logout_user()
     return render_template('logoutsuccess.html')
 
-# COULD ADAPT FOR USR LISTS
-
-# locate all the thumbnails uploaded by the user
-# since images is a login-required page, won't worry
-# about guest users
-def findUserImgs(uid):
-    entries = Entry.objects(uid = unicode(uid)).as_pymongo()
-    uuids = []
-    datetime = []
-    diag = []
-    
-    for entry in entries:
-        uuid = str(entry['uuid'])
-        uuids.append(str(uuid))
-        datetime.append(entry['datetime'])
-        diag.append(entry['diag'])
-    
-    filenames = []
-    for uuid in uuids:
-        # for some reason it can't find this directory out of static
-        # command works when I link an external image url
-        filename = "/Users/Rachel/Documents/UROP/CC/eye-learning-api/files/thumb/" + uuid + "_thumb.png"
-        print(filename)
-        filenames.append(filename)
-    return datetime, diag, filenames
-
 @app.route("/login")
 def login():
     return render_template('./security/login_user.html')
@@ -183,14 +124,6 @@ def login():
 @app.route("/register")
 def register():
     return render_template('register.html')
-
-@app.route("/images", methods=['GET'])
-@flask_security.login_required
-def images():
-    #login-required so current_user MUST exist
-    datetime, diag, imgs = findUserImgs(flask_security.core.current_user.get_id())
-    n = len(imgs)
-    return render_template('images.html', imgs=imgs, datetime=datetime, diag=diag, n=n)
 
 @app.route("/list/<listid>", methods=['GET'])
 def getlist():
@@ -228,7 +161,7 @@ def list_save():
     req_json = request.form
     print(req_json)
     list_title = req_json["title"]
-    list_contents = req_json["contents"]
+    list_contents = req_json["contents[]"]
     formatted_list_contents = []
     for entry in list_contents:
         temp = CatalistEntry(title=entry[0])
@@ -241,6 +174,16 @@ def list_save():
     newlist = Catalist(title=list_title, contents=formatted_list_contents)
     newlist.save()
     return redirect("/list/"+str(newlist.id),code=302)
+
+# let's start small, since the receiving end is so picky
+# this one successfully receives the listItemTitle inputs
+# and does nothing with them at the moment
+@app.route("/ajax/saveitems", methods=['POST'])
+def items_save():
+    req_json = request.form
+    list_items = req_json["items[title][]"]
+    print(list_items)
+    return "List Saved"
 
 @app.route("/ajax/savekey", methods=['POST'])
 def key_save():

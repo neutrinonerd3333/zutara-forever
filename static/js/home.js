@@ -9,8 +9,8 @@ $(document).ready(function()
     // of the list
     $(".list").on("click", ".lastAttribute", addAttribute);
     
+    // testing Ajax connection for now
 	$(".list").on("focusout",function(){
-		// skeleton for ajax call
         $("#catalist").ajaxSubmit();
 	});
 
