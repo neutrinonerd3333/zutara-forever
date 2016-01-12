@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}
+Launch your lists to the clouds and beyond.
+{% endblock %}
+
+
+{% block content %}
+
+<link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
+
+<section id="wrapper">
+    <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
+    <div class="list">
+        <div class="listTitle">
+            <input type="text" name="title" placeholder="Title">
+        </div>
+        {% block listcontent %}
+        {% endblock %}
+        <div class="lastListItem">
+            <!--id because unique last element-->
+            <input type="text" value=" +" disabled>
+        </div>
+    </div>
+    </form>
+</section>
+{% endblock %}

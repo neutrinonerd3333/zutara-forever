@@ -65,7 +65,6 @@ class CatalistEntry(db.EmbeddedDocument):
 
 # a class for our lists (catalists :P)
 class Catalist(db.Document):
-
     listid = db.StringField(max_length=40, unique=True)
     title = db.StringField(max_length=100)
     created = db.DateTimeField(required=True) # when list was created
@@ -126,9 +125,10 @@ def register():
     return render_template('register.html')
 
 @app.route("/list/<listid>", methods=['GET'])
-def getlist():
+def getlist(lid):
     # insert some templating stuff to populate list
-    return render_template('home.html')
+    the_list = Catalist.objects.get(listid=lid)
+    return render_template('loadlist.html', entries=the_list.contents)
 
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
