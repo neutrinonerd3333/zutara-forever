@@ -26,6 +26,7 @@ body {
     right: 0;
     color: #cef;
     font-weight: lighter;
+    letter-spacing: 0.2px;
 }
 .login-container div {
     padding: 4px;
