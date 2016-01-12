@@ -7,6 +7,7 @@ Account Registration Page
 <section id="wrapper">
     <article>
         <div class="register-container">
+            <div class="errormsg">{{ message }}</div> <!--For error messages-->
             <form action="/signup" method="POST" onsubmit="return signup(this)">
                 <div class="register">
                     <input type="email" class="inputField" name="email" placeholder="Email" required>

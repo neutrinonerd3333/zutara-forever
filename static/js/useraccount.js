@@ -73,7 +73,6 @@ function signup(form)
     if (! validate_signup(uid, password, 4, 12))
         return false;
     
-    alert("You have successfully signed up!");
     var formData = new formData();
     
     formData.append('uid',uid);
