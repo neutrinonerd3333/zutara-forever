@@ -3,8 +3,8 @@
 Launch your lists to the clouds and beyond.
 {% endblock %}
 
-
 {% block content %}
+<p align="center"><h2><div id="link"></div></h1></p>
 
 <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">
@@ -19,7 +19,7 @@ Launch your lists to the clouds and beyond.
         <div class="listItem">
             <!--list item-->
             <div class="itemTitle">
-                <input type="text" name="contents[][0]" placeholder="Item">
+                <input type="text" name="contents[][title]" placeholder="Item">
                 <!--<input type="text" name="items[title][]" placeholder="Item">-->
             </div>
             <img src="/static/img/down.svg">
@@ -28,10 +28,10 @@ Launch your lists to the clouds and beyond.
                 <div class="attribute">
                     <!--single item attribute-->
                     <div class="key"
-                        ><input type="text" name="contents[][1][0]" placeholder="Key"
+                        ><input type="text" name="contents[][attr][key][]" placeholder="Key"
                     ></div
                     ><div class="value"
-                        ><input type="text" name="contents[][1][1]" placeholder="Value"
+                        ><input type="text" name="contents[][attr][val][]" placeholder="Value"
                     ></div
                     ><div class="minus"></div>
                 </div>

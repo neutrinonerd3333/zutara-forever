@@ -30,6 +30,8 @@ app.config['MONGODB_SETTINGS'] = {
 
 app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
 
+HOSTNAME = '0.0.0.0:6005' # we'll need this later for actual app
+
 db = MongoEngine(app)
 mongo = PyMongo(app)
 
@@ -146,6 +148,18 @@ def index():
 # Ajax Routes
 #----------------------------------------------------------
 
+@app.route("/ajax/makelist", methods=['GET'])
+def make_list():
+    """
+    Upon making the first edit, an empty list will be
+    created for the insertion of more data
+    """
+    list_id = str(uuid_module.uuid4())
+    title = "";
+    time = datetime.utcnow()
+    new_list = Catalist(listid = list_id, created = time, last_visited = time)
+    new_list.save()
+    return jsonify(id = list_id)
 
 # DEV NOTE: maybe make this a regular route, not AJAX
 @app.route("/ajax/savelist", methods=['POST'])
