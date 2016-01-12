@@ -85,12 +85,12 @@ security = Security(app, user_datastore)
 # of username
 @app.route("/signup", methods=['POST'])
 def signup():
-    id = request.form['uid']
+    user_id = request.form['uid']
     pw = request.form['password']
     users = mongo.db.users
-    user = users.find_one({'uid': unicode(id)})
+    user = users.find_one({'uid': unicode(user_id)})
     if user == None: # does not currently exist
-        user_datastore.create_user(uid=id, password=pw)
+        user_datastore.create_user(uid=user_id, password=pw)
     return render_template('home.html')
 
 # signs user in, given valid credentials
