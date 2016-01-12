@@ -125,9 +125,9 @@ def register():
     return render_template('register.html')
 
 @app.route("/list/<listid>", methods=['GET'])
-def getlist(lid):
+def getlist(listid):
     # insert some templating stuff to populate list
-    the_list = Catalist.objects.get(listid=lid)
+    the_list = Catalist.objects.get(listid=listid)
     return render_template('loadlist.html', entries=the_list.contents)
 
 @app.route("/mylists", methods=['GET'])
