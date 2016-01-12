@@ -1,5 +1,20 @@
 $(document).ready(function()
 {
+    // creates list on first serious attempt at making a list
+    $(".list").one("focusout",function(){
+        $.ajax({
+            url: "/ajax/makelist",
+            method:'GET',
+            success:function(data, status, jqxhr)
+            {
+                // get list id
+                var listid = data.id;
+                // put the url in later >.<
+                $("#link").append("Access or share your list at: <br><a href=0.0.0.0:6005/lists/" + listid + ".html>0.0.0.0:6005/lists/" + listid + ".html</a>");
+                console.log("<a href='./lists/' + listid + '.html'>'./lists/' + listid + '.html'</a>");
+            }});
+	});
+    
     // upon clicking the last list item (with a plus sign), a new
     // list item will automatically be added to the bottom of the list
     $(".list").on("click", ".lastListItem", addItem);
@@ -8,6 +23,11 @@ $(document).ready(function()
     // attribute entry will be automatically added to the bottom
     // of the list
     $(".list").on("click", ".lastAttribute", addAttribute);
+    
+    // testing Ajax connection for now
+	/*$(".list").on("focusout",function(){
+        $("#catalist").ajaxSubmit();
+	});*/
 
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes

@@ -6,6 +6,7 @@
 <!--external stylesheets and scripts-->
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
 
 <!--page icon-->
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-16.png') }}" sizes="16x16">
@@ -15,7 +16,7 @@
 <body>
 <div class="container">
     <div class="header">
-	   <a href="/"><img src="/static/img/logo.svg"></a>  
+	   <a href="/"><img src="/static/img/logo.svg"></a>
         <!--title block is an optional bit, like a header to each page-->
     <p align="center"><h1>{% block title %}{% endblock %}</h1></p>
     </div>

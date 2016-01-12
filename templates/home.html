@@ -1,24 +1,26 @@
 {% extends "layout.html" %}
 {% block title %}
-Take your lists to the clouds and beyond.
+Launch your lists to the clouds and beyond.
 {% endblock %}
 
-
 {% block content %}
+<p align="center"><h2><div id="link"></div></h1></p>
 
 <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
 
 <section id="wrapper">
+    <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
     <div class="list">
         <div class="listTitle">
-            <input type="text" placeholder="Title">
+            <input type="text" name="title" placeholder="Title">
         </div>
         <div class="listItem">
             <!--list item-->
             <div class="itemTitle">
-                <input type="text" placeholder="Item">
+                <input type="text" name="contents[][title]" placeholder="Item">
+                <!--<input type="text" name="items[title][]" placeholder="Item">-->
             </div>
             <img src="/static/img/down.svg">
             <div class="attributes">
@@ -26,10 +28,10 @@ Take your lists to the clouds and beyond.
                 <div class="attribute">
                     <!--single item attribute-->
                     <div class="key"
-                        ><input type="text" placeholder="Key"
+                        ><input type="text" name="contents[][attr][key][]" placeholder="Key"
                     ></div
                     ><div class="value"
-                        ><input type="text" placeholder="Value"
+                        ><input type="text" name="contents[][attr][val][]" placeholder="Value"
                     ></div
                     ><div class="minus"></div>
                 </div>
@@ -43,5 +45,6 @@ Take your lists to the clouds and beyond.
             <input type="text" value=" +" disabled>
         </div>
     </div>
+    </form>
 </section>
 {% endblock %}

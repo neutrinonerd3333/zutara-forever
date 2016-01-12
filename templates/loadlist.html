@@ -1,0 +1,37 @@
+{% extends "list-generic.html" %}
+
+{% block listcontent %}
+
+{% for entry in entries %}
+<div class="listItem">
+    <!--list item-->
+    <div class="itemTitle">
+        <input type="text" name="contents[][0]" placeholder="Item" value={{ entry.title }}>
+        <!--<input type="text" name="items[title][]" placeholder="Item">-->
+    </div>
+    <img src="/static/img/down.svg">
+    <div class="attributes">
+        <!--all item attributes-->
+        {% for kvp in entry.contents %}
+        <div class="attribute">
+            <!--single item attribute-->
+            <div class="key"
+                ><input type="text" name="contents[][1][0]" placeholder="Key" value={{ kvp.key }}
+            ></div
+            ><div class="value"
+                ><input type="text" name="contents[][1][1]" placeholder="Value" value={{ kvp.value }}
+            ></div
+            ><div class="minus"></div>
+        </div>
+        {% endfor %}
+        <div class="lastAttribute">
+            <input type="text" value=" +" disabled>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+
+

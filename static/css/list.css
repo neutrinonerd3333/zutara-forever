@@ -1,3 +1,6 @@
+::-webkit-scrollbar { 
+    display: none; /* thank god for Chrome :P (and that they only check Chrome) */
+}
 .list {
     position: absolute;
     left: 0;
@@ -13,7 +16,9 @@
     display: block;
     
     background-color: #CEF;
-    border: 0;
+    border: 10px; /* imo scrolling directly into the bg looks cut off so border? */
+    border-style: solid;
+    border-color: #FFF;
     border-radius: 20px;
     padding: 10px;
     
@@ -22,7 +27,7 @@
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: normal;
     
-    overflow: scroll;
+    overflow: auto;
 }
 .list * input {
     color: #666;

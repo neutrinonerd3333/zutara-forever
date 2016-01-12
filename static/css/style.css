@@ -47,6 +47,13 @@ h1 {
     font-weight: lighter;
     letter-spacing: 0.2px;
 }
+h2, h2 a {
+    font-size: 1em;
+    font-weight: lighter;
+}
+#link {
+    margin-bottom: -2.2em;
+}
 a {
     /*font-size: 0.8em;*/
     font-weight: lighter;
