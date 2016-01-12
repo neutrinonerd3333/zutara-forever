@@ -52,7 +52,10 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=20) # limit length
     active = db.BooleanField(default=True) # set False for user confirmation
     confirmed_at = db.DateTimeField()
-    last_active = db.DateTimeField(required=True) # we want to remove long-inactive users
+
+    # we want to remove long-inactive users
+    last_active = db.DateTimeField(required=True)
+    
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
 class CatalistKVP(db.EmbeddedDocument):
@@ -75,7 +78,10 @@ class Catalist(db.Document):
     listid = db.StringField(max_length=40, unique=True)
     title = db.StringField(max_length=100)
     created = db.DateTimeField(required=True) # when list was created
-    last_visited = db.DateTimeField(required=True) # delete lists that haven't been visited for a long time
+
+    # delete lists that haven't been visited for a long time
+    last_visited = db.DateTimeField(required=True)
+    
     # keys = db.ListField(db.StringField(max_length=20))
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
@@ -98,7 +104,8 @@ def signup():
     users = mongo.db.users
     user = users.find_one({'uid': unicode(user_id)})
     if user == None: # does not currently exist
-        user_datastore.create_user(uid=user_id, password=pw, last_active = time)
+        user_datastore.create_user(uid=user_id, password=pw,
+                                   last_active = time)
     return render_template('home.html')
 
 # signs user in, given valid credentials
@@ -107,14 +114,16 @@ def signin():
     id = request.form['uid']
     pw = request.form['password']
     user = User.objects.get(uid = unicode(id))
+    wrong_msg = "You have entered a wrong username or password. " + \
+        "Please try again."
     if not(user == None): # user exists
         if flask_security.utils.verify_and_update_password(pw, user):
             flask_security.utils.login_user(user, remember=None)
             message=""
         else:
-            message="You have entered a wrong username or password. Please try again."
+            message = wrong_msg
     else:
-        message="You have entered a wrong username or password. Please try again."
+        message = wrong_msg
     return render_template('./security/login_user.html', message=message)
 
 # logs out current user and clears Remember Me cookie
@@ -134,7 +143,6 @@ def register():
 
 @app.route("/list/<listid>", methods=['GET'])
 def getlist(listid):
-    # insert some templating stuff to populate list
     the_list = Catalist.objects.get(listid=listid)
     return render_template('loadlist.html', entries=the_list.contents)
 
@@ -160,7 +168,7 @@ def make_list():
     list_id = str(uuid_module.uuid4())
     title = "";
     time = datetime.utcnow()
-    new_list = Catalist(listid = list_id, created = time, last_visited = time)
+    new_list = Catalist(listid=list_id, created=time, last_visited=time)
     new_list.save()
     return jsonify(id = list_id)
 
@@ -188,7 +196,8 @@ def list_save():
         keys = [], kvps = []
         for index, (k, v) in enumerate(entry[1]):
             keys.append(key)
-            kvps.append(CatalistKVP(kvpid=hash(list_title+str(index)),key=k,value=v))
+            kvps.append(CatalistKVP(kvpid=hash(list_title+str(index)),
+                                    key=k,value=v))
         temp.contents = kvps
         formatted_list_contents.append(temp)
     newlist = Catalist(title=list_title, contents=formatted_list_contents)
@@ -232,7 +241,9 @@ def key_save():
     # option ALL
     for x in the_list.contents:
         x.contents.get(kvpid=kid).key = val
-        x.save() # this should be taken care of my the_list.save()? leave just in case
+        # the following should be taken care of my the_list.save()
+        # I'll leave just in case [txz]
+        x.save()
 
     the_list.save()
     return jsonify({}) # return a blank 200
@@ -261,19 +272,19 @@ def vote():
         listid: <listid>,
         entryid: <entryid>,
         userid: <userid>,
-        vote: {1 (upvote) | 0 (no vote) | -1 (downvote)| 100 (get the current vote)},
+        vote: {1 (upvote) | 0 (no vote) |
+               -1 (downvote) | 100 (get the current vote)}
     }
     """
     req_json = request.form
     listid = req_json["listid"]
-    eid = req_json["entryid"]
     uid = req_json["userid"]
     vote_val = req_json["vote"]
     the_user = User.objects(uid=uid)
-    the_entry = Catalist(listid=listid).contents(id=eid)
+    the_entry = Catalist(listid=listid).contents(id=req_json["entryid"])
     curscore = the_entry.score
 
-    # figure out the current vote, possibly removing user from up/downvoters lists
+    # find the current vote, possibly removing user from up/downvoters lists
     cur_vote = 0
     if the_user in the_entry.upvoters:
         cur_vote = 1
@@ -285,6 +296,7 @@ def vote():
             the_entry.update_one(pull__downvoters=the_user)
 
     # do we only want to look up some values?
+    # TODO maybe change this to NaN instead of 100?
     if vote_val == 100:
         return jsonify({"current_vote": cur_vote, "score": curscore})
 
