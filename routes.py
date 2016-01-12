@@ -62,6 +62,9 @@ class CatalistEntry(db.EmbeddedDocument):
     # entryid = db.StringField(max_length=40, unique=True)
     title = db.StringField(max_length=80)
     contents = db.EmbeddedDocumentListField(CatalistKVP)
+    score = db.IntField(default=0)
+    upvoters = db.ListField(ReferenceField(User))
+    downvoters = db.ListField(ReferenceField(User))
 
 # a class for our lists (catalists :P)
 class Catalist(db.Document):
@@ -228,6 +231,58 @@ def value_save():
     the_list.contents.get(entryid=eid).contents.get(kvpid=kid).value = val
     the_list.save()
     return jsonify({}) # return a 200
+
+@app.route("/ajax/vote", methods=['POST'])
+def vote():
+    """
+    Two options:
+    1) Update the database to incorporate a user's vote on an entry.
+    2) Find the user's current vote and the current score of the entry.
+
+    usage: POST the following
+    {
+        listid: <listid>,
+        entryid: <entryid>,
+        userid: <userid>,
+        vote: {1 (upvote) | 0 (no vote) | -1 (downvote)| 100 (get the current vote)},
+    }
+    """
+    req_json = request.form
+    listid = req_json["listid"]
+    eid = req_json["entryid"]
+    uid = req_json["userid"]
+    vote_val = req_json["vote"]
+    the_user = User.objects(uid=uid)
+    the_entry = Catalist(listid=listid).contents(id=eid)
+    curscore = the_entry.score
+
+    # figure out the current vote, possibly removing user from up/downvoters lists
+    cur_vote = 0
+    if the_user in the_entry.upvoters:
+        cur_vote = 1
+        if vote_val in (-1,0,1):
+            the_entry.update_one(pull__upvoters=the_user)
+    elif the_user in the_entry.downvoters:
+        cur_vote = -1
+        if vote_val in (-1,0,1):
+            the_entry.update_one(pull__downvoters=the_user)
+
+    # do we only want to look up some values?
+    if vote_val == 100:
+        return jsonify({"current_vote": cur_vote, "score": curscore})
+
+    # stick the user in the correct list
+    if vote_val == 1:
+        the_entry.update_one(push__upvoters=the_user)
+    elif vote_val == -1:
+        the_entry.update_one(push__downvoters=the_user)
+
+    # update the score in the database
+    the_entry.score += (vote_val - cur_vote)
+    the_entry.save()
+
+    return jsonify({"current_vote": vote_val, "score": the_entry.score})
+
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
