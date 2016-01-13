@@ -189,7 +189,9 @@ def getlist(listid):
     """
     the_list = Catalist.objects.get(listid=listid)
     # print(the_list.contents)  # for debug
-    return render_template('loadlist.html', entries=the_list.contents)
+    print(the_list.title)  # for debug
+    return render_template('loadlist.html', listtitle=the_list.title,
+                           entries=the_list.contents)
 
 
 @app.route("/mylists", methods=['GET'])
