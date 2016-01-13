@@ -180,6 +180,14 @@ def index():
     return render_template('home.html')
 
 #----------------------------------------------------------
+# Error Handlers
+#----------------------------------------------------------
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+#----------------------------------------------------------
 # Ajax Routes
 #----------------------------------------------------------
 
@@ -194,7 +202,7 @@ def make_list():
     time = datetime.utcnow()
     new_list = Catalist(listid=list_id, created=time, last_visited=time)
     new_list.save()
-    return jsonify(id = list_id)
+    return jsonify(id=list_id)
 
 # DEV NOTE: maybe make this a regular route, not AJAX
 @app.route("/ajax/savelist", methods=['POST'])
@@ -270,7 +278,7 @@ def key_save():
         x.save()
 
     the_list.save()
-    return jsonify({}) # return a blank 200
+    return jsonify() # return a blank 200
 
 # maybe merge this with /ajax/savekey and have client pass an extra
 # key-val pair; this would be repeat significantly less code [txz]
@@ -282,7 +290,7 @@ def value_save():
     the_list = Catalist.objects(listid=req_json["listid"])
     the_list.contents.get(entryid=eid).contents.get(kvpid=kid).value = val
     the_list.save()
-    return jsonify({}) # return a 200
+    return jsonify() # return a 200
 
 @app.route("/ajax/vote", methods=['POST'])
 def vote():
@@ -334,7 +342,7 @@ def vote():
     the_entry.score += (vote_val - cur_vote)
     the_entry.save()
 
-    return jsonify({"current_vote": vote_val, "score": the_entry.score})
+    return jsonify(current_vote=vote_val, score=the_entry.score)
 
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
@@ -353,7 +361,7 @@ def autocomplete():
         l = len(fragment)
         if item[:l] == fragment:
             completions.append(item)
-    response = jsonify({'completions': completions})
+    response = jsonify(completions=completions)
     return response
 
 #----------------------------------------------------------
