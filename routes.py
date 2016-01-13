@@ -223,7 +223,7 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 #----------------------------------------------------------
-# Ajax Routes
+# THE API!!!
 #----------------------------------------------------------
 
 
@@ -423,6 +423,22 @@ def list_title_save():
     the_list.title = req_json["newvalue"]
     the_list.save()
     return jsonify()  # 200 OK ^_^
+
+
+@app.route("/api/deletelist", methods=['POST'])
+def list_delete():
+    pass
+
+
+@app.route("/api/deleteentry", methods=['POST'])
+def entry_delete():
+    pass
+
+
+@app.route("/api/deletekvp", methods=['POST'])
+def kvp_delete():
+    pass
+
 
 @app.route("/api/vote", methods=['POST'])
 def vote():
