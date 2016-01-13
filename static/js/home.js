@@ -45,6 +45,31 @@ $(document).ready(function()
             }
         })
     });
+
+    $(".list").on('focusout', ".value input", function(){
+        var newval = $(this).val();
+
+        var listitem = $(this).parents().eq(4-1);
+        var kvps = $(this).parents().eq(3-1);
+        var this_kvp = $(this).parents().eq(2-1);
+        
+        var ind = kvps.children().index(this_kvp);
+        var entryind = $(".list .listItem").index(listitem);
+        
+        $.ajax({
+            url: "/ajax/savevalue",
+            method: 'POST',
+            data: {
+                listid: listid,
+                index: ind,
+                entryind: entryind,
+                newvalue: newval
+            },
+            success: function(data, status, jqxhr){
+                console.log("value " + newval + " saved to position " + ind) // debug
+            }
+        })
+    });
     
     // upon clicking the last list item (with a plus sign), a new
     // list item will automatically be added to the bottom of the list

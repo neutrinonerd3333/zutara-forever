@@ -309,8 +309,8 @@ def key_save():
     POST a JS associative array (basically a dict) like so:
     {
         listid:  <the list id>,
-        entryind: <index of entry>,
-        index: <index of key-val pair (note: we use zero indexing!)>,
+        entryind: <index of entry w.r.t. list (0-indexing)>,
+        index: <index of key-val pair w.r.t. entry>,
         newvalue: <new value of key>
     }
     """
@@ -320,15 +320,12 @@ def key_save():
     val = request.form["newvalue"]
     ind = int(request.form["index"])
     lid = request.form["listid"]
-    print("The list id is {} and the newvalue is {}".format(lid, val))
+    # print("The list id is {} and the newvalue is {}".format(lid, val))
     the_list = Catalist.objects.get(listid=lid)
 
-    try:
-        the_entry = the_list.contents[entryind]
-    except IndexError:
-        while len(the_list.contents) <= entryind:
-            the_list.contents.append(CatalistEntry())
-        the_entry = the_list.contents[entryind]
+    while len(the_list.contents) <= entryind:
+        the_list.contents.append(CatalistEntry())
+    the_entry = the_list.contents[entryind]
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
@@ -360,12 +357,24 @@ def value_save():
 
     The API is virtually identical the that of key_save()
     """
-    
-    eid = request.form["entryid"]
+    entryind = int(request.form["entryind"])
+    # kid = request.form["kvpid"]
     val = request.form["newvalue"]
-    ind = request.form["index"]
-    the_list = Catalist.objects(listid=request.form["listid"])
-    the_list.contents.get(entryid=eid).contents[ind].value = val
+    ind = int(request.form["index"])
+    lid = request.form["listid"]
+    print("The list id is {} and the newvalue is {}".format(lid, val))
+    the_list = Catalist.objects.get(listid=lid)
+
+    while len(the_list.contents) <= entryind:
+        the_list.contents.append(CatalistEntry())
+    the_entry = the_list.contents[entryind]
+
+    try:
+        the_entry.contents[ind].value = val
+    except IndexError:
+        new_kvp = CatalistKVP(key="",value=val)
+        the_entry.contents.append(new_kvp)
+
     the_list.save()
     return jsonify()  # return a 200
 
