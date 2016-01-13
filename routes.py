@@ -280,8 +280,9 @@ def items_save():
     return "List Saved"
 
 
-@app.route("/ajax/saveentry", methods=['POST'])
-def entry_save():
+# INCOMPLETE
+# @app.route("/ajax/saveentry", methods=['POST'])
+# def entry_save():
     """
     Save a Catalist entry.
 
@@ -302,22 +303,6 @@ def entry_save():
     the_list = Catalist.get(listid=lid)
 
 
-def setitem_with_padding(array, item, index, cls):
-    """
-    Performs array[index] = item, padding array to avoid IndexErrors.
-
-    Arguments:
-    array -- the array we're modifying
-    item  -- the item we're inserting into *array*
-    index -- the index we're inserting *item* into
-    cls   -- a class we use to pad the array if we extend it. In particular,
-             we pad with blank instances cls().
-    """
-    while len(array) <= index:
-        array.append(cls())
-    array[index] = item
-
-
 @app.route("/ajax/savekey", methods=['POST'])
 def key_save():
     """
@@ -331,31 +316,29 @@ def key_save():
     }
     """
     # necessary only for option ONLY (see later)
-    entryind = int(request.form["entryind"])
-    # kid = request.form["kvpid"]
+    eind = int(request.form["entryind"])
     val = request.form["newvalue"]
     ind = int(request.form["index"])
     lid = request.form["listid"]
     # print("The list id is {} and the newvalue is {}".format(lid, val))
     the_list = Catalist.objects.get(listid=lid)
 
-    while len(the_list.contents) <= entryind:
-        the_list.contents.append(CatalistEntry())
-    the_entry = the_list.contents[entryind]
+    # pad the_list.contents if index eind out of bounds
+    pad_len = eind - len(the_list.contents) + 1
+    if pad_len > 0:
+        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_entry = the_list.contents[eind]
+
+    # do the same for the_entry.contents and ind
+    pad_len = ind - len(the_entry.contents) + 1
+    if pad_len > 0:
+        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
 
     # option ONLY
-    while len(the_entry.contents) <= ind:
-        the_entry.contents.append(CatalistKVP())
     the_entry.contents[ind].key = val
-
-    # try:
-    #     the_entry.contents[ind].key = val
-    # except IndexError:
-    #     new_kvp = CatalistKVP(key=val, value="")
-    #     the_entry.contents.append(new_kvp)
 
     # option ALL
     # for entry in the_list.contents:
@@ -374,24 +357,54 @@ def value_save():
 
     The API is virtually identical the that of key_save()
     """
-    entryind = int(request.form["entryind"])
+    eind = int(request.form["entryind"])
     val = request.form["newvalue"]
     ind = int(request.form["index"])
     lid = request.form["listid"]
     the_list = Catalist.objects.get(listid=lid)
 
-    while len(the_list.contents) <= entryind:
-        the_list.contents.append(CatalistEntry())
-    the_entry = the_list.contents[entryind]
-
-    try:
-        the_entry.contents[ind].value = val
-    except IndexError:
-        new_kvp = CatalistKVP(key="", value=val)
-        the_entry.contents.append(new_kvp)
-
+    # pad the_list.contents if index eind out of bounds
+    pad_len = eind - len(the_list.contents) + 1
+    if pad_len > 0:
+        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_entry = the_list.contents[eind]
+    
+    pad_len = ind - len(the_entry.contents) + 1
+    if pad_len > 0:
+        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents[ind].value = val
+    
     the_list.save()
     return jsonify()  # return a 200
+
+
+@app.route("/ajax/saveentrytitle", methods=['POST'])
+def entry_title_save():
+    """
+    AJAXily save the title of an entry.
+
+    usage: POST a JS associative array (basically a dict) like so:
+    {
+        listid:  <the list id>,
+        entryind: <index of entry w.r.t. list (0-indexing)>,
+        index: <index of key-val pair w.r.t. entry>,
+        newvalue: <new value of key>
+    }
+    """
+    req_json = request.form
+    lid, eind, kvpind = [req_json[s] for s in ["listid", "entryind", "index"]]
+    eind = int(eind)
+    kvping = int(kvping)
+    val = req_json["newvalue"]
+    the_list = Catalist.objects.get(listid=lid)
+
+    pad_len = eind - len(the_list.contents) + 1
+    if pad_len > 0:
+        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_entry = the_list.contents[eind]
+    the_entry.title = newvalue
+    the_list.save()
+    return jsonify()  # 200 OK ^_^
 
 
 @app.route("/ajax/vote", methods=['POST'])

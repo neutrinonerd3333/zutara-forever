@@ -78,8 +78,7 @@ $(document).ready(function()
         
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
-        if(file==="/static/img/up.svg")
-        {
+        if(file==="/static/img/up.svg"){
             $(this).next(".attributes").slideUp(500);
             $(this).attr("src","/static/img/down.svg");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px");
@@ -108,18 +107,15 @@ $(document).ready(function()
         }
         // if currently down arrow, click should show attributes and switch
         // to up arrow
-        else
-        {
+        else{
             $(this).next(".attributes").slideDown(500);
             $(this).attr("src","/static/img/up.svg");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
-        }
-        
+        }  
     });
     
     // clicking minus will delete the current entry
-    $(".list").on("click", ".minus", function()
-    {
+    $(".list").on("click", ".minus", function(){
         $(this).closest(".attribute").remove();
     });
 });
@@ -143,14 +139,42 @@ function ifNoListMakeOne(){
     }
 }
 
-function addItem()
-{
+function addItem(){
     $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
 }
 
-function addAttribute()
-{
+function addAttribute(){
     $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
+}
+
+// would be nice to use this function in the focusout listeners for key/val save
+function saveKeyOrValue(toSave, newval){
+    if (toSave !== "key" && toSave !== "value"){
+        throw "ValueError: argument of saveKeyOrValue must be 'key' or 'value'";
+    }
+
+    var newkey = $(this).val();
+
+    var listitem = $(this).parents().eq(4-1);
+    var kvps = $(this).parents().eq(3-1);
+    var this_kvp = $(this).parents().eq(2-1);
+    
+    var ind = kvps.children().index(this_kvp);
+    var entryind = $(".list .listItem").index(listitem);
+
+    $.ajax({
+        url: "/ajax/" + toSave,
+        method: 'POST',
+        data: {
+            listid: listid,
+            index: ind,
+            entryind: entryind,
+            newvalue: newval
+        },
+        success: function(data, status, jqxhr){
+            console.log(toSave + " " + newval + " saved to position " + ind) // for debug
+        }
+    })
 }
 
 function deleteItem(){
