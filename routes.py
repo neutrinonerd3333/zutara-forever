@@ -314,8 +314,8 @@ def key_save():
         newvalue: <new value of key>
     }
     """
-    
-    # eid = request.args.get("entryid") # necessary only for option ONLY (see later)
+    # necessary only for option ONLY (see later)
+    # eid = request.args.get("entryid")
     kid = request.args.get("kvpid")
     val = request.args.get("newvalue")
     ind = request.args.get("index")
@@ -378,7 +378,8 @@ def vote():
     uid = request.args.get("userid")
     vote_val = request.args.get("vote")
     the_user = User.objects(uid=uid)
-    the_entry = Catalist(listid=listid).contents(id=request.args.get("entryid"))
+    the_entry = Catalist(listid=listid).contents(
+        id=request.args.get("entryid"))
     curscore = the_entry.score
 
     # find the current vote, possibly removing user from up/downvoters lists
