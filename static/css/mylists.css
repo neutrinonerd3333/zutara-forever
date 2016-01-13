@@ -32,7 +32,7 @@
 .listTitle {    
     margin: 0 0 .5em 0;
     
-    height: 0em;
+    height: 0em; /* this is due to the padding up and down */
     width: calc(100% - 2em);
     background-color: transparent;
 
@@ -52,113 +52,12 @@
     padding: 1em;
     margin: 0 0 0 0;
 }
-
-.list * input:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-}
-.list * input:focus {
-    background-color: rgba(255, 255, 255, 0.3);
-}
-.list .listItem {
-    width: 100%;
-    min-height: 2em;
-    background-color: rgba(150, 150, 255, 0);
-    border-radius: 20px;
-    margin: 0;
-    margin-bottom: 1em;
-    padding: 0;
-    position: relative;
-}
-.listItem img{
-    width: 1.5em;
-    height: 1.5em;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    right: .3em;
-    top: .3em;
-}
-.list .lastListItem {
-    height: 2em;
-    border-radius: 20px;
-    background-color: rgba(150, 150, 255, 0);
-}
-.list .lastListItem input {
-    width: calc(100% - 2em);
-    height: 100%;
-    border-radius: 20px;
-    padding: 0 1em;
-}
-.list .listItem .itemTitle {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 2em;
-    background-color: transparent;
-    
-    border-radius: 20px 20px 0 0;
-    padding: 0;
-    margin: 0;
-}
-.itemTitle input {
-    background-color: #9DF;
-    padding: 0 1em;
-    margin: 0;
-    
-    border-radius: 20px;
-    height: 100%;
-    width: calc(100% - 2em);
-}
-.list .listItem .attributes {
-    border-radius: 0 0 20px 20px;
+.box{
     display: none;
-}
-.attribute {
     width: 100%;
-    height: 2em;
+}
+a:hover + .box,.box:hover{
     display: block;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-}
-.attribute .minus {
-    background-image: url("/static/img/minus.svg");
-    background-size: contain;
     position: relative;
-    right: calc(-100% + 26px + .3em);
-    top: -2em;
-    
-    width: 1.5em;
-    height: 1.5em;
-    margin: 0;
-    padding: 0;
-}
-.lastAttribute{
-    height: 2em;
-    border-radius: 0 0 20px 20px;
-}
-.lastAttribute input {
-    width: calc(100% - 2em);
-    height: 100%;
-    border-radius: 0 0 20px 20px;
-    padding: 0 1em;
-}
-.key,
-.value {
-    display: inline-block;
-    height: 100%;
-    margin: 0;
-}
-.key {
-    width: 20%;
-}
-.value {
-    width: 80%;
-}
-.key input,
-.value input {
-    float: left;
-    width: calc(100% - 2em);
-    height: 100%;
-    padding: 0 1em;
+    z-index: 100;
 }
