@@ -387,7 +387,7 @@ def entry_title_save():
     {
         listid:  <the list id>,
         entryind: <index of entry w.r.t. list (0-indexing)>,
-        newvalue: <new value of key>
+        newvalue: <new entry title>
     }
     """
     req_json = request.form
@@ -404,6 +404,23 @@ def entry_title_save():
     the_list.save()
     return jsonify()  # 200 OK ^_^
 
+
+@app.route("/ajax/savelisttitle", methods=['POST'])
+def list_title_save():
+    """
+    AJAXily save the title of a Catalist ^_^
+
+    usage: POST a JS assoc array like so:
+    {
+        listid: <the list id>,
+        newvalue: <our new title>
+    }
+    """
+    req_json = request.form
+    the_list = Catalist.objects.get(listid=req_json["listid"])
+    the_list.title = req_json["newvalue"]
+    the_list.save()
+    return jsonify()  # 200 OK ^_^
 
 @app.route("/ajax/vote", methods=['POST'])
 def vote():

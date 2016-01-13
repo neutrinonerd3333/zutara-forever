@@ -35,7 +35,26 @@ $(document).ready(function()
                     newvalue: newval
                 },
                 success: function(data, status, jqxhr){
-                    console.log("title " + newval + " saved to entry " + entryind);
+                    console.log("entry title " + newval + " saved to entry " + entryind);
+                }
+            });
+        });
+    });
+
+    // no need to do "on" because we won't have multiple listTitle's
+    $(".listTitle input").focusout(function(){
+        var that = $(this);
+        ifNoListMakeOne(function(){
+            var newval = that.val();
+            $.ajax({
+                url: "/ajax/savelisttitle",
+                method: 'POST',
+                data: {
+                    listid: listid,
+                    newvalue: newval
+                },
+                success: function(data, status, jqxhr){
+                    console.log("list title " + newval + " saved to list " + listid);
                 }
             });
         });
