@@ -95,6 +95,8 @@ class Catalist(db.Document):
     # keys = db.ListField(db.StringField(max_length=20))
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
+    creator = db.StringField(max_length=40)
+
 
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
@@ -103,7 +105,6 @@ security = Security(app, user_datastore)
 #----------------------------------------------------
 # User Interaction Section
 #----------------------------------------------------
-
 
 @app.route("/signup", methods=['POST'])
 def signup():
@@ -195,12 +196,23 @@ def getlist(listid):
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
-    return render_template('userlists.html')
+    current_user = flask_security.core.current_user
+    lists = Catalist.objects(creator = current_user.uid).only('title','created','last_visited').all()
+    if lists.first() == None:
+        return render_template('home.html', message="Oops! You have no lists saved! Would you like to create one?")
+    
+    lists = lists.order_by('last_visited').all()
+    for list in lists:
+        print(list.title)
+        print(list.created)
+        print(list.last_visited)
+    return render_template('mylists.html')
 
 
 def get_id():
     """ Return name of current user """
-    uid = flask_security.core.current_user.uid
+    current_user = flask_security.core.current_user
+    uid = current_user.uid
     return uid
 
 app.jinja_env.globals.update(get_id=get_id)
@@ -234,7 +246,11 @@ def make_list():
     list_id = str(uuid_module.uuid4())
     title = ""
     time = datetime.utcnow()
-    new_list = Catalist(listid=list_id, created=time, last_visited=time)
+    
+    current_user = flask_security.core.current_user
+    if not current_user.is_authenticated:
+        current_user = None
+    new_list = Catalist(listid=list_id, created=time, last_visited=time, creator=current_user.uid)
     new_list.save()
     return jsonify(id=list_id)
 

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}
+My Lists
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/mylists.js') }}"></script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/mylists.css') }}">
+
+<p align="center"><h2><div id="link">{{ message }}</div></h2></p>
+
+<section id="wrapper">
+    
+    <div class="lists">
+        <div class="listTitle">list of clickable things to sort</div>
+        <div class="list">
+            <div class="title">title</div>
+            <div class="created"></div>
+            <div class="visited"></div>
+        </div>
+        <div class="list">
+            <div class="title">title</div>
+            <div class="created"></div>
+            <div class="visited"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

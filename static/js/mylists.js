@@ -1,5 +1,3 @@
-var listid = null;
-
 $(document).ready(function()
 {
 
