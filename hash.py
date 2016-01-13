@@ -1,7 +1,9 @@
 class UserManager():
+
     def __init__(self):
         with app.app_context():
             self._users = mongo.db.users
+
     def get_user(self, uid):
         user = self._users.find_one({'uid': unicode(uid)})
         if not (user == None):
@@ -9,6 +11,7 @@ class UserManager():
             return User(uid, salt)
         else:
             return None
+
     def set_pw(self, uid, newPW):
         user = self._users.find_one({'uid': unicode(uid)})
         if(user != ''):
@@ -19,6 +22,7 @@ class UserManager():
                              '$set':{'salt': salt}})
             return True
         return False
+
     # verify password for authentication
     # return if the hashes are the same
     def validate_pw(self, uid, pw):
@@ -31,6 +35,7 @@ class UserManager():
             return test_hash == actual_hash
         else:
             return False
+
     # allows creation of user document with uid and pw in db
     # return: inserted_id of new document
     def create_user(self, uid, pw):

@@ -334,7 +334,7 @@ def key_save():
     try:
         the_entry.contents[ind].key = val
     except IndexError:
-        new_kvp = CatalistKVP(key=val,value="")
+        new_kvp = CatalistKVP(key=val, value="")
         the_entry.contents.append(new_kvp)
 
     # option ALL
@@ -372,7 +372,7 @@ def value_save():
     try:
         the_entry.contents[ind].value = val
     except IndexError:
-        new_kvp = CatalistKVP(key="",value=val)
+        new_kvp = CatalistKVP(key="", value=val)
         the_entry.contents.append(new_kvp)
 
     the_list.save()
@@ -395,7 +395,6 @@ def vote():
                -1 (downvote) | 100 (get the current vote)}
     }
     """
-    
     listid = request.form["listid"]
     uid = request.form["userid"]
     vote_val = request.form["vote"]
@@ -444,7 +443,6 @@ def autocomplete():
     response is the list of possible completions of *myfragment*
     drawn from *autocomplete_dict*
     """
-    
     fragment = request.form["fragment"]
     completions = []
     for item in autocomplete_dict:
