@@ -1,22 +1,50 @@
+var listid = "none"
+
 $(document).ready(function()
 {
+
     // creates list on first serious attempt at making a list
     $(".list").one("focusout",function(){
         $.ajax({
             url: "/ajax/makelist",
             method: 'GET',
             data: {
-                "title": "inserttitlehere"
+                title: $(".listtitle input").val()
             },
             success: function(data, status, jqxhr)
             {
-                // get list id
-                var listid = data.id;
+                // get list id, which we want to be a global var
+                listid = data.id;
                 // put the url in later >.<
                 $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
-                console.log("<a href='./list/' + listid>'./list/' + listid</a>");
+                console.log('http://0.0.0.0:6005/list/' + listid);
             }});
 	});
+
+    $(".list").on('focusout', ".key input", function(){
+        var newkey = $(this).val();
+
+        var listitem = $(this).parents().eq(4-1);
+        var kvps = $(this).parents().eq(3-1);
+        var this_kvp = $(this).parents().eq(2-1);
+        
+        var ind = kvps.children().index(this_kvp);
+        var entryind = $(".list .listItem").index(listitem);
+        
+        $.ajax({
+            url: "/ajax/savekey",
+            method: 'POST',
+            data: {
+                listid: listid,
+                index: ind,
+                entryind: entryind,
+                newvalue: newkey
+            },
+            success: function(data, status, jqxhr){
+                console.log("key " + newkey + " saved to position " + ind) // debug
+            }
+        })
+    });
     
     // upon clicking the last list item (with a plus sign), a new
     // list item will automatically be added to the bottom of the list

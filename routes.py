@@ -253,8 +253,8 @@ def list_save():
         ]
     }
     """
-    list_title = request.args.get("title")
-    list_contents = request.args.get("contents[]")
+    list_title = request.form["title"]
+    list_contents = request.form["contents[]"]
     formatted_list_contents = []
     for entry in list_contents:
         temp = CatalistEntry(title=entry[0])
@@ -275,7 +275,7 @@ def list_save():
 # and does nothing with them at the moment
 @app.route("/ajax/saveitems", methods=['POST'])
 def items_save():
-    list_items = request.args.get("items[title][]")
+    list_items = request.form["items[title][]"]
     print(list_items)
     return "List Saved"
 
@@ -297,8 +297,8 @@ def entry_save():
         ]
     }
     """
-    lid = request.args.get("listid")
-    eid = request.args.get("entryid")
+    lid = request.form["listid"]
+    eid = request.form["entryid"]
     the_list = Catalist.get(listid=lid)
 
 
@@ -309,30 +309,43 @@ def key_save():
     POST a JS associative array (basically a dict) like so:
     {
         listid:  <the list id>,
-        entryid: <entryid of entry>,
+        entryind: <index of entry>,
         index: <index of key-val pair (note: we use zero indexing!)>,
         newvalue: <new value of key>
     }
     """
     # necessary only for option ONLY (see later)
-    # eid = request.args.get("entryid")
-    kid = request.args.get("kvpid")
-    val = request.args.get("newvalue")
-    ind = request.args.get("index")
-    the_list = Catalist.get(listid=request.args.get("listid"))
+    entryind = int(request.form["entryind"])
+    # kid = request.form["kvpid"]
+    val = request.form["newvalue"]
+    ind = int(request.form["index"])
+    lid = request.form["listid"]
+    print("The list id is {} and the newvalue is {}".format(lid, val))
+    the_list = Catalist.objects.get(listid=lid)
+
+    try:
+        the_entry = the_list.contents[entryind]
+    except IndexError:
+        while len(the_list.contents) <= entryind:
+            the_list.contents.append(CatalistEntry())
+        the_entry = the_list.contents[entryind]
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
 
     # option ONLY
-    # the_list.contents.get(entryid=eid).getattr(kvpid)[0] = val
+    try:
+        the_entry.contents[ind].key = val
+    except IndexError:
+        new_kvp = CatalistKVP(key=val,value="")
+        the_entry.contents.append(new_kvp)
 
     # option ALL
-    for x in the_list.contents:
-        x.contents[ind].key = val
-        # the following should be taken care of my the_list.save()
-        # I'll leave just in case [txz]
-        x.save()
+    # for x in the_list.contents:
+    #     x.contents[ind].key = val
+    #     # the following should be taken care of my the_list.save()
+    #     # I'll leave just in case [txz]
+    #     x.save()
 
     the_list.save()
     return jsonify()  # return a blank 200
@@ -348,10 +361,10 @@ def value_save():
     The API is virtually identical the that of key_save()
     """
     
-    eid = request.args.get("entryid")
-    val = request.args.get("newvalue")
-    ind = request.args.get("index")
-    the_list = Catalist.objects(listid=request.args.get("listid"))
+    eid = request.form["entryid"]
+    val = request.form["newvalue"]
+    ind = request.form["index"]
+    the_list = Catalist.objects(listid=request.form["listid"])
     the_list.contents.get(entryid=eid).contents[ind].value = val
     the_list.save()
     return jsonify()  # return a 200
@@ -374,12 +387,12 @@ def vote():
     }
     """
     
-    listid = request.args.get("listid")
-    uid = request.args.get("userid")
-    vote_val = request.args.get("vote")
+    listid = request.form["listid"]
+    uid = request.form["userid"]
+    vote_val = request.form["vote"]
     the_user = User.objects(uid=uid)
     the_entry = Catalist(listid=listid).contents(
-        id=request.args.get("entryid"))
+        id=request.form["entryid"])
     curscore = the_entry.score
 
     # find the current vote, possibly removing user from up/downvoters lists
@@ -423,7 +436,7 @@ def autocomplete():
     drawn from *autocomplete_dict*
     """
     
-    fragment = request.args.get("fragment")
+    fragment = request.form["fragment"]
     completions = []
     for item in autocomplete_dict:
         l = len(fragment)
