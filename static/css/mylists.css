@@ -52,12 +52,22 @@
     padding: 1em;
     margin: 0 0 0 0;
 }
+.title, .title a {
+    color: #666;
+}
 .box{
     display: none;
     width: 100%;
+    
+    border: 0;
+    outline: none;
 }
 a:hover + .box,.box:hover{
     display: block;
     position: relative;
-    z-index: 100;
+    z-index: 100; /* heh all the way on top */
+}
+iframe {
+    border: none;
+    height: 100%
 }

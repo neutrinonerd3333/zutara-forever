@@ -4,6 +4,7 @@
 
 from __future__ import division, print_function
 from datetime import datetime
+from datetime import date
 # from glob import glob
 
 import uuid as uuid_module
@@ -86,7 +87,7 @@ class CatalistEntry(db.EmbeddedDocument):
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=100, default="")
+    title = db.StringField(max_length=100, default="List Title")
     created = db.DateTimeField(required=True)  # when list was created
 
     # delete lists that haven't been visited for a long time
@@ -197,16 +198,46 @@ def getlist(listid):
 @flask_security.login_required
 def userlists():
     current_user = flask_security.core.current_user
-    lists = Catalist.objects(creator = current_user.uid).only('title','created','last_visited').all()
+    lists = Catalist.objects(creator = current_user.uid).only('listid','title','created','last_visited').all()
     if lists.first() == None:
         return render_template('home.html', message="Oops! You have no lists saved! Would you like to create one?")
     
     lists = lists.order_by('last_visited').all()
+
+    n=0
+    urls = []
+    titles = []
+    created = []
+    last_visited = []
+
     for list in lists:
-        print(list.title)
-        print(list.created)
-        print(list.last_visited)
-    return render_template('mylists.html')
+        urls.append("/list/" + list.listid)
+        titles.append(list.title)
+        
+        c = list.created
+        lv = list.last_visited
+        
+        # formatting last visited
+        if(lv.date() == date.today()):
+            lv = lv.strftime("%I:%M%p")
+        else:
+            lv = lv.strftime("%I:%M%p, %x")
+        if lv[0:1] == "0":
+            lv = lv[1:]
+
+        # formatting creation date
+        if(c.date() == date.today()):
+            c = c.strftime("%I:%M%p")
+        else:
+            c = c.strftime("%I:%M%p, %x")
+        if lv[0:1] == "0":
+            c = lv[1:]
+
+        last_visited.append(lv)
+        created.append(c)
+        n += 1
+            
+    return render_template('mylists.html', n=n, titles=titles, created=created, last_visited=last_visited, urls=urls)
 
 
 def get_id():
@@ -249,8 +280,10 @@ def make_list():
     
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
-        current_user = None
-    new_list = Catalist(listid=list_id, created=time, last_visited=time, creator=current_user.uid)
+        uid = "Guest"
+    else:
+        uid = current_user.uid
+    new_list = Catalist(listid=list_id, created=time, last_visited=time, creator=uid)
     new_list.save()
     return jsonify(id=list_id)
 
