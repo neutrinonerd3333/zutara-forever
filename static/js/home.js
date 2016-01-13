@@ -1,3 +1,6 @@
+/* listid initialized to null, will get assigned the listid of the list
+ * when we create it in the database
+ */
 var listid = null;
 
 $(document).ready(function()
@@ -7,6 +10,8 @@ $(document).ready(function()
     $(".list").one("focusout", ifNoListMakeOne);
 
     $(".list").on('focusout', ".key input", function(){
+        ifNoListMakeOne();
+
         var newkey = $(this).val();
 
         var listitem = $(this).parents().eq(4-1);
@@ -32,6 +37,7 @@ $(document).ready(function()
     });
 
     $(".list").on('focusout', ".value input", function(){
+        ifNoListMakeOne();
         var newval = $(this).val();
 
         var listitem = $(this).parents().eq(4-1);
@@ -54,6 +60,26 @@ $(document).ready(function()
                 console.log("value " + newval + " saved to position " + ind) // debug
             }
         })
+    });
+
+    $(".list").on('focusout', ".itemTitle input", function(){
+        ifNoListMakeOne();
+        var newval = $(this).val();
+        var grandpa = $(this).parents().eq(2-1);
+        var entryind = $(".list .listItem").index(grandpa);
+
+        $.ajax({
+            url: "/ajax/saveentrytitle",
+            method: 'POST',
+            data: {
+                listid: listid,
+                entryind: entryind,
+                newvalue: newval
+            },
+            success: function(data, status, jqxhr){
+                console.log("title " + newval + " saved to entry " + entryind);
+            }
+        });
     });
     
     // upon clicking the last list item (with a plus sign), a new

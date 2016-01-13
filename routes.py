@@ -387,14 +387,12 @@ def entry_title_save():
     {
         listid:  <the list id>,
         entryind: <index of entry w.r.t. list (0-indexing)>,
-        index: <index of key-val pair w.r.t. entry>,
         newvalue: <new value of key>
     }
     """
     req_json = request.form
-    lid, eind, kvpind = [req_json[s] for s in ["listid", "entryind", "index"]]
+    lid, eind = [req_json[s] for s in ["listid", "entryind"]]
     eind = int(eind)
-    kvping = int(kvping)
     val = req_json["newvalue"]
     the_list = Catalist.objects.get(listid=lid)
 
@@ -402,7 +400,7 @@ def entry_title_save():
     if pad_len > 0:
         the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
-    the_entry.title = newvalue
+    the_entry.title = val
     the_list.save()
     return jsonify()  # 200 OK ^_^
 
