@@ -10,8 +10,8 @@ $(document).ready(function()
                 // get list id
                 var listid = data.id;
                 // put the url in later >.<
-                $("#link").append("Access or share your list at: <br><a href=0.0.0.0:6005/lists/" + listid + ".html>0.0.0.0:6005/lists/" + listid + "</a>");
-                console.log("<a href='./lists/' + listid>'./lists/' + listid</a>");
+                $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">0.0.0.0:6005/list/' + listid + "</a>");
+                console.log("<a href='./list/' + listid>'./list/' + listid</a>");
             }});
 	});
     
