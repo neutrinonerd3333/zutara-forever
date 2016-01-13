@@ -283,6 +283,29 @@ def items_save():
     return "List Saved"
 
 
+@app.route("/ajax/saveentry", methods=['POST'])
+def entry_save():
+    """
+    Save a Catalist entry.
+
+    API: POST a JS associative array as follows:
+    {
+        listid: <listid>,
+        entryid: <entryid>,
+        title: <new entry title>,
+        contents: [
+            [key1, value1],
+            [key2, value2],
+            ...
+        ]
+    }
+    """
+    req_json = request.form
+    lid = req_json["listid"]
+    eid = req_json["entryid"]
+    the_list = Catalist.get(listid=lid)
+
+
 @app.route("/ajax/savekey", methods=['POST'])
 def key_save():
     """
@@ -291,7 +314,7 @@ def key_save():
     {
         listid:  <the list id>,
         entryid: <entryid of entry>,
-        kvpid: <kvpid of key-val pair>,
+        index: <index of key-val pair (note: we use zero indexing!)>,
         newvalue: <new value of key>
     }
     """
@@ -299,6 +322,7 @@ def key_save():
     # eid = req_json["entryid"] # necessary only for option ONLY (see later)
     kid = req_json["kvpid"]
     val = req_json["newvalue"]
+    ind = req_json["index"]
     the_list = Catalist.get(listid=req_json["listid"])
 
     # two options for updating key name: either we update it
@@ -309,7 +333,7 @@ def key_save():
 
     # option ALL
     for x in the_list.contents:
-        x.contents.get(kvpid=kid).key = val
+        x.contents[ind].key = val
         # the following should be taken care of my the_list.save()
         # I'll leave just in case [txz]
         x.save()
@@ -322,11 +346,17 @@ def key_save():
 # key-val pair; this would be repeat significantly less code [txz]
 @app.route("/ajax/savevalue", methods=['POST'])
 def value_save():
+    """
+    Save the value in a particular key-value pair.
+
+    The API is virtually identical the that of key_save()
+    """
     req_json = request.form
     eid = req_json["entryid"]
     val = req_json["newvalue"]
+    ind = req_json["index"]
     the_list = Catalist.objects(listid=req_json["listid"])
-    the_list.contents.get(entryid=eid).contents.get(kvpid=kid).value = val
+    the_list.contents.get(entryid=eid).contents[ind].value = val
     the_list.save()
     return jsonify()  # return a 200
 
@@ -386,7 +416,6 @@ def vote():
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
-
 
 @app.route("/ajax/autocomplete", methods=['POST'])
 def autocomplete():
