@@ -4,13 +4,16 @@ $(document).ready(function()
     $(".list").one("focusout",function(){
         $.ajax({
             url: "/ajax/makelist",
-            method:'GET',
-            success:function(data, status, jqxhr)
+            method: 'GET',
+            data: {
+                "title": "inserttitlehere"
+            },
+            success: function(data, status, jqxhr)
             {
                 // get list id
                 var listid = data.id;
                 // put the url in later >.<
-                $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">0.0.0.0:6005/list/' + listid + "</a>");
+                $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
                 console.log("<a href='./list/' + listid>'./list/' + listid</a>");
             }});
 	});

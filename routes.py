@@ -253,10 +253,9 @@ def list_save():
         ]
     }
     """
-    req_json = request.form
-    print(req_json)
-    list_title = req_json["title"]
-    list_contents = req_json["contents[]"]
+    
+    list_title = request.args.get("title")
+    list_contents = request.args.get("contents[]")
     formatted_list_contents = []
     for entry in list_contents:
         temp = CatalistEntry(title=entry[0])
@@ -277,8 +276,7 @@ def list_save():
 # and does nothing with them at the moment
 @app.route("/ajax/saveitems", methods=['POST'])
 def items_save():
-    req_json = request.form
-    list_items = req_json["items[title][]"]
+    list_items = request.args.get("items[title][]")
     print(list_items)
     return "List Saved"
 
@@ -300,9 +298,8 @@ def entry_save():
         ]
     }
     """
-    req_json = request.form
-    lid = req_json["listid"]
-    eid = req_json["entryid"]
+    lid = request.args.get("listid")
+    eid = request.args.get("entryid")
     the_list = Catalist.get(listid=lid)
 
 
@@ -318,12 +315,12 @@ def key_save():
         newvalue: <new value of key>
     }
     """
-    req_json = request.form
-    # eid = req_json["entryid"] # necessary only for option ONLY (see later)
-    kid = req_json["kvpid"]
-    val = req_json["newvalue"]
-    ind = req_json["index"]
-    the_list = Catalist.get(listid=req_json["listid"])
+    
+    # eid = request.args.get("entryid") # necessary only for option ONLY (see later)
+    kid = request.args.get("kvpid")
+    val = request.args.get("newvalue")
+    ind = request.args.get("index")
+    the_list = Catalist.get(listid=request.args.get("listid"))
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
@@ -351,11 +348,11 @@ def value_save():
 
     The API is virtually identical the that of key_save()
     """
-    req_json = request.form
-    eid = req_json["entryid"]
-    val = req_json["newvalue"]
-    ind = req_json["index"]
-    the_list = Catalist.objects(listid=req_json["listid"])
+    
+    eid = request.args.get("entryid")
+    val = request.args.get("newvalue")
+    ind = request.args.get("index")
+    the_list = Catalist.objects(listid=request.args.get("listid"))
     the_list.contents.get(entryid=eid).contents[ind].value = val
     the_list.save()
     return jsonify()  # return a 200
@@ -377,12 +374,12 @@ def vote():
                -1 (downvote) | 100 (get the current vote)}
     }
     """
-    req_json = request.form
-    listid = req_json["listid"]
-    uid = req_json["userid"]
-    vote_val = req_json["vote"]
+    
+    listid = request.args.get("listid")
+    uid = request.args.get("userid")
+    vote_val = request.args.get("vote")
     the_user = User.objects(uid=uid)
-    the_entry = Catalist(listid=listid).contents(id=req_json["entryid"])
+    the_entry = Catalist(listid=listid).contents(id=request.args.get("entryid"))
     curscore = the_entry.score
 
     # find the current vote, possibly removing user from up/downvoters lists
@@ -425,8 +422,8 @@ def autocomplete():
     response is the list of possible completions of *myfragment*
     drawn from *autocomplete_dict*
     """
-    req_json = request.form
-    fragment = req_json["fragment"]
+    
+    fragment = request.args.get("fragment")
     completions = []
     for item in autocomplete_dict:
         l = len(fragment)
