@@ -368,12 +368,12 @@ def value_save():
     if pad_len > 0:
         the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
-    
+
     pad_len = ind - len(the_entry.contents) + 1
     if pad_len > 0:
         the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
     the_entry.contents[ind].value = val
-    
+
     the_list.save()
     return jsonify()  # return a 200
 
