@@ -1,6 +1,9 @@
 ::-webkit-scrollbar { 
     display: none; /* thank god for Chrome :P (and that they only check Chrome) */
 }
+.listBlock {
+    display: inline-block;
+}
 .lists {
     position: absolute;
     left: 0;
@@ -15,11 +18,11 @@
     min-height: 400px;
     display: block;
     
-    background-color: #AEF;
+    background-color: rgba(255,255,255,0.3);
     border: 0px;
     border-style: solid;
     border-color: #FFF;
-    border-radius: 20px;
+    border-radius: 0px;
     padding: 0;
     
     color: #666;
@@ -29,20 +32,30 @@
     
     overflow: auto;
 }
-.listTitle {    
+.list_head {    
     margin: 0 0 .5em 0;
     
-    height: 0em; /* this is due to the padding up and down */
+    height: 1.2em;
     width: calc(100% - 2em);
     background-color: transparent;
 
-    padding: 1em 1em;
+    padding: 0.8em 1em 0 1em;
     border: 0;
-    border-radius: 20px;
+    border-radius: 0px;
     
     text-align: center;
     font-size: 1.2em;
 }
+.titles, .times {
+    height: 100%;
+    width: 50%;
+    display: inline-block;
+    text-align: center;
+    color: #333;
+    font-weight: 300;
+    margin: 0;
+}
+.times { width: 50%;}
 .list {
     height: 2em;
     width: calc(100% - 2em);
@@ -52,22 +65,31 @@
     padding: 1em;
     margin: 0 0 0 0;
 }
-.title, .title a {
+.listTitle, .listTitle a, .listTime, .listTime a {
+    width: 50%;
+    display: inline-block;
+    
     color: #666;
+    text-decoration: none;
+    text-align: center;
+    font-weight: normal;
 }
 .box{
     display: none;
+    height: 300px;
     width: 100%;
     
     border: 0;
     outline: none;
-}
-a:hover + .box,.box:hover{
-    display: block;
-    position: relative;
-    z-index: 100; /* heh all the way on top */
+    
+    -webkit-transition:height, 0.5s linear;
+    -moz-transition: height, 0.5s linear;
+    -ms-transition: height, 0.5s linear;
+    -o-transition: height, 0.5s linear;
+    transition: height, 0.5s linear;
 }
 iframe {
+    display: block;
     border: none;
-    height: 100%
+    height: 100%;
 }

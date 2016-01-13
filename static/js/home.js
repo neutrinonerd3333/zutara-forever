@@ -2,7 +2,6 @@ var listid = null;
 
 $(document).ready(function()
 {
-
     // creates list on first serious attempt at making a list
     $(".list").one("focusout", ifNoListMakeOne);
 

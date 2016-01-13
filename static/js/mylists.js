@@ -1,59 +1,8 @@
 $(document).ready(function()
 {
 
-    // creates list on first serious attempt at making a list
-    $(".list").one("focusout", ifNoListMakeOne);
-
-    $(".list").on('focusout', ".key input", function(){
-        var newkey = $(this).val();
-
-        var listitem = $(this).parents().eq(4-1);
-        var kvps = $(this).parents().eq(3-1);
-        var this_kvp = $(this).parents().eq(2-1);
-        
-        var ind = kvps.children().index(this_kvp);
-        var entryind = $(".list .listItem").index(listitem);
-        
-        $.ajax({
-            url: "/ajax/savekey",
-            method: 'POST',
-            data: {
-                listid: listid,
-                index: ind,
-                entryind: entryind,
-                newvalue: newkey
-            },
-            success: function(data, status, jqxhr){
-                console.log("key " + newkey + " saved to position " + ind) // debug
-            }
-        })
-    });
-
-    $(".list").on('focusout', ".value input", function(){
-        var newval = $(this).val();
-
-        var listitem = $(this).parents().eq(4-1);
-        var kvps = $(this).parents().eq(3-1);
-        var this_kvp = $(this).parents().eq(2-1);
-        
-        var ind = kvps.children().index(this_kvp);
-        var entryind = $(".list .listItem").index(listitem);
-        
-        $.ajax({
-            url: "/ajax/savevalue",
-            method: 'POST',
-            data: {
-                listid: listid,
-                index: ind,
-                entryind: entryind,
-                newvalue: newval
-            },
-            success: function(data, status, jqxhr){
-                console.log("value " + newval + " saved to position " + ind) // debug
-            }
-        })
-    });
-    
+    // expands preview on hover (should I make it click?) over url
+  
     // upon clicking the last list item (with a plus sign), a new
     // list item will automatically be added to the bottom of the list
     $(".list").on("click", ".lastListItem", addItem);
@@ -139,6 +88,16 @@ function ifNoListMakeOne(){
             }
         });
     }
+}
+
+function expandAndPreview()
+{
+    $(this).find(".box").slideDown(500);
+}
+
+function shrinkAndHide()
+{
+    $(this).find(".box").slideUp(500);
 }
 
 function addItem()
