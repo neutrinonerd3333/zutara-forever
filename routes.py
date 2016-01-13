@@ -31,7 +31,8 @@ app.config['MONGODB_SETTINGS'] = {
 
 app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
 
-HOSTNAME = '0.0.0.0:6005' # we'll need this later for actual app
+# we'll need this later for actual app
+HOSTNAME = '0.0.0.0:6005'
 
 db = MongoEngine(app)
 mongo = PyMongo(app)
@@ -39,35 +40,41 @@ mongo = PyMongo(app)
 #----------------------------------------------------------
 # Flask-Security and MongoEngine Setup
 #----------------------------------------------------------
-# User, Admin, etc. sort of roles
+
+
 class Role(db.Document, RoleMixin):
+    """ A class for user roles (e.g. User, Admin, ...) """
     name = db.StringField(max_length=80, unique=True)
     description = db.StringField(max_length=255)
 
-# Generic User class
-# can have any or none of these attributes
+
 class User(db.Document, UserMixin):
+    """ A class for users. Can have any/none of these attributes. """
     firstname = db.StringField(max_length=40)
     email = db.StringField(max_length=100, unique=True)
     lastname = db.StringField(max_length=40)
     uid = db.StringField(max_length=40, unique=True)
-    password = db.StringField(max_length=20) # limit length
-    active = db.BooleanField(default=True) # set False for user confirmation
+    password = db.StringField(max_length=20)  # limit length
+    active = db.BooleanField(default=True)  # set False for user confirmation
     confirmed_at = db.DateTimeField()
 
     # we want to remove long-inactive users
     last_active = db.DateTimeField(required=True)
-    
+
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
+
 class CatalistKVP(db.EmbeddedDocument):
+    """ A class for individual key-value pairs in our Catalist entries """
     # id is implicit in mongoengine, but we want to
     # share kvpid's across (CatalistEntry)s
     kvpid = db.StringField(max_length=40)
     key = db.StringField(max_length=40)
     value = db.StringField(max_length=200)
 
+
 class CatalistEntry(db.EmbeddedDocument):
+    """ A class for the entries in our Catalists """
     # entryid = db.StringField(max_length=40, unique=True)
     title = db.StringField(max_length=80)
     contents = db.EmbeddedDocumentListField(CatalistKVP)
@@ -75,15 +82,16 @@ class CatalistEntry(db.EmbeddedDocument):
     upvoters = db.ListField(db.ReferenceField(User))
     downvoters = db.ListField(db.ReferenceField(User))
 
-# a class for our lists (catalists :P)
+
 class Catalist(db.Document):
+    """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
     title = db.StringField(max_length=100)
-    created = db.DateTimeField(required=True) # when list was created
+    created = db.DateTimeField(required=True)  # when list was created
 
     # delete lists that haven't been visited for a long time
     last_visited = db.DateTimeField(required=True)
-    
+
     # keys = db.ListField(db.StringField(max_length=20))
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
@@ -96,10 +104,13 @@ security = Security(app, user_datastore)
 # User Interaction Section
 #----------------------------------------------------
 
-# signs user up, given valid credentials and no repeat
-# of username
+
 @app.route("/signup", methods=['POST'])
 def signup():
+    """
+    Sign the user up, given valid credentials and a username the doesn't
+    already exist in our database.
+    """
     user_id = request.form['uid']
     pw = request.form['password']
     email = request.form['email']
@@ -107,29 +118,36 @@ def signup():
 
     try:
         # if user exists, then can't sign up with same username
-        user = User.objects.get(uid = unicode(user_id))
-        return render_template('register.html', message="Sorry, that username is taken!")
+        user = User.objects.get(uid=unicode(user_id))
+        return render_template('register.html',
+                               message="Sorry, that username is taken!")
     except mongoengine.DoesNotExist:
         try:
             # if user exists, then can't sign up with same username
-            user = User.objects.get(email = unicode(email))
-            return render_template('register.html', message="Sorry, that email is taken! Did you forget your password?")
+            user = User.objects.get(email=unicode(email))
+            return render_template(
+                'register.html',
+                message="Sorry, that email is taken! " +
+                "Did you forget your password?")
         except:
-            user_datastore.create_user(uid=user_id, password=pw, last_active = time, email=email)
+            user_datastore.create_user(uid=user_id, password=pw,
+                                       last_active=time, email=email)
     # if multiple objects, then something just screwed up
     except:
-        return render_template('error.html') # DNE yet
+        return render_template('error.html')  # DNE yet
 
     return render_template('home.html')
 
-# signs user in, given valid credentials
+
 @app.route("/signin", methods=['POST'])
 def signin():
+    """ Sign the user in, given valid credentials. """
     user_id = request.form['uid']
     pw = request.form['password']
+    whoops = "You have entered a wrong username or password. Please try again."
     try:
         # if user exists, then sign in
-        user = User.objects.get(uid = unicode(user_id))
+        user = User.objects.get(uid=unicode(user_id))
         if flask_security.utils.verify_and_update_password(pw, user):
             time = datetime.utcnow()
             user.last_active = time
@@ -137,51 +155,66 @@ def signin():
             flask_security.utils.login_user(user, remember=None)
             message = ""
         else:
-            message = "You have entered a wrong username or password. Please try again."
-    except: # user DNE
-        message="You have entered a wrong username or password. Please try again."
+            message = whoops
+    except:  # user DNE
+        message = whoops
 
     return render_template('./security/login_user.html', message=message)
 
-# logs out current user and clears Remember Me cookie
+
 @app.route("/logout", methods=['POST'])
 def logout():
+    """ Log out the current user, clearing the Remember Me cookie """
     flask_security.utils.logout_user()
     return render_template('logoutsuccess.html')
 
-@app.route("/login")
+
+@app.route("/login", methods=['GET'])
 def login():
+    """ Page for user login """
     return render_template('./security/login_user.html')
 
-# this route takes the user to the registration page
+
 @app.route("/register")
 def register():
+    """ Page for user registration """
     return render_template('register.html')
+
 
 @app.route("/list/<listid>", methods=['GET'])
 def getlist(listid):
+    """
+    Fetch the list with given listid from our database,
+    display with template
+    """
     the_list = Catalist.objects.get(listid=listid)
+    # print(the_list.contents)  # for debug
     return render_template('loadlist.html', entries=the_list.contents)
+
 
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
     return render_template('userlists.html')
 
-# returns name of current user
+
 def get_id():
+    """ Return name of current user """
     uid = flask_security.core.current_user.uid
     return uid
 
-app.jinja_env.globals.update(get_id = get_id)
+app.jinja_env.globals.update(get_id=get_id)
 
-@app.route("/", methods=['GET','POST'])
+
+@app.route("/", methods=['GET', 'POST'])
 def index():
+    """ Our homepage! """
     return render_template('home.html')
 
 #----------------------------------------------------------
 # Error Handlers
 #----------------------------------------------------------
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -191,6 +224,7 @@ def page_not_found(e):
 # Ajax Routes
 #----------------------------------------------------------
 
+
 @app.route("/ajax/makelist", methods=['GET'])
 def make_list():
     """
@@ -198,11 +232,12 @@ def make_list():
     created for the insertion of more data
     """
     list_id = str(uuid_module.uuid4())
-    title = "";
+    title = ""
     time = datetime.utcnow()
     new_list = Catalist(listid=list_id, created=time, last_visited=time)
     new_list.save()
     return jsonify(id=list_id)
+
 
 # DEV NOTE: maybe make this a regular route, not AJAX
 @app.route("/ajax/savelist", methods=['POST'])
@@ -228,13 +263,14 @@ def list_save():
         keys = [], kvps = []
         for index, (k, v) in enumerate(entry[1]):
             keys.append(key)
-            kvps.append(CatalistKVP(kvpid=hash(list_title+str(index)),
-                                    key=k,value=v))
+            kvps.append(CatalistKVP(kvpid=hash(list_title + str(index)),
+                                    key=k, value=v))
         temp.contents = kvps
         formatted_list_contents.append(temp)
     newlist = Catalist(title=list_title, contents=formatted_list_contents)
     newlist.save()
-    return redirect("/list/"+str(newlist.id),code=302)
+    return redirect("/list/" + str(newlist.id), code=302)
+
 
 # let's start small, since the receiving end is so picky
 # this one successfully receives the listItemTitle inputs
@@ -245,6 +281,7 @@ def items_save():
     list_items = req_json["items[title][]"]
     print(list_items)
     return "List Saved"
+
 
 @app.route("/ajax/savekey", methods=['POST'])
 def key_save():
@@ -278,7 +315,8 @@ def key_save():
         x.save()
 
     the_list.save()
-    return jsonify() # return a blank 200
+    return jsonify()  # return a blank 200
+
 
 # maybe merge this with /ajax/savekey and have client pass an extra
 # key-val pair; this would be repeat significantly less code [txz]
@@ -290,7 +328,8 @@ def value_save():
     the_list = Catalist.objects(listid=req_json["listid"])
     the_list.contents.get(entryid=eid).contents.get(kvpid=kid).value = val
     the_list.save()
-    return jsonify() # return a 200
+    return jsonify()  # return a 200
+
 
 @app.route("/ajax/vote", methods=['POST'])
 def vote():
@@ -320,11 +359,11 @@ def vote():
     cur_vote = 0
     if the_user in the_entry.upvoters:
         cur_vote = 1
-        if vote_val in (-1,0,1):
+        if vote_val in (-1, 0, 1):
             the_entry.update_one(pull__upvoters=the_user)
     elif the_user in the_entry.downvoters:
         cur_vote = -1
-        if vote_val in (-1,0,1):
+        if vote_val in (-1, 0, 1):
             the_entry.update_one(pull__downvoters=the_user)
 
     # do we only want to look up some values?
@@ -348,12 +387,15 @@ def vote():
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
 
-# completes a word fragment with a possible list type
-# usage: POST to this route with
-# {"fragment": myfragment}, response is the list of possible
-# completions of *myfragment* drawn from *autocomplete_dict*
+
 @app.route("/ajax/autocomplete", methods=['POST'])
 def autocomplete():
+    """
+    completes a word fragment with a possible list type
+    usage: POST to this route with {"fragment": myfragment},
+    response is the list of possible completions of *myfragment*
+    drawn from *autocomplete_dict*
+    """
     req_json = request.form
     fragment = req_json["fragment"]
     completions = []
