@@ -253,7 +253,6 @@ def list_save():
         ]
     }
     """
-    
     list_title = request.args.get("title")
     list_contents = request.args.get("contents[]")
     formatted_list_contents = []
