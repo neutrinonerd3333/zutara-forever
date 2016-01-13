@@ -7,78 +7,37 @@ $(document).ready(function()
 {
 
     // creates list on first serious attempt at making a list
-    $(".list").one("focusout", ifNoListMakeOne);
+    // $(".list").one("focusout", ifNoListMakeOne);
 
     $(".list").on('focusout', ".key input", function(){
-        ifNoListMakeOne();
-
-        var newkey = $(this).val();
-
-        var listitem = $(this).parents().eq(4-1);
-        var kvps = $(this).parents().eq(3-1);
-        var this_kvp = $(this).parents().eq(2-1);
-        
-        var ind = kvps.children().index(this_kvp);
-        var entryind = $(".list .listItem").index(listitem);
-        
-        $.ajax({
-            url: "/ajax/savekey",
-            method: 'POST',
-            data: {
-                listid: listid,
-                index: ind,
-                entryind: entryind,
-                newvalue: newkey
-            },
-            success: function(data, status, jqxhr){
-                console.log("key " + newkey + " saved to position " + ind) // debug
-            }
-        })
+        var that = $(this);
+        ifNoListMakeOne(function(){saveKeyOrValue(that, "key");});
     });
 
     $(".list").on('focusout', ".value input", function(){
-        ifNoListMakeOne();
-        var newval = $(this).val();
-
-        var listitem = $(this).parents().eq(4-1);
-        var kvps = $(this).parents().eq(3-1);
-        var this_kvp = $(this).parents().eq(2-1);
-        
-        var ind = kvps.children().index(this_kvp);
-        var entryind = $(".list .listItem").index(listitem);
-        
-        $.ajax({
-            url: "/ajax/savevalue",
-            method: 'POST',
-            data: {
-                listid: listid,
-                index: ind,
-                entryind: entryind,
-                newvalue: newval
-            },
-            success: function(data, status, jqxhr){
-                console.log("value " + newval + " saved to position " + ind) // debug
-            }
-        })
+        var that = $(this);
+        ifNoListMakeOne(function(){saveKeyOrValue(that, "value");});
     });
 
     $(".list").on('focusout', ".itemTitle input", function(){
-        ifNoListMakeOne();
-        var newval = $(this).val();
-        var grandpa = $(this).parents().eq(2-1);
-        var entryind = $(".list .listItem").index(grandpa);
+        var that = $(this);
+        ifNoListMakeOne(function(){
+            var newval = that.val();
+            var grandpa = that.parents().eq(2-1);
+            var entryind = $(".list .listItem").index(grandpa);
 
-        $.ajax({
-            url: "/ajax/saveentrytitle",
-            method: 'POST',
-            data: {
-                listid: listid,
-                entryind: entryind,
-                newvalue: newval
-            },
-            success: function(data, status, jqxhr){
-                console.log("title " + newval + " saved to entry " + entryind);
-            }
+            $.ajax({
+                url: "/ajax/saveentrytitle",
+                method: 'POST',
+                data: {
+                    listid: listid,
+                    entryind: entryind,
+                    newvalue: newval
+                },
+                success: function(data, status, jqxhr){
+                    console.log("title " + newval + " saved to entry " + entryind);
+                }
+            });
         });
     });
     
@@ -146,7 +105,7 @@ $(document).ready(function()
     });
 });
 
-function ifNoListMakeOne(){
+function ifNoListMakeOne(callback){
     if(listid===null){
         $.ajax({
             url: "/ajax/makelist",
@@ -160,8 +119,11 @@ function ifNoListMakeOne(){
                 // put the url in later >.<
                 $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
                 console.log('http://0.0.0.0:6005/list/' + listid);
+                callback()
             }
         });
+    } else {
+        callback();
     }
 }
 
@@ -173,23 +135,22 @@ function addAttribute(){
     $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
 }
 
-// would be nice to use this function in the focusout listeners for key/val save
-function saveKeyOrValue(toSave, newval){
+function saveKeyOrValue(that, toSave){
     if (toSave !== "key" && toSave !== "value"){
         throw "ValueError: argument of saveKeyOrValue must be 'key' or 'value'";
     }
 
-    var newkey = $(this).val();
+    var newval = that.val();
 
-    var listitem = $(this).parents().eq(4-1);
-    var kvps = $(this).parents().eq(3-1);
-    var this_kvp = $(this).parents().eq(2-1);
+    var listitem = that.parents().eq(4-1);
+    var kvps = that.parents().eq(3-1);
+    var this_kvp = that.parents().eq(2-1);
     
     var ind = kvps.children().index(this_kvp);
     var entryind = $(".list .listItem").index(listitem);
 
     $.ajax({
-        url: "/ajax/" + toSave,
+        url: "/ajax/save" + toSave,
         method: 'POST',
         data: {
             listid: listid,
