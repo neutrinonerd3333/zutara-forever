@@ -1,25 +1,10 @@
-var listid = "none"
+var listid = null;
 
 $(document).ready(function()
 {
 
     // creates list on first serious attempt at making a list
-    $(".list").one("focusout",function(){
-        $.ajax({
-            url: "/ajax/makelist",
-            method: 'GET',
-            data: {
-                title: $(".listtitle input").val()
-            },
-            success: function(data, status, jqxhr)
-            {
-                // get list id, which we want to be a global var
-                listid = data.id;
-                // put the url in later >.<
-                $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
-                console.log('http://0.0.0.0:6005/list/' + listid);
-            }});
-	});
+    $(".list").one("focusout", ifNoListMakeOne);
 
     $(".list").on('focusout', ".key input", function(){
         var newkey = $(this).val();
@@ -139,6 +124,25 @@ $(document).ready(function()
     });
 });
 
+function ifNoListMakeOne(){
+    if(listid===null){
+        $.ajax({
+            url: "/ajax/makelist",
+            method: 'GET',
+            data: {
+                title: $(".listtitle input").val()
+            },
+            success: function(data, status, jqxhr){
+                // get list id, which we want to be a global var
+                listid = data.id;
+                // put the url in later >.<
+                $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
+                console.log('http://0.0.0.0:6005/list/' + listid);
+            }
+        });
+    }
+}
+
 function addItem()
 {
     $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
@@ -147,4 +151,12 @@ function addItem()
 function addAttribute()
 {
     $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
+}
+
+function deleteItem(){
+    // do ajax-y things
+}
+
+function deleteAttribute(){
+    // do more ajax-y things
 }

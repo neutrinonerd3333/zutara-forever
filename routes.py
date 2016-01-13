@@ -69,24 +69,24 @@ class CatalistKVP(db.EmbeddedDocument):
     # id is implicit in mongoengine, but we want to
     # share kvpid's across (CatalistEntry)s
     kvpid = db.StringField(max_length=40)
-    key = db.StringField(max_length=40)
-    value = db.StringField(max_length=200)
+    key = db.StringField(max_length=40, default="")
+    value = db.StringField(max_length=200, default="")
 
 
 class CatalistEntry(db.EmbeddedDocument):
     """ A class for the entries in our Catalists """
     # entryid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=80)
-    contents = db.EmbeddedDocumentListField(CatalistKVP)
+    title = db.StringField(max_length=80, default="")
+    contents = db.EmbeddedDocumentListField(CatalistKVP, default=[])
     score = db.IntField(default=0)
-    upvoters = db.ListField(db.ReferenceField(User))
-    downvoters = db.ListField(db.ReferenceField(User))
+    upvoters = db.ListField(db.ReferenceField(User), default=[])
+    downvoters = db.ListField(db.ReferenceField(User), default=[])
 
 
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=100)
+    title = db.StringField(max_length=100, default="")
     created = db.DateTimeField(required=True)  # when list was created
 
     # delete lists that haven't been visited for a long time
@@ -302,6 +302,22 @@ def entry_save():
     the_list = Catalist.get(listid=lid)
 
 
+def setitem_with_padding(array, item, index, cls):
+    """
+    Performs array[index] = item, padding array to avoid IndexErrors.
+
+    Arguments:
+    array -- the array we're modifying
+    item  -- the item we're inserting into *array*
+    index -- the index we're inserting *item* into
+    cls   -- a class we use to pad the array if we extend it. In particular,
+             we pad with blank instances cls().
+    """
+    while len(array) <= index:
+        array.append(cls())
+    array[index] = item
+
+
 @app.route("/ajax/savekey", methods=['POST'])
 def key_save():
     """
@@ -331,18 +347,19 @@ def key_save():
     # for this entry ONLY or update it for ALL entries
 
     # option ONLY
-    try:
-        the_entry.contents[ind].key = val
-    except IndexError:
-        new_kvp = CatalistKVP(key=val, value="")
-        the_entry.contents.append(new_kvp)
+    while len(the_entry.contents) <= ind:
+        the_entry.contents.append(CatalistKVP())
+    the_entry.contents[ind].key = val
+
+    # try:
+    #     the_entry.contents[ind].key = val
+    # except IndexError:
+    #     new_kvp = CatalistKVP(key=val, value="")
+    #     the_entry.contents.append(new_kvp)
 
     # option ALL
-    # for x in the_list.contents:
-    #     x.contents[ind].key = val
-    #     # the following should be taken care of my the_list.save()
-    #     # I'll leave just in case [txz]
-    #     x.save()
+    # for entry in the_list.contents:
+    #     entry.contents[ind].key = val
 
     the_list.save()
     return jsonify()  # return a blank 200
@@ -358,11 +375,9 @@ def value_save():
     The API is virtually identical the that of key_save()
     """
     entryind = int(request.form["entryind"])
-    # kid = request.form["kvpid"]
     val = request.form["newvalue"]
     ind = int(request.form["index"])
     lid = request.form["listid"]
-    print("The list id is {} and the newvalue is {}".format(lid, val))
     the_list = Catalist.objects.get(listid=lid)
 
     while len(the_list.contents) <= entryind:
