@@ -2,6 +2,11 @@
  * when we create it in the database
  */
 var listid = null;
+var pathname = window.location.pathname;
+var n = pathname.search(/^\/list\/.+/, pathname);
+if (n === 0) {
+    listid = pathname.slice(6);
+}
 
 $(document).ready(function()
 {
