@@ -225,7 +225,7 @@ def page_not_found(e):
 #----------------------------------------------------------
 
 
-@app.route("/ajax/makelist", methods=['GET'])
+@app.route("/api/makelist", methods=['GET'])
 def make_list():
     """
     Upon making the first edit, an empty list will be
@@ -240,7 +240,7 @@ def make_list():
 
 
 # DEV NOTE: maybe make this a regular route, not AJAX
-@app.route("/ajax/savelist", methods=['POST'])
+@app.route("/api/savelist", methods=['POST'])
 def list_save():
     """
     For saving an entire list.
@@ -273,7 +273,7 @@ def list_save():
 # let's start small, since the receiving end is so picky
 # this one successfully receives the listItemTitle inputs
 # and does nothing with them at the moment
-@app.route("/ajax/saveitems", methods=['POST'])
+@app.route("/api/saveitems", methods=['POST'])
 def items_save():
     list_items = request.form["items[title][]"]
     print(list_items)
@@ -281,7 +281,7 @@ def items_save():
 
 
 # INCOMPLETE
-# @app.route("/ajax/saveentry", methods=['POST'])
+# @app.route("/api/saveentry", methods=['POST'])
 # def entry_save():
     """
     Save a Catalist entry.
@@ -303,7 +303,7 @@ def items_save():
     the_list = Catalist.get(listid=lid)
 
 
-@app.route("/ajax/savekey", methods=['POST'])
+@app.route("/api/savekey", methods=['POST'])
 def key_save():
     """
     mini-API for this view function
@@ -348,9 +348,9 @@ def key_save():
     return jsonify()  # return a blank 200
 
 
-# maybe merge this with /ajax/savekey and have client pass an extra
+# maybe merge this with /api/savekey and have client pass an extra
 # key-val pair; this would be repeat significantly less code [txz]
-@app.route("/ajax/savevalue", methods=['POST'])
+@app.route("/api/savevalue", methods=['POST'])
 def value_save():
     """
     Save the value in a particular key-value pair.
@@ -378,7 +378,7 @@ def value_save():
     return jsonify()  # return a 200
 
 
-@app.route("/ajax/saveentrytitle", methods=['POST'])
+@app.route("/api/saveentrytitle", methods=['POST'])
 def entry_title_save():
     """
     AJAXily save the title of an entry.
@@ -405,7 +405,7 @@ def entry_title_save():
     return jsonify()  # 200 OK ^_^
 
 
-@app.route("/ajax/savelisttitle", methods=['POST'])
+@app.route("/api/savelisttitle", methods=['POST'])
 def list_title_save():
     """
     AJAXily save the title of a Catalist ^_^
@@ -422,7 +422,7 @@ def list_title_save():
     the_list.save()
     return jsonify()  # 200 OK ^_^
 
-@app.route("/ajax/vote", methods=['POST'])
+@app.route("/api/vote", methods=['POST'])
 def vote():
     """
     Two options:
@@ -478,7 +478,7 @@ def vote():
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
 
-@app.route("/ajax/autocomplete", methods=['POST'])
+@app.route("/api/autocomplete", methods=['POST'])
 def autocomplete():
     """
     completes a word fragment with a possible list type

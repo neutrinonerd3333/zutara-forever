@@ -27,7 +27,7 @@ $(document).ready(function()
             var entryind = $(".list .listItem").index(grandpa);
 
             $.ajax({
-                url: "/ajax/saveentrytitle",
+                url: "/api/saveentrytitle",
                 method: 'POST',
                 data: {
                     listid: listid,
@@ -47,7 +47,7 @@ $(document).ready(function()
         ifNoListMakeOne(function(){
             var newval = that.val();
             $.ajax({
-                url: "/ajax/savelisttitle",
+                url: "/api/savelisttitle",
                 method: 'POST',
                 data: {
                     listid: listid,
@@ -127,7 +127,7 @@ $(document).ready(function()
 function ifNoListMakeOne(callback){
     if(listid===null){
         $.ajax({
-            url: "/ajax/makelist",
+            url: "/api/makelist",
             method: 'GET',
             data: {
                 title: $(".listtitle input").val()
@@ -169,7 +169,7 @@ function saveKeyOrValue(that, toSave){
     var entryind = $(".list .listItem").index(listitem);
 
     $.ajax({
-        url: "/ajax/save" + toSave,
+        url: "/api/save" + toSave,
         method: 'POST',
         data: {
             listid: listid,
