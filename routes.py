@@ -31,6 +31,7 @@ app.config['MONGODB_SETTINGS'] = {
 }
 
 app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
+app.config['SECURITY_PASSWORD_SALT'] = "eddb960e-269c-4458-8e08-c1027d8b290"
 
 # we'll need this later for actual app
 HOSTNAME = '0.0.0.0:6005'
@@ -55,7 +56,7 @@ class User(db.Document, UserMixin):
     email = db.StringField(max_length=100, unique=True)
     lastname = db.StringField(max_length=40)
     uid = db.StringField(max_length=40, unique=True)
-    password = db.StringField(max_length=20)  # limit length
+    password = db.StringField(max_length=255)  # because this is a hash
     active = db.BooleanField(default=True)  # set False for user confirmation
     confirmed_at = db.DateTimeField()
 
@@ -115,6 +116,7 @@ def signup():
     """
     user_id = request.form['uid']
     pw = request.form['password']
+    pw_hash = flask_security.utils.get_hmac(pw)
     email = request.form['email']
     time = datetime.utcnow()
 
@@ -125,14 +127,14 @@ def signup():
                                message="Sorry, that username is taken!")
     except mongoengine.DoesNotExist:
         try:
-            # if user exists, then can't sign up with same username
+            # if user exists, then can't sign up with same email
             user = User.objects.get(email=unicode(email))
             return render_template(
                 'register.html',
                 message="Sorry, that email is taken! " +
                 "Did you forget your password?")
         except:
-            user_datastore.create_user(uid=user_id, password=pw,
+            user_datastore.create_user(uid=user_id, password=pw_hash,
                                        last_active=time, email=email)
     # if multiple objects, then something just screwed up
     except:
@@ -146,11 +148,12 @@ def signin():
     """ Sign the user in, given valid credentials. """
     user_id = request.form['uid']
     pw = request.form['password']
+    pw_hash = flask_security.utils.get_hmac(pw)
     whoops = "You have entered a wrong username or password. Please try again."
     try:
         # if user exists, then sign in
         user = User.objects.get(uid=unicode(user_id))
-        if flask_security.utils.verify_and_update_password(pw, user):
+        if flask_security.utils.verify_and_update_password(pw_hash, user):
             time = datetime.utcnow()
             user.last_active = time
             print(user.last_active)
@@ -207,7 +210,6 @@ def userlists():
     n=0
     urls = []
     titles = []
-    created = []
     last_visited = []
 
     for list in lists:
@@ -225,19 +227,10 @@ def userlists():
         if lv[0:1] == "0":
             lv = lv[1:]
 
-        # formatting creation date
-        if(c.date() == date.today()):
-            c = c.strftime("%I:%M%p")
-        else:
-            c = c.strftime("%I:%M%p, %x")
-        if lv[0:1] == "0":
-            c = lv[1:]
-
         last_visited.append(lv)
-        created.append(c)
         n += 1
             
-    return render_template('mylists.html', n=n, titles=titles, created=created, last_visited=last_visited, urls=urls)
+    return render_template('mylists.html', n=n, titles=titles, last_visited=last_visited, urls=urls)
 
 
 def get_id():
