@@ -285,24 +285,24 @@ def items_save():
 # INCOMPLETE
 # @app.route("/api/saveentry", methods=['POST'])
 # def entry_save():
-    """
-    Save a Catalist entry.
+    # """
+    # Save a Catalist entry.
 
-    API: POST a JS associative array as follows:
-    {
-        listid: <listid>,
-        entryid: <entryid>,
-        title: <new entry title>,
-        contents: [
-            [key1, value1],
-            [key2, value2],
-            ...
-        ]
-    }
-    """
-    lid = request.form["listid"]
-    eid = request.form["entryid"]
-    the_list = Catalist.get(listid=lid)
+    # API: POST a JS associative array as follows:
+    # {
+    #     listid: <listid>,
+    #     entryid: <entryid>,
+    #     title: <new entry title>,
+    #     contents: [
+    #         [key1, value1],
+    #         [key2, value2],
+    #         ...
+    #     ]
+    # }
+    # """
+    # lid = request.form["listid"]
+    # eid = request.form["entryid"]
+    # the_list = Catalist.get(listid=lid)
 
 
 @app.route("/api/savekey", methods=['POST'])
@@ -427,17 +427,77 @@ def list_title_save():
 
 @app.route("/api/deletelist", methods=['POST'])
 def list_delete():
-    pass
+    """
+    Delete a Catalist.
+
+    usage: POST a JSON associative array as follows:
+    {
+        listid: <the id of the list to be deleted>
+    }
+    """
+    listid = request.form["listid"]
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        return "The list doesn't exist", 400
+    the_list.delete()
+    return 'OK'  # this should return a 200
 
 
 @app.route("/api/deleteentry", methods=['POST'])
 def entry_delete():
-    pass
+    """
+    Delete an entry from a Catalist.
+
+    usage: POST a JSON associative array as follows:
+    {
+        listid: <the id of the Catalist>,
+        entryind: <the index of the entry to remove>
+    }
+    """
+    listid = request.form["listid"]
+    entryind = int(request.form["entryind"])
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        return "The list doesn't exist", 400
+    try:
+        removed = the_list.contents.pop(entryind)
+    except IndexError:
+        return "Entry index out of bounds", 400
+    the_list.save()
+    return 'OK'  # 200 OK
 
 
 @app.route("/api/deletekvp", methods=['POST'])
 def kvp_delete():
-    pass
+    """
+    Delete a key-value pair from a Catalist entry.
+
+    usage: POST a JSON associative array as follows:
+    {
+        listid: <the id of the Catalist>,
+        entryind: <the index of the entry to remove>,
+        index: <the index of the kvp within the entry>
+    }
+    """
+    listid = request.form["listid"]
+    entryind = int(request.form["entryind"])
+    ind = int(request.form["index"])
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        return "The list doesn't exist", 400
+    try:
+        the_entry = the_list.contents[entryind]
+    except IndexError:
+        return "Entry index out of bounds", 400
+    try:
+        removed = the_entry.contents.pop(ind)
+    except IndexError:
+        return "KVP index out of bounds", 400
+    the_list.save()
+    return 'OK'  # 200 OK
 
 
 @app.route("/api/vote", methods=['POST'])
