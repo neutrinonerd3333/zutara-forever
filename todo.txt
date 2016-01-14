@@ -16,6 +16,9 @@ agenda Jan 14:
 * figure out hosting
 * debug!
 * implement this? http://flask.pocoo.org/docs/0.10/patterns/apierrors/
+* implement email notification of errors
+    - see http://flask.pocoo.org/docs/0.10/errorhandling/#error-mails
+
 
 011216
 [I think this is done -txz] Properly format all the responses from server, on client side
