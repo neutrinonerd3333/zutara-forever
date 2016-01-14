@@ -5,7 +5,9 @@ TO DO LIST FOR CATALIST
 agenda Jan 14:
 * fix some ui issues [long lists hit bottom of page, the list seems a bit too small]
 * make UI responsive? as in it should still look nice with a smaller window, different device, diff browser, etc.
-* fully flesh out "My Lists"
+* [in progress] fully flesh out "My Lists"
+    - human friendly relative timing?
+        http://stackoverflow.com/questions/7641791/javascript-library-for-human-friendly-relative-date-formatting
 * start working on permissions
 * invite system for lists?
 * add an "about" page ... ?
