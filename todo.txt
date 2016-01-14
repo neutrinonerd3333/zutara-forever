@@ -3,7 +3,8 @@ TO DO LIST FOR CATALIST
 =======================
 
 agenda Jan 14:
-* fix some ui issues [long lists hit bottom of page, ]
+* fix some ui issues [long lists hit bottom of page, the list seems a bit too small]
+* make UI responsive? as in it should still look nice with a smaller window, different device, diff browser, etc.
 * fully flesh out "My Lists"
 * start working on permissions
 * invite system for lists?
@@ -12,6 +13,7 @@ agenda Jan 14:
 * database cleaning: lists that aren't used for a while should be removed; similar for users (how to handle references to deleted users?)
 * figure out hosting
 * debug!
+* implement this? http://flask.pocoo.org/docs/0.10/patterns/apierrors/
 
 011216
 Properly format all the responses from server, on client side
