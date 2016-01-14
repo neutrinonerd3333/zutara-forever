@@ -2,6 +2,19 @@
 TO DO LIST FOR CATALIST
 =======================
 
+agenda Jan 14:
+* fix some ui issues [long lists hit bottom of page, ]
+* implement delete methods in API
+* attach delete buttons to ajax handlers
+* fully flesh out "My Lists"
+* start working on permissions
+* invite system for lists?
+* add an "about" page ... ?
+* add a "contact us" page so people can report bugs and stuff
+* database cleaning: lists that aren't used for a while should be removed; similar for users (how to handle references to deleted users?)
+* figure out hosting
+* debug!
+
 011216
 Properly format all the responses from server, on client side
 Get name of user instead of inserted_id
