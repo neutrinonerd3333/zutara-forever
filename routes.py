@@ -213,7 +213,8 @@ def userlists():
     last_visited = []
 
     for list in lists:
-        urls.append("/list/" + list.listid)
+        # urls.append("/list/" + list.listid)
+        urls.append("/preview/" + list.listid)
         titles.append(list.title)
         
         c = list.created
@@ -232,6 +233,9 @@ def userlists():
             
     return render_template('mylists.html', n=n, titles=titles, last_visited=last_visited, urls=urls)
 
+@app.route("/preview/<listid>", methods=['GET'])
+def preview_list(listid):
+    return render_template('preview.html')
 
 def get_id():
     """ Return name of current user """

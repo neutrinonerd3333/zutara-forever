@@ -1,8 +1,8 @@
 $(document).ready(function()
 {
-
+    
     // expands preview on click (should I make it click?) over url
-    $(".list").on("hover", "a", previewLink)
+    $(".listBlock2").on("mouseenter", ".list", previewLink)
     
     // upon clicking the last list item (with a plus sign), a new
     // list item will automatically be added to the bottom of the list
@@ -93,7 +93,8 @@ function ifNoListMakeOne(){
 
 function previewLink()
 {
-    $(this).find(".box").slideDown(500);
+    var url = $(this).find("a").attr("href");
+    $(this).parent().parent().parent().find("iframe").attr("src",url);
 }
 
 function addItem()

@@ -1,31 +1,32 @@
-::-webkit-scrollbar { 
-    display: none; /* thank god for Chrome :P (and that they only check Chrome) */
-}
 .listBlock, .listBlock2 {
     display: inline-block;
     position: absolute;
-    height: 60%;
+    height: 55%;
+    width: 40%;
     
     background-color: transparent;
     border: 0px;
-    padding: 3em 0 0 0; /* use absolute positioning later to put labels here */
+    padding: 3em 0 0 0; /* absolute positioning places labels here */
     margin: 0.5em;
     
     color: #333;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     text-align: center;
     
-    overflow: auto;
+    overflow: hidden;
+}
+.scrollWrapper {
+    overflow: scroll;
+    height: 100%;
 }
 .listBlock {
     left: 10%;
-    width: 40%;
     border-radius: 20px 0 0 0;
+    background-color: #CEF;
 }
 .listBlock2 {
     left: 50%;
     right: 20%;
-    width: 40%;
     border-radius: 0 20px 0 0;
 }
 .blockTitle {
@@ -40,12 +41,12 @@
     font-weight: bold;
     letter-spacing: 2px;
 }
-/* implement later */
+/* implement later 
 @media (max-width:800px) {
     .listBlock {
         float: none;
     }
-}
+}*/
 .listHead {
     width: 100%;
 }
@@ -60,15 +61,16 @@
     font-weight: normal;
     margin: 0;
 }
-.titles {border-radius: 0 0 0 0;}
-.times {border-radius: 0 0 20px 0;}
 .list {
     height: 1em; /* padding covers height too */
-    width: 100%;
-    background-color: #CEF;
+    width: calc(100% - 2em);
+    background-color: #CFF;
     border-radius: 0 20px 20px 0;
     padding: 0.5em 1em;
     margin: 0.5em 0 0 0;
+}
+.list:hover {
+    background-color: #CEF;
 }
 .listTitle, .listTitle a, .listTime, .listTime a {
     width: 50%;
@@ -78,20 +80,6 @@
     text-decoration: none;
     text-align: center;
     font-weight: normal;
-}
-.box{
-    display: none;
-    height: 300px;
-    width: 100%;
-    
-    border: 0;
-    outline: none;
-    
-    -webkit-transition:height, 0.5s linear;
-    -moz-transition: height, 0.5s linear;
-    -ms-transition: height, 0.5s linear;
-    -o-transition: height, 0.5s linear;
-    transition: height, 0.5s linear;
 }
 iframe {
     display: block;
