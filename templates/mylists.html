@@ -10,12 +10,14 @@ My Lists
 <p align="center"><h2><div id="link">{{ message }}</div></h2></p>
 
 <section id="wrapper">
-    
-    <div class="lists">
-        <div class="list_head">
-            <div class="titles">List Title</div><div class="times">Last Modified</div>
-        </div>
-        
+    <!--src of iframe will be edited in jquery later upon choosing a list to preview-->
+    <div class="listBlock">
+        <div class="blockTitle">LIVE PREVIEW</div>
+        <iframe src={{urls[0]}} width = "100%" height = "200px"></iframe>
+    </div>
+    <div class="listBlock2">
+        <div class="blockTitle">LISTS</div>
+        <div class="titles">Titles</div><div class="times">Last Modified</div>
         {% for i in range(n) %}
         <div class="list">
             <a href={{urls[i]}}><div class="listTitle">{{titles[i]}}</div></a

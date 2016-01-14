@@ -221,9 +221,9 @@ def userlists():
         
         # formatting last visited
         if(lv.date() == date.today()):
-            lv = lv.strftime("%I:%M%p")
+            lv = lv.strftime("%I:%M %p")
         else:
-            lv = lv.strftime("%I:%M%p, %x")
+            lv = lv.strftime("%I:%M %p, %x")
         if lv[0:1] == "0":
             lv = lv[1:]
 

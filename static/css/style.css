@@ -188,6 +188,7 @@ input:focus:-moz-placeholder{ color:transparent; }
     width: auto;
 }
 #wrapper {
+    height: 100%;
     margin: 50px;
     width: auto;
 }
