@@ -13,17 +13,18 @@ My Lists
     <!--src of iframe will be edited in jquery later upon choosing a list to preview-->
     <div class="listBlock">
         <div class="blockTitle">LIVE PREVIEW</div>
-        <iframe src={{urls[0]}} width = "100%" height = "200px"></iframe>
+        <!--<iframe src={{urls[0]}} width = "100%" height = "200px"></iframe>-->
     </div>
     <div class="listBlock2">
         <div class="blockTitle">LISTS</div>
-        <div class="titles">Titles</div><div class="times">Last Modified</div>
+        <div class="listHead">
+            <div class="titles">Titles</div><div class="times">Last Modified</div>
+        </div>
         {% for i in range(n) %}
         <div class="list">
             <a href={{urls[i]}}><div class="listTitle">{{titles[i]}}</div></a
             ><div class="listTime">{{last_visited[i]}}</div
-        ><div class="box"><iframe src="/" width = "100%" height = "200px"></iframe>
-        </div></div>
+        ></div>
         {% endfor %}
     </div>
 </section>

@@ -1,8 +1,9 @@
 $(document).ready(function()
 {
 
-    // expands preview on hover (should I make it click?) over url
-  
+    // expands preview on click (should I make it click?) over url
+    $(".list").on("hover", "a", previewLink)
+    
     // upon clicking the last list item (with a plus sign), a new
     // list item will automatically be added to the bottom of the list
     $(".list").on("click", ".lastListItem", addItem);
@@ -90,14 +91,9 @@ function ifNoListMakeOne(){
     }
 }
 
-function expandAndPreview()
+function previewLink()
 {
     $(this).find(".box").slideDown(500);
-}
-
-function shrinkAndHide()
-{
-    $(this).find(".box").slideUp(500);
 }
 
 function addItem()
