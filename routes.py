@@ -63,6 +63,7 @@ class User(db.Document, UserMixin):
 
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
+
 key_max_len = 32
 val_max_len = 1024
 class CatalistKVP(db.EmbeddedDocument):
@@ -73,6 +74,7 @@ class CatalistKVP(db.EmbeddedDocument):
     key = db.StringField(max_length=key_max_len, default="")
     value = db.StringField(max_length=val_max_len, default="")
 
+
 entry_title_max_len = 128
 class CatalistEntry(db.EmbeddedDocument):
     """ A class for the entries in our Catalists """
@@ -82,6 +84,7 @@ class CatalistEntry(db.EmbeddedDocument):
     score = db.IntField(default=0)
     upvoters = db.ListField(db.ReferenceField(User), default=[])
     downvoters = db.ListField(db.ReferenceField(User), default=[])
+
 
 list_title_max_len = 128
 class Catalist(db.Document):
@@ -219,9 +222,19 @@ def index():
 #----------------------------------------------------------
 
 
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template('403.html'), 403
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
 
 #----------------------------------------------------------
 # THE API!!!
