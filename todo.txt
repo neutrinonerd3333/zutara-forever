@@ -4,8 +4,6 @@ TO DO LIST FOR CATALIST
 
 agenda Jan 14:
 * fix some ui issues [long lists hit bottom of page, ]
-* implement delete methods in API
-* attach delete buttons to ajax handlers
 * fully flesh out "My Lists"
 * start working on permissions
 * invite system for lists?
@@ -25,15 +23,7 @@ Test out loadlist and related
 DESIGN
 * * * * *
 
-Links on top right (MIT 6.148 | Login ...) seem a bit big (I've heard the saying that smaller text is more classy)
-On login/register page, helpful text that pops up on $("input").focus() seems a bit big too
-Along the same line, the <input>'s seem awkwardly small relative to the help text
-    maybe widen the <input>'s and shrink the help text?
-Black text on the light colored background is a bit *too* contrasty
 Should we make .list a uniform, grayish color? (use a color picker to figure out the hex value of a nice part of the div)
-Perhaps make our own logo for Catalist, instead of using text? (It can still be text-based, but not explicit text --
-    you know how a lot of places tell you that their logo, even if text based, should not be used as text, but rather
-    as images?)
 
 
 * * * * *
