@@ -63,30 +63,31 @@ class User(db.Document, UserMixin):
 
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
-
+key_max_len = 32
+val_max_len = 1024
 class CatalistKVP(db.EmbeddedDocument):
     """ A class for individual key-value pairs in our Catalist entries """
     # id is implicit in mongoengine, but we want to
     # share kvpid's across (CatalistEntry)s
     kvpid = db.StringField(max_length=40)
-    key = db.StringField(max_length=40, default="")
-    value = db.StringField(max_length=200, default="")
+    key = db.StringField(max_length=key_max_len, default="")
+    value = db.StringField(max_length=val_max_len, default="")
 
-
+entry_title_max_len = 128
 class CatalistEntry(db.EmbeddedDocument):
     """ A class for the entries in our Catalists """
     # entryid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=80, default="")
+    title = db.StringField(max_length=entry_title_max_len, default="")
     contents = db.EmbeddedDocumentListField(CatalistKVP, default=[])
     score = db.IntField(default=0)
     upvoters = db.ListField(db.ReferenceField(User), default=[])
     downvoters = db.ListField(db.ReferenceField(User), default=[])
 
-
+list_title_max_len = 128
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=100, default="")
+    title = db.StringField(max_length=list_title_max_len, default="")
     created = db.DateTimeField(required=True)  # when list was created
 
     # delete lists that haven't been visited for a long time
@@ -247,7 +248,7 @@ def list_save():
     """
     For saving an entire list.
 
-    syntax:
+    usage:
     {
         title: <thetitle>,
         contents: [
@@ -319,7 +320,7 @@ def key_save():
     """
     # necessary only for option ONLY (see later)
     eind = int(request.form["entryind"])
-    val = request.form["newvalue"]
+    val = request.form["newvalue"][:key_max_len]
     ind = int(request.form["index"])
     lid = request.form["listid"]
     # print("The list id is {} and the newvalue is {}".format(lid, val))
@@ -360,7 +361,7 @@ def value_save():
     The API is virtually identical the that of key_save()
     """
     eind = int(request.form["entryind"])
-    val = request.form["newvalue"]
+    val = request.form["newvalue"][:val_max_len]
     ind = int(request.form["index"])
     lid = request.form["listid"]
     the_list = Catalist.objects.get(listid=lid)
@@ -395,7 +396,7 @@ def entry_title_save():
     req_json = request.form
     lid, eind = [req_json[s] for s in ["listid", "entryind"]]
     eind = int(eind)
-    val = req_json["newvalue"]
+    val = req_json["newvalue"][:entry_title_max_len]
     the_list = Catalist.objects.get(listid=lid)
 
     pad_len = eind - len(the_list.contents) + 1
@@ -420,7 +421,7 @@ def list_title_save():
     """
     req_json = request.form
     the_list = Catalist.objects.get(listid=req_json["listid"])
-    the_list.title = req_json["newvalue"]
+    the_list.title = req_json["newvalue"][:list_title_max_len]
     the_list.save()
     return jsonify()  # 200 OK ^_^
 
