@@ -16,7 +16,7 @@ agenda Jan 14:
 * implement this? http://flask.pocoo.org/docs/0.10/patterns/apierrors/
 
 011216
-Properly format all the responses from server, on client side
+[I think this is done -txz] Properly format all the responses from server, on client side
 Get name of user instead of inserted_id
 That gray still bothers me: will eventually find an alternative
 Test out loadlist and related
