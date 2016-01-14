@@ -491,11 +491,11 @@ def kvp_delete():
     try:
         the_entry = the_list.contents[entryind]
     except IndexError:
-        return "Entry index out of bounds", 400
+        return "Entry index out of bounds"
     try:
         removed = the_entry.contents.pop(ind)
     except IndexError:
-        return "KVP index out of bounds", 400
+        return "KVP index out of bounds"
     the_list.save()
     return 'OK'  # 200 OK
 

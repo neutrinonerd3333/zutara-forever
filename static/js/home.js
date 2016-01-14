@@ -64,6 +64,11 @@ $(document).ready(function()
             });
         });
     });
+
+
+    /* DOM Manipulation
+     * add items
+     */
     
     // upon clicking the last list item (with a plus sign), a new
     // list item will automatically be added to the bottom of the list
@@ -73,11 +78,6 @@ $(document).ready(function()
     // attribute entry will be automatically added to the bottom
     // of the list
     $(".list").on("click", ".lastAttribute", addAttribute);
-    
-    // testing Ajax connection for now
-	/*$(".list").on("focusout",function(){
-        $("#catalist").ajaxSubmit();
-	});*/
 
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes
@@ -123,8 +123,27 @@ $(document).ready(function()
         }  
     });
     
-    // clicking minus will delete the current entry
+    // clicking minus will delete the current key-value pair
     $(".list").on("click", ".minus", function(){
+        var item = $(this).closest(".listItem");
+        var eind = $(".list .listItem").index(item);
+        var siblings = $(this).closest(".attributes").children(".attribute");
+        var kvpind = siblings.index($(this).closest(".attribute"));
+
+        // delete from database
+        $.ajax({
+            url: "/api/deletekvp",
+            method: 'POST',
+            data: {
+                listid: listid,
+                entryind: eind,
+                index: kvpind
+            },
+            success: function(data, status, jqxhr){
+                // console.log("deleted kvp at entry " + eind + " index " + kvpind);
+            }
+        });
+
         $(this).closest(".attribute").remove();
     });
 });
