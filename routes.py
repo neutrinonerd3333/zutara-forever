@@ -208,6 +208,12 @@ def get_id():
 app.jinja_env.globals.update(get_id=get_id)
 
 
+@app.route("/about", methods=['GET', 'POST'])
+def about():
+    """ About us. """
+    return render_template('about.html')
+
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     """ Our homepage! """

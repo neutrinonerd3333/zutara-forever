@@ -56,9 +56,13 @@ h3, h3 a {
     font-size: 1em;
     font-weight: lighter;
     text-align: center;
-    color: #CEF;
+    color: hsl(200, 100%, 95%);
+    letter-spacing: 0.35px;
 }
-h3 a {font-weight: normal;}
+h3 a {
+    font-weight: normal;
+}
+
 #link {
     margin-bottom: -2em;
     text-align: center;
@@ -70,6 +74,48 @@ a {
 a:hover {
     color: #fff;
 }
+
+.textcontainer {
+    /* basically a rehash of .list from list.css */
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 17px; /* change this later? */
+    padding: 1em;
+    
+    width: 40%;
+    min-width: 500px;
+    height: 60%;
+    min-height: 400px;
+    display: block;
+    
+    /*background-color: #CEF;
+    border: 10px;  imo scrolling directly into the bg looks cut off so border?
+    border-style: solid;
+    border-color: #FFF;
+    border-radius: 20px;
+    padding: 10px;*/
+    
+    /*color: #cef;*/
+    color: hsl(200, 100%, 95%);
+    
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+    overflow: auto;
+}
+
+.textcontainer p {
+    font-weight: 100;
+    letter-spacing: 0.5px;
+}
+
+.textcontainer a {
+    color: inherit;
+    font-weight: 200;
+}
+.textcontainer a:hover { color: #fff;}
 
 .register-container {
     color: #666;
