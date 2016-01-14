@@ -3,6 +3,7 @@
 ====================
 
 HTML ESCAPING -- unsafe (read: user-provided) variables should escaped.
+    To find things that might need escaping, try "grep -r . {{" in templates directory
     See http://jinja.pocoo.org/docs/dev/templates/#html-escaping
  
 NON-ASCII INPUTS -- exactly what it sounds like. Things to test, from easy to hard:
