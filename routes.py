@@ -319,12 +319,17 @@ def key_save():
     }
     """
     # necessary only for option ONLY (see later)
-    eind = int(request.form["entryind"])
-    val = request.form["newvalue"][:key_max_len]
-    ind = int(request.form["index"])
-    lid = request.form["listid"]
-    # print("The list id is {} and the newvalue is {}".format(lid, val))
-    the_list = Catalist.objects.get(listid=lid)
+    try:
+        eind = int(request.form["entryind"])
+        val = request.form["newvalue"][:key_max_len]
+        ind = int(request.form["index"])
+        lid = request.form["listid"]
+    except KeyError:
+        return "Invalid arguments", 400
+    try:
+        the_list = Catalist.objects.get(listid=lid)
+    except DoesNotExist:
+        return "The requested list does not exist", 400
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
@@ -360,11 +365,16 @@ def value_save():
 
     The API is virtually identical the that of key_save()
     """
-    eind = int(request.form["entryind"])
-    val = request.form["newvalue"][:val_max_len]
-    ind = int(request.form["index"])
-    lid = request.form["listid"]
-    the_list = Catalist.objects.get(listid=lid)
+    try:
+        eind = int(request.form["entryind"])
+        val = request.form["newvalue"][:val_max_len]
+        ind = int(request.form["index"])
+        lid = request.form["listid"]
+        the_list = Catalist.objects.get(listid=lid)
+    except KeyError:
+        return "Invalid arguments", 400
+    except DoesNotExist:
+        return "The requested list does not exist", 400
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
@@ -393,11 +403,16 @@ def entry_title_save():
         newvalue: <new entry title>
     }
     """
-    req_json = request.form
-    lid, eind = [req_json[s] for s in ["listid", "entryind"]]
-    eind = int(eind)
-    val = req_json["newvalue"][:entry_title_max_len]
-    the_list = Catalist.objects.get(listid=lid)
+    try:
+        req_json = request.form
+        lid, eind = [req_json[s] for s in ["listid", "entryind"]]
+        eind = int(eind)
+        val = req_json["newvalue"][:entry_title_max_len]
+        the_list = Catalist.objects.get(listid=lid)
+    except KeyError:
+        return "Invalid arguments", 400
+    except DoesNotExist:
+        return "The requested list does not exist", 400
 
     pad_len = eind - len(the_list.contents) + 1
     if pad_len > 0:
@@ -420,7 +435,13 @@ def list_title_save():
     }
     """
     req_json = request.form
-    the_list = Catalist.objects.get(listid=req_json["listid"])
+    try:
+        the_list = Catalist.objects.get(listid=req_json["listid"])
+    except KeyError:
+        return "Invalid arguments", 400
+    except DoesNotExist:
+        return "The requested list does not exist", 400
+
     the_list.title = req_json["newvalue"][:list_title_max_len]
     the_list.save()
     return jsonify()  # 200 OK ^_^
@@ -436,9 +457,11 @@ def list_delete():
         listid: <the id of the list to be deleted>
     }
     """
-    listid = request.form["listid"]
     try:
+        listid = request.form["listid"]
         the_list = Catalist.objects.get(listid=listid)
+    except KeyError:
+        return "Invalid arguments", 400
     except DoesNotExist:
         return "The list doesn't exist", 400
     the_list.delete()
@@ -456,14 +479,15 @@ def entry_delete():
         entryind: <the index of the entry to remove>
     }
     """
-    listid = request.form["listid"]
-    entryind = int(request.form["entryind"])
     try:
+        listid = request.form["listid"]
+        entryind = int(request.form["entryind"])
         the_list = Catalist.objects.get(listid=listid)
+        removed = the_list.contents.pop(entryind)
+    except KeyError:
+        return "Invalid arguments", 400
     except DoesNotExist:
         return "The list doesn't exist", 400
-    try:
-        removed = the_list.contents.pop(entryind)
     except IndexError:
         return "Entry index out of bounds", 400
     the_list.save()
@@ -482,21 +506,25 @@ def kvp_delete():
         index: <the index of the kvp within the entry>
     }
     """
-    listid = request.form["listid"]
-    entryind = int(request.form["entryind"])
-    ind = int(request.form["index"])
     try:
-        the_list = Catalist.objects.get(listid=listid)
+        entryind = int(request.form["entryind"])
+        ind = int(request.form["index"])
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except KeyError, ValueError:
+        return "Invalid arguments", 400
     except DoesNotExist:
         return "The list doesn't exist", 400
+
     try:
         the_entry = the_list.contents[entryind]
     except IndexError:
         return "Entry index out of bounds"
+
     try:
         removed = the_entry.contents.pop(ind)
     except IndexError:
         return "KVP index out of bounds"
+
     the_list.save()
     return 'OK'  # 200 OK
 
