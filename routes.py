@@ -282,29 +282,6 @@ def items_save():
     return "List Saved"
 
 
-# INCOMPLETE
-# @app.route("/api/saveentry", methods=['POST'])
-# def entry_save():
-    # """
-    # Save a Catalist entry.
-
-    # API: POST a JS associative array as follows:
-    # {
-    #     listid: <listid>,
-    #     entryid: <entryid>,
-    #     title: <new entry title>,
-    #     contents: [
-    #         [key1, value1],
-    #         [key2, value2],
-    #         ...
-    #     ]
-    # }
-    # """
-    # lid = request.form["listid"]
-    # eid = request.form["entryid"]
-    # the_list = Catalist.get(listid=lid)
-
-
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
     """
