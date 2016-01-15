@@ -326,15 +326,16 @@ def list_save():
     newlist.save()
     return redirect("/list/" + str(newlist.id), code=302)
 
-
+# seems like vestigial stuff: remove from API?
+# 
 # let's start small, since the receiving end is so picky
 # this one successfully receives the listItemTitle inputs
 # and does nothing with them at the moment
-@app.route("/api/saveitems", methods=['POST'])
-def items_save():
-    list_items = request.form["items[title][]"]
-    print(list_items)
-    return "List Saved"
+# @app.route("/api/saveitems", methods=['POST'])
+# def items_save():
+#     list_items = request.form["items[title][]"]
+#     print(list_items)
+#     return "List Saved"
 
 
 @app.route("/api/savekey", methods=['POST'])
