@@ -99,7 +99,6 @@ class Catalist(db.Document):
 
     creator = db.StringField(max_length=40)
 
-
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
@@ -286,7 +285,7 @@ def make_list():
         uid = current_user.uid
     new_list = Catalist(listid=list_id, created=time, last_visited=time, creator=uid)
     new_list.save()
-    return jsonify(id=list_id)
+    return jsonify(listid=list_id)
 
 
 # DEV NOTE: maybe make this a regular route, not AJAX
@@ -542,14 +541,30 @@ def vote():
     }
     """
     listid = request.form["listid"]
-    uid = request.form["userid"]
-    vote_val = request.form["vote"]
+    entryid = int(request.form["entryid"])
+    print(entryid)
+    # uid = request.form["userid"]
+    current_user = flask_security.core.current_user
+    if not current_user.is_authenticated:
+        uid = "Guest"
+    else:
+        uid = current_user.uid
+    vote_val = int(request.form["vote"])
     the_user = User.objects(uid=uid)
-    the_entry = Catalist(listid=listid).contents(
-        id=request.form["entryid"])
+
+    the_list = Catalist.objects.get(listid=listid)
+
+    # pad the_list.contents if index eind out of bounds
+    pad_len = entryid - len(the_list.contents) + 1
+    if pad_len > 0:
+        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_entry = the_list.contents[entryid]
+
     curscore = the_entry.score
 
     # find the current vote, possibly removing user from up/downvoters lists
+    # code works until  here and then 500s due to update_one being a method
+    # of the queryset instead of the document
     cur_vote = 0
     if the_user in the_entry.upvoters:
         cur_vote = 1

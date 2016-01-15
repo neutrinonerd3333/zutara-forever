@@ -17,7 +17,7 @@
     display: block;
     
     background-color: #CEF;
-    border: 5px; /* imo scrolling directly into the bg looks cut off so border? */
+    border: 0px;
     border-style: solid;
     border-color: #FFF;
     border-radius: 20px;
@@ -43,10 +43,10 @@
     /* same as 12pt font */
 }
 .list * input:hover {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 .list * input:focus {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.5);
 }
 .list .listTitle {
     width: 100%;
@@ -120,6 +120,13 @@
     background-position: -4.5em -4.5em;
 }
 
+.icon-heart {
+    right: 2.1em;
+    top: .3em;
+    
+    background-position: -6em -3em;
+}
+
 .list .lastListItem {
     height: 2em;
     border-radius: 20px;
@@ -131,7 +138,7 @@
     border-radius: 20px;
     padding: 0 1em;
 }
-.list .listItem .itemTitle {
+.itemTitle {
     position: relative;
     display: block;
     width: 100%;
@@ -144,14 +151,14 @@
 }
 .itemTitle input {
     background-color: #9DF;
-    padding: 0 1em;
+    padding: 0 5em 0 1em;
     margin: 0;
     
     border-radius: 20px;
     height: 100%;
-    width: calc(100% - 2em);
+    width: calc(100% - 6em);
 }
-.list .listItem .attributes {
+.attributes {
     border-radius: 0 0 20px 20px;
     display: none;
 }

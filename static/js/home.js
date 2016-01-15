@@ -26,6 +26,8 @@ $(document).ready(function()
 
     $(".list").on('focusin', ".itemTitle input", function(){
         var icon = $(this).parent().next();
+        var heart = $(this).parent().prev();
+        $(heart).css("background-position","-6em -6em");
         if(isArrowUp(icon)){
             $(icon).css("background-position","-1.5em -6em");
         }
@@ -36,6 +38,8 @@ $(document).ready(function()
     });
     $(".list").on('focusout', ".itemTitle input", function(){
         var icon = $(this).parent().next();
+        var heart = $(this).parent().prev();
+        $(heart).css("background-position","-6em -3em");
         if(isArrowUp(icon)){
             $(icon).css("background-position","-1.5em -3em");
         }
@@ -101,7 +105,7 @@ $(document).ready(function()
     // clicking the up arrow will hide the attributes
     var arrowUp = false;
     
-    $(".list").on("click", ".icon", function()
+    $(".list").on("click", ".icon-down", function()
     {
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
@@ -142,6 +146,25 @@ $(document).ready(function()
             resize();
         }  
     });
+    // clicking heart will add a vote to the item (or remove it if existing)
+    $(".list").on("click", ".icon-heart", function(){
+        alert("You clicked the heart!");
+        var item = $(this).closest(".listItem");
+        var eind = $(".list .listItem").index(item);
+        console.log(eind);
+        $.ajax({
+            url: "/api/vote",
+            method: 'POST',
+            data: {
+                listid: listid,
+                entryid: eind,
+                vote: 1
+            },
+            success: function(data, status, jqxhr){
+                console.log("Current score is " + score);
+            }
+        });
+    });
     
     // clicking minus will delete the current key-value pair
     $(".list").on("click", ".icon-minus", function(){
@@ -180,7 +203,7 @@ function ifNoListMakeOne(callback){
             },
             success: function(data, status, jqxhr){
                 // get list id, which we want to be a global var
-                listid = data.id;
+                listid = data.listid;
                 // put the url in later >.<
                 $("#link").html('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
                 console.log('http://0.0.0.0:6005/list/' + listid);
@@ -193,7 +216,7 @@ function ifNoListMakeOne(callback){
 }
 
 function addItem(){
-    $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
+    $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
     resize();
 }
 
