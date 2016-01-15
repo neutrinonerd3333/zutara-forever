@@ -51,8 +51,8 @@ class Role(db.Document, RoleMixin):
 class User(db.Document, UserMixin):
     """ A class for users. Can have any/none of these attributes. """
     firstname = db.StringField(max_length=40)
-    email = db.StringField(max_length=100, unique=True)
     lastname = db.StringField(max_length=40)
+    email = db.StringField(max_length=100, unique=True)
     uid = db.StringField(max_length=40, unique=True)
     password = db.StringField(max_length=20)  # limit length
     active = db.BooleanField(default=True)  # set False for user confirmation
@@ -96,13 +96,21 @@ class Catalist(db.Document):
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
     # PERMISSIONS
-    # convention: blank list = everyone.
+    # hierarchy: admin/own/edit/view/none
+
+    # the permission the public has with the list
+    public_level = db.StringField(choices=["edit", "view", "none"],
+                                  default="edit")
+
+    # people with owner permission (i.e. can modify list permissions)
+    owners = db.ListField(db.ReferenceField(User))
 
     # people with edit permission
     editors = db.ListField(db.ReferenceField(User))
 
-    # people with view permission, but no edit
+    # people with view permission
     viewers = db.ListField(db.ReferenceField(User))
+
 
 
 # Setup Flask-Security
@@ -545,81 +553,82 @@ def vote():
     return jsonify(current_vote=vote_val, score=the_entry.score)
 
 
-def query_permission(user, list):
+perm_list = ["none", "view", "edit", "own", "admin"]
+def cmp_permission(perm1, perm2):
+    """ Return a positive/0/negative integer when perm1 >/=/< perm2 """
+    return perm_list.index(perm1) - perm_list.index(perm2)
+
+
+admin_unames = ['rmwu', 'txz']
+def query_permission(user, catalist):
     """
     Gives the permission level a user has for a list
     """
-    # if Role.get(title="admin") in user.roles: stuff happens
-    pass
-
-@app.route("/api/addeditor", methods=['POST'])
-def editor_add():
-    """
-    Give a user edit permission.
-
-    {
-        listid: <listid>,
-        target: <username to give perms to>
-    }
-    """
-    req_json = request.form
-    user = User.objects.get(uid=get_id())
-    target = User.objects.get(username=req_json["target"])
-    the_list = Catalist.objects.get(listid=req_json["listid"])
-    # check if user has permission to do this
-    # do this
-
-
-@app.route("/api/deleteeditor", methods=['POST'])
-def editor_delete():
-    """
-    Strip a user of edit permission. Note: if you remove
-    the last user from the list of editors,
-
-    {
-        listid: <listid>,
-        username: <username initiating action>,
-        target: <username to strip perms from>
-    }
-    """
-    pass
-
-
-@app.route("/api/addviewer", methods=['POST'])
-def viewer_add():
-    """
-    {
-        listid: <listid>,
-        username: <username initiating action>,
-        target: <username to give perms to>
-    }
-    """
-    pass
-
-
-@app.route("/api/deleteviewer", methods=['POST'])
-def viewer_delete():
-    """
-    {
-        listid: <listid>,
-        username: <username initiating action>,
-        target: <username to strip perms from>
-    }
-    """
-    pass
+    if user.uid in admin_unames:
+        return "admin"
+    elif user in catalist.owners:
+        return "own"
+    elif cmp_permission(catalist.public_level, "edit") >= 0 or \
+        user in catalist.editors:
+        return "edit"
+    elif cmp_permission(catalist.public_level, "view") >= 0 or \
+        user in catalist.viewers:
+        return "view"
+    return "none"
 
 
 @app.route("/api/setpermissions", methods=['POST'])
 def permissions_set():
     """
     {
+        Set permissions for a user. The user must 
+
         listid: <listid>,
-        username: <username initiating action>,
         target: <username of user to set perms with>,
-        permission: {view | edit | admin}
+        permission: {none | view | edit | own | admin}
     }
     """
-    pass
+    uname = get_id()
+    listid = request.form["listid"]
+    perm = request.form["permission"]
+    target = request.form["target"]
+
+    the_list = Catalist.objects.get(listid=listid)
+
+    if perm not in perm_list:
+        return "Invalid arguments", 400
+
+    uperm = query_permission(Users.objects.get(uid=uname), the_list)
+    if cmp_permission(uperm, "own") < 0:
+        return "No permission", 403
+
+    the_target = Users.objects.get(uid=target)
+    target_cur_perm = query_permission(the_target, the_list)
+    if target_cur_perm == perm:
+        return "OK"  # 200 OK
+
+    # if target user is currently on own/edit/view, remove user from that
+    if target_cur_perm in ["own", "view"]:
+        getattr(the_list, target_cur_perm + "ers").remove(the_target)
+    elif target_cur_perm == "edit":
+        the_list.editors.remove(the_target)
+
+    # add target user to appropriate new privilege lists
+    if perm in ["own", "view"]:
+        getattr(the_list, perm + "ers").append(the_target)
+    elif perm == "edit":
+        the_list.editors.append(the_target)
+
+    # if owners is now empty, make the list publicly editable
+    if len(the_list.owners) == 0:
+        the_list.public_level = "edit"
+
+    # save the list
+    the_list.save()
+
+
+
+
 
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
