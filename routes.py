@@ -43,7 +43,7 @@ mongo = PyMongo(app)
 
 
 class Role(db.Document, RoleMixin):
-    """ A class for user roles (e.g. User, Admin, ...) """
+    """ A class for user roles (e.g. user, admin, ...) """
     name = db.StringField(max_length=80, unique=True)
     description = db.StringField(max_length=255)
 
@@ -545,6 +545,13 @@ def vote():
     return jsonify(current_vote=vote_val, score=the_entry.score)
 
 
+def query_permission(user, list):
+    """
+    Gives the permission level a user has for a list
+    """
+    # if Role.get(title="admin") in user.roles: stuff happens
+    pass
+
 @app.route("/api/addeditor", methods=['POST'])
 def editor_add():
     """
@@ -552,11 +559,15 @@ def editor_add():
 
     {
         listid: <listid>,
-        username: <username initiating action>,
         target: <username to give perms to>
     }
     """
-    pass
+    req_json = request.form
+    user = User.objects.get(uid=get_id())
+    target = User.objects.get(username=req_json["target"])
+    the_list = Catalist.objects.get(listid=req_json["listid"])
+    # check if user has permission to do this
+    # do this
 
 
 @app.route("/api/deleteeditor", methods=['POST'])
