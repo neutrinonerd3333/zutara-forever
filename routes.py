@@ -95,6 +95,15 @@ class Catalist(db.Document):
     # keys = db.ListField(db.StringField(max_length=20))
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
+    # PERMISSIONS
+    # convention: blank list = everyone.
+
+    # people with edit permission
+    editors = db.ListField(db.ReferenceField(User))
+
+    # people with view permission, but no edit
+    viewers = db.ListField(db.ReferenceField(User))
+
 
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
@@ -534,6 +543,72 @@ def vote():
     the_entry.save()
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
+
+
+@app.route("/api/addeditor", methods=['POST'])
+def editor_add():
+    """
+    Give a user edit permission.
+
+    {
+        listid: <listid>,
+        username: <username initiating action>,
+        target: <username to give perms to>
+    }
+    """
+    pass
+
+
+@app.route("/api/deleteeditor", methods=['POST'])
+def editor_delete():
+    """
+    Strip a user of edit permission. Note: if you remove
+    the last user from the list of editors,
+
+    {
+        listid: <listid>,
+        username: <username initiating action>,
+        target: <username to strip perms from>
+    }
+    """
+    pass
+
+
+@app.route("/api/addviewer", methods=['POST'])
+def viewer_add():
+    """
+    {
+        listid: <listid>,
+        username: <username initiating action>,
+        target: <username to give perms to>
+    }
+    """
+    pass
+
+
+@app.route("/api/deleteviewer", methods=['POST'])
+def viewer_delete():
+    """
+    {
+        listid: <listid>,
+        username: <username initiating action>,
+        target: <username to strip perms from>
+    }
+    """
+    pass
+
+
+@app.route("/api/setpermissions", methods=['POST'])
+def permissions_set():
+    """
+    {
+        listid: <listid>,
+        username: <username initiating action>,
+        target: <username of user to set perms with>,
+        permission: {view | edit | admin}
+    }
+    """
+    pass
 
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
