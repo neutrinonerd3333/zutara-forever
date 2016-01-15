@@ -25,7 +25,8 @@ My Lists
         <div class="scrollWrapper">
         {% for i in range(n) %}
         <div class="list">
-            <a href={{urls[i]}}><div class="listTitle">{{titles[i]}}</div></a
+            <input type="hidden" value={{urls[i]}}>
+            <a href={{urls_actual[i]}}><div class="listTitle">{{titles[i]}}</div></a
             ><div class="listTime">{{last_visited[i]}}</div
         ></div>
         {% endfor %}
