@@ -1,0 +1,88 @@
+.listBlock, .listBlock2 {
+    display: inline-block;
+    position: absolute;
+    height: 55%;
+    width: 40%;
+    
+    background-color: transparent;
+    border: 0px;
+    padding: 3em 0 0 0; /* absolute positioning places labels here */
+    margin: 0.5em;
+    
+    color: #333;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    text-align: center;
+    
+    overflow: hidden;
+}
+.scrollWrapper {
+    overflow: scroll;
+    height: 100%;
+}
+.listBlock {
+    left: 10%;
+    border-radius: 20px 0 0 0;
+    background-color: #CEF;
+}
+.listBlock2 {
+    left: 50%;
+    right: 20%;
+    border-radius: 0 20px 0 0;
+}
+.blockTitle {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    height: 2em;
+    padding-top: 1em;
+    background-color: #3AF;
+    color: #CEF;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+/* implement later 
+@media (max-width:800px) {
+    .listBlock {
+        float: none;
+    }
+}*/
+.listHead {
+    width: 100%;
+}
+.titles, .times {
+    padding-top: 0.5em;
+    height: 1.5em;
+    width: 50%;
+    display: inline-block;
+    text-align: center;
+    color: #555;
+    background-color: #8DF;
+    font-weight: normal;
+    margin: 0;
+}
+.list {
+    height: 1em; /* padding covers height too */
+    width: calc(100% - 2em);
+    background-color: #CFF;
+    border-radius: 0 20px 20px 0;
+    padding: 0.5em 1em;
+    margin: 0.5em 0 0 0;
+}
+.list:hover {
+    background-color: #CEF;
+}
+.listTitle, .listTitle a, .listTime, .listTime a {
+    width: 50%;
+    display: inline-block;
+    
+    color: #666;
+    text-decoration: none;
+    text-align: center;
+    font-weight: normal;
+}
+iframe {
+    display: block;
+    border: none;
+    height: 100%;
+}

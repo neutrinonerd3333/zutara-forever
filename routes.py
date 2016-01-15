@@ -4,6 +4,7 @@
 
 from __future__ import division, print_function
 from datetime import datetime
+from datetime import date
 # from glob import glob
 
 import uuid as uuid_module
@@ -30,6 +31,7 @@ app.config['MONGODB_SETTINGS'] = {
 }
 
 app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
+app.config['SECURITY_PASSWORD_SALT'] = "eddb960e-269c-4458-8e08-c1027d8b290"
 
 # we'll need this later for actual app
 HOSTNAME = '0.0.0.0:6005'
@@ -54,7 +56,7 @@ class User(db.Document, UserMixin):
     email = db.StringField(max_length=100, unique=True)
     lastname = db.StringField(max_length=40)
     uid = db.StringField(max_length=40, unique=True)
-    password = db.StringField(max_length=20)  # limit length
+    password = db.StringField(max_length=255)  # because this is a hash
     active = db.BooleanField(default=True)  # set False for user confirmation
     confirmed_at = db.DateTimeField()
 
@@ -86,7 +88,7 @@ class CatalistEntry(db.EmbeddedDocument):
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=100, default="")
+    title = db.StringField(max_length=100, default="List Title")
     created = db.DateTimeField(required=True)  # when list was created
 
     # delete lists that haven't been visited for a long time
@@ -94,6 +96,8 @@ class Catalist(db.Document):
 
     # keys = db.ListField(db.StringField(max_length=20))
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
+
+    creator = db.StringField(max_length=40)
 
 
 # Setup Flask-Security
@@ -104,7 +108,6 @@ security = Security(app, user_datastore)
 # User Interaction Section
 #----------------------------------------------------
 
-
 @app.route("/signup", methods=['POST'])
 def signup():
     """
@@ -113,6 +116,7 @@ def signup():
     """
     user_id = request.form['uid']
     pw = request.form['password']
+    pw_hash = flask_security.utils.get_hmac(pw)
     email = request.form['email']
     time = datetime.utcnow()
 
@@ -123,14 +127,14 @@ def signup():
                                message="Sorry, that username is taken!")
     except mongoengine.DoesNotExist:
         try:
-            # if user exists, then can't sign up with same username
+            # if user exists, then can't sign up with same email
             user = User.objects.get(email=unicode(email))
             return render_template(
                 'register.html',
                 message="Sorry, that email is taken! " +
                 "Did you forget your password?")
         except:
-            user_datastore.create_user(uid=user_id, password=pw,
+            user_datastore.create_user(uid=user_id, password=pw_hash,
                                        last_active=time, email=email)
     # if multiple objects, then something just screwed up
     except:
@@ -144,11 +148,12 @@ def signin():
     """ Sign the user in, given valid credentials. """
     user_id = request.form['uid']
     pw = request.form['password']
+    pw_hash = flask_security.utils.get_hmac(pw)
     whoops = "You have entered a wrong username or password. Please try again."
     try:
         # if user exists, then sign in
         user = User.objects.get(uid=unicode(user_id))
-        if flask_security.utils.verify_and_update_password(pw, user):
+        if flask_security.utils.verify_and_update_password(pw_hash, user):
             time = datetime.utcnow()
             user.last_active = time
             print(user.last_active)
@@ -197,12 +202,47 @@ def getlist(listid):
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
-    return render_template('userlists.html')
+    current_user = flask_security.core.current_user
+    lists = Catalist.objects(creator = current_user.uid).only('listid','title','created','last_visited').all()
+    if lists.first() == None:
+        return render_template('home.html', message="Oops! You have no lists saved! Would you like to create one?")
+    
+    lists = lists.order_by('last_visited').all()
 
+    n=0
+    urls = []
+    titles = []
+    last_visited = []
+
+    for list in lists:
+        # urls.append("/list/" + list.listid)
+        urls.append("/preview/" + list.listid)
+        titles.append(list.title)
+        
+        c = list.created
+        lv = list.last_visited
+        
+        # formatting last visited
+        if(lv.date() == date.today()):
+            lv = lv.strftime("%I:%M %p")
+        else:
+            lv = lv.strftime("%I:%M %p, %x")
+        if lv[0:1] == "0":
+            lv = lv[1:]
+
+        last_visited.append(lv)
+        n += 1
+            
+    return render_template('mylists.html', n=n, titles=titles, last_visited=last_visited, urls=urls)
+
+@app.route("/preview/<listid>", methods=['GET'])
+def preview_list(listid):
+    return render_template('preview.html')
 
 def get_id():
     """ Return name of current user """
-    uid = flask_security.core.current_user.uid
+    current_user = flask_security.core.current_user
+    uid = current_user.uid
     return uid
 
 app.jinja_env.globals.update(get_id=get_id)
@@ -236,7 +276,13 @@ def make_list():
     list_id = str(uuid_module.uuid4())
     title = ""
     time = datetime.utcnow()
-    new_list = Catalist(listid=list_id, created=time, last_visited=time)
+    
+    current_user = flask_security.core.current_user
+    if not current_user.is_authenticated:
+        uid = "Guest"
+    else:
+        uid = current_user.uid
+    new_list = Catalist(listid=list_id, created=time, last_visited=time, creator=uid)
     new_list.save()
     return jsonify(id=list_id)
 

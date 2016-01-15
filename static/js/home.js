@@ -10,7 +10,6 @@ if (n === 0) {
 
 $(document).ready(function()
 {
-
     // creates list on first serious attempt at making a list
     // $(".list").one("focusout", ifNoListMakeOne);
 
@@ -160,7 +159,7 @@ function ifNoListMakeOne(callback){
                 // get list id, which we want to be a global var
                 listid = data.id;
                 // put the url in later >.<
-                $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
+                $("#link").html('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
                 console.log('http://0.0.0.0:6005/list/' + listid);
                 callback()
             }
