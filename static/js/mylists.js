@@ -93,7 +93,8 @@ function ifNoListMakeOne(){
 
 function previewLink()
 {
-    var url = $(this).find("a").attr("href");
+    var url = $(this).find("input").attr("value");
+    console.log(url);
     $(this).parent().parent().parent().find("iframe").attr("src",url);
 }
 
