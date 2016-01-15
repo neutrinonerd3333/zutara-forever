@@ -233,7 +233,7 @@ def page_not_found(e):
 
 
 @app.errorhandler(410)
-def page_not_found(e):
+def page_gone(e):
     return render_template('410.html'), 410
 
 
@@ -351,14 +351,12 @@ def key_save():
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents.extend([CatalistEntry() for i in xrange(pad_len)])
     the_entry = the_list.contents[eind]
 
     # do the same for the_entry.contents and ind
     pad_len = ind - len(the_entry.contents) + 1
-    if pad_len > 0:
-        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents.extend([CatalistKVP() for i in xrange(pad_len)])
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
@@ -396,13 +394,11 @@ def value_save():
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents.extend([CatalistEntry() for i in xrange(pad_len)])
     the_entry = the_list.contents[eind]
 
     pad_len = ind - len(the_entry.contents) + 1
-    if pad_len > 0:
-        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents.extend([CatalistKVP() for i in xrange(pad_len)])
     the_entry.contents[ind].value = val
 
     the_list.save()
@@ -433,8 +429,7 @@ def entry_title_save():
         return "The requested list does not exist", 400
 
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
     the_entry.title = val
     the_list.save()
