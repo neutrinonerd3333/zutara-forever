@@ -13,7 +13,7 @@ Launch your lists to the clouds and beyond.
     <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
     <div class="list">
         <div class="listTitle">
-            <input type="text" name="title" placeholder="Title" value="{{listtitle}}">
+            <input type="text" name="title" placeholder="Title" value="{{ listtitle|e }}">
         </div>
         {% block listcontent %}
         {% endblock %}

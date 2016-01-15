@@ -87,9 +87,11 @@ $(document).ready(function()
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
         if(file==="/static/img/up.svg"){
-            $(this).next(".attributes").slideUp(500);
+            var that = $(this);
+            $(this).next(".attributes").slideUp(500, function(){
+                that.prev(".itemTitle").find("input").css("border-radius","20px");
+            });
             $(this).attr("src","/static/img/down.svg");
-            $(this).prev(".itemTitle").find("input").css("border-radius","20px");
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
             if(nums > 1)
@@ -115,7 +117,7 @@ $(document).ready(function()
         }
         // if currently down arrow, click should show attributes and switch
         // to up arrow
-        else{
+        else {
             $(this).next(".attributes").slideDown(500);
             $(this).attr("src","/static/img/up.svg");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
