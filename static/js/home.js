@@ -1,59 +1,73 @@
+/* listid initialized to null, will get assigned the listid of the list
+ * when we create it in the database
+ */
 var listid = null;
+var pathname = window.location.pathname;
+var n = pathname.search(/^\/list\/.+/, pathname);
+if (n === 0) {
+    listid = pathname.slice(6);
+}
 
 $(document).ready(function()
 {
     // creates list on first serious attempt at making a list
-    $(".list").one("focusout", ifNoListMakeOne);
+    // $(".list").one("focusout", ifNoListMakeOne);
 
     $(".list").on('focusout', ".key input", function(){
-        var newkey = $(this).val();
-
-        var listitem = $(this).parents().eq(4-1);
-        var kvps = $(this).parents().eq(3-1);
-        var this_kvp = $(this).parents().eq(2-1);
-        
-        var ind = kvps.children().index(this_kvp);
-        var entryind = $(".list .listItem").index(listitem);
-        
-        $.ajax({
-            url: "/ajax/savekey",
-            method: 'POST',
-            data: {
-                listid: listid,
-                index: ind,
-                entryind: entryind,
-                newvalue: newkey
-            },
-            success: function(data, status, jqxhr){
-                console.log("key " + newkey + " saved to position " + ind) // debug
-            }
-        })
+        var that = $(this);
+        ifNoListMakeOne(function(){saveKeyOrValue(that, "key");});
     });
 
     $(".list").on('focusout', ".value input", function(){
-        var newval = $(this).val();
-
-        var listitem = $(this).parents().eq(4-1);
-        var kvps = $(this).parents().eq(3-1);
-        var this_kvp = $(this).parents().eq(2-1);
-        
-        var ind = kvps.children().index(this_kvp);
-        var entryind = $(".list .listItem").index(listitem);
-        
-        $.ajax({
-            url: "/ajax/savevalue",
-            method: 'POST',
-            data: {
-                listid: listid,
-                index: ind,
-                entryind: entryind,
-                newvalue: newval
-            },
-            success: function(data, status, jqxhr){
-                console.log("value " + newval + " saved to position " + ind) // debug
-            }
-        })
+        var that = $(this);
+        ifNoListMakeOne(function(){saveKeyOrValue(that, "value");});
     });
+
+    $(".list").on('focusout', ".itemTitle input", function(){
+        var that = $(this);
+        ifNoListMakeOne(function(){
+            var newval = that.val();
+            var grandpa = that.parents().eq(2-1);
+            var entryind = $(".list .listItem").index(grandpa);
+
+            $.ajax({
+                url: "/api/saveentrytitle",
+                method: 'POST',
+                data: {
+                    listid: listid,
+                    entryind: entryind,
+                    newvalue: newval
+                },
+                success: function(data, status, jqxhr){
+                    console.log("entry title " + newval + " saved to entry " + entryind);
+                }
+            });
+        });
+    });
+
+    // no need to do "on" because we won't have multiple listTitle's
+    $(".listTitle input").focusout(function(){
+        var that = $(this);
+        ifNoListMakeOne(function(){
+            var newval = that.val();
+            $.ajax({
+                url: "/api/savelisttitle",
+                method: 'POST',
+                data: {
+                    listid: listid,
+                    newvalue: newval
+                },
+                success: function(data, status, jqxhr){
+                    console.log("list title " + newval + " saved to list " + listid);
+                }
+            });
+        });
+    });
+
+
+    /* DOM Manipulation
+     * add items
+     */
     
     // upon clicking the last list item (with a plus sign), a new
     // list item will automatically be added to the bottom of the list
@@ -63,11 +77,6 @@ $(document).ready(function()
     // attribute entry will be automatically added to the bottom
     // of the list
     $(".list").on("click", ".lastAttribute", addAttribute);
-    
-    // testing Ajax connection for now
-	/*$(".list").on("focusout",function(){
-        $("#catalist").ajaxSubmit();
-	});*/
 
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes
@@ -77,8 +86,7 @@ $(document).ready(function()
         
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
-        if(file==="/static/img/up.svg")
-        {
+        if(file==="/static/img/up.svg"){
             $(this).next(".attributes").slideUp(500);
             $(this).attr("src","/static/img/down.svg");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px");
@@ -107,26 +115,42 @@ $(document).ready(function()
         }
         // if currently down arrow, click should show attributes and switch
         // to up arrow
-        else
-        {
+        else{
             $(this).next(".attributes").slideDown(500);
             $(this).attr("src","/static/img/up.svg");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
-        }
-        
+        }  
     });
     
-    // clicking minus will delete the current entry
-    $(".list").on("click", ".minus", function()
-    {
+    // clicking minus will delete the current key-value pair
+    $(".list").on("click", ".minus", function(){
+        var item = $(this).closest(".listItem");
+        var eind = $(".list .listItem").index(item);
+        var siblings = $(this).closest(".attributes").children(".attribute");
+        var kvpind = siblings.index($(this).closest(".attribute"));
+
+        // delete from database
+        $.ajax({
+            url: "/api/deletekvp",
+            method: 'POST',
+            data: {
+                listid: listid,
+                entryind: eind,
+                index: kvpind
+            },
+            success: function(data, status, jqxhr){
+                // console.log("deleted kvp at entry " + eind + " index " + kvpind);
+            }
+        });
+
         $(this).closest(".attribute").remove();
     });
 });
 
-function ifNoListMakeOne(){
+function ifNoListMakeOne(callback){
     if(listid===null){
         $.ajax({
-            url: "/ajax/makelist",
+            url: "/api/makelist",
             method: 'GET',
             data: {
                 title: $(".listtitle input").val()
@@ -137,19 +161,49 @@ function ifNoListMakeOne(){
                 // put the url in later >.<
                 $("#link").html('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
                 console.log('http://0.0.0.0:6005/list/' + listid);
+                callback()
             }
         });
+    } else {
+        callback();
     }
 }
 
-function addItem()
-{
+function addItem(){
     $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
 }
 
-function addAttribute()
-{
+function addAttribute(){
     $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
+}
+
+function saveKeyOrValue(that, toSave){
+    if (toSave !== "key" && toSave !== "value"){
+        throw "ValueError: argument of saveKeyOrValue must be 'key' or 'value'";
+    }
+
+    var newval = that.val();
+
+    var listitem = that.parents().eq(4-1);
+    var kvps = that.parents().eq(3-1);
+    var this_kvp = that.parents().eq(2-1);
+    
+    var ind = kvps.children().index(this_kvp);
+    var entryind = $(".list .listItem").index(listitem);
+
+    $.ajax({
+        url: "/api/save" + toSave,
+        method: 'POST',
+        data: {
+            listid: listid,
+            index: ind,
+            entryind: entryind,
+            newvalue: newval
+        },
+        success: function(data, status, jqxhr){
+            console.log(toSave + " " + newval + " saved to position " + ind) // for debug
+        }
+    })
 }
 
 function deleteItem(){

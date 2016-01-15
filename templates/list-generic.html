@@ -6,7 +6,6 @@ Launch your lists to the clouds and beyond.
 
 {% block content %}
 
-<link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
 
@@ -14,7 +13,7 @@ Launch your lists to the clouds and beyond.
     <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
     <div class="list">
         <div class="listTitle">
-            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="title" placeholder="Title" value="{{listtitle}}">
         </div>
         {% block listcontent %}
         {% endblock %}

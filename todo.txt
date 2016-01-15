@@ -2,8 +2,26 @@
 TO DO LIST FOR CATALIST
 =======================
 
+agenda Jan 14:
+* fix some ui issues [long lists hit bottom of page, the list seems a bit too small]
+* make UI responsive? as in it should still look nice with a smaller window, different device, diff browser, etc.
+* [in progress] fully flesh out "My Lists"
+    - human friendly relative timing?
+        http://stackoverflow.com/questions/7641791/javascript-library-for-human-friendly-relative-date-formatting
+* start working on permissions
+* invite system for lists?
+* add an "about" page ... ?
+* add a "contact us" page so people can report bugs and stuff
+* database cleaning: lists that aren't used for a while should be removed; similar for users (how to handle references to deleted users?)
+* figure out hosting
+* debug!
+* implement this? http://flask.pocoo.org/docs/0.10/patterns/apierrors/
+* implement email notification of errors
+    - see http://flask.pocoo.org/docs/0.10/errorhandling/#error-mails
+
+
 011216
-Properly format all the responses from server, on client side
+[I think this is done -txz] Properly format all the responses from server, on client side
 Get name of user instead of inserted_id
 That gray still bothers me: will eventually find an alternative
 Test out loadlist and related
@@ -12,15 +30,7 @@ Test out loadlist and related
 DESIGN
 * * * * *
 
-Links on top right (MIT 6.148 | Login ...) seem a bit big (I've heard the saying that smaller text is more classy)
-On login/register page, helpful text that pops up on $("input").focus() seems a bit big too
-Along the same line, the <input>'s seem awkwardly small relative to the help text
-    maybe widen the <input>'s and shrink the help text?
-Black text on the light colored background is a bit *too* contrasty
 Should we make .list a uniform, grayish color? (use a color picker to figure out the hex value of a nice part of the div)
-Perhaps make our own logo for Catalist, instead of using text? (It can still be text-based, but not explicit text --
-    you know how a lot of places tell you that their logo, even if text based, should not be used as text, but rather
-    as images?)
 
 
 * * * * *

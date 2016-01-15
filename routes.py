@@ -194,7 +194,9 @@ def getlist(listid):
     """
     the_list = Catalist.objects.get(listid=listid)
     # print(the_list.contents)  # for debug
-    return render_template('loadlist.html', entries=the_list.contents)
+    print(the_list.title)  # for debug
+    return render_template('loadlist.html', listtitle=the_list.title,
+                           entries=the_list.contents)
 
 
 @app.route("/mylists", methods=['GET'])
@@ -263,11 +265,11 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 #----------------------------------------------------------
-# Ajax Routes
+# THE API!!!
 #----------------------------------------------------------
 
 
-@app.route("/ajax/makelist", methods=['GET'])
+@app.route("/api/makelist", methods=['GET'])
 def make_list():
     """
     Upon making the first edit, an empty list will be
@@ -288,7 +290,7 @@ def make_list():
 
 
 # DEV NOTE: maybe make this a regular route, not AJAX
-@app.route("/ajax/savelist", methods=['POST'])
+@app.route("/api/savelist", methods=['POST'])
 def list_save():
     """
     For saving an entire list.
@@ -321,52 +323,14 @@ def list_save():
 # let's start small, since the receiving end is so picky
 # this one successfully receives the listItemTitle inputs
 # and does nothing with them at the moment
-@app.route("/ajax/saveitems", methods=['POST'])
+@app.route("/api/saveitems", methods=['POST'])
 def items_save():
     list_items = request.form["items[title][]"]
     print(list_items)
     return "List Saved"
 
 
-@app.route("/ajax/saveentry", methods=['POST'])
-def entry_save():
-    """
-    Save a Catalist entry.
-
-    API: POST a JS associative array as follows:
-    {
-        listid: <listid>,
-        entryid: <entryid>,
-        title: <new entry title>,
-        contents: [
-            [key1, value1],
-            [key2, value2],
-            ...
-        ]
-    }
-    """
-    lid = request.form["listid"]
-    eid = request.form["entryid"]
-    the_list = Catalist.get(listid=lid)
-
-
-def setitem_with_padding(array, item, index, cls):
-    """
-    Performs array[index] = item, padding array to avoid IndexErrors.
-
-    Arguments:
-    array -- the array we're modifying
-    item  -- the item we're inserting into *array*
-    index -- the index we're inserting *item* into
-    cls   -- a class we use to pad the array if we extend it. In particular,
-             we pad with blank instances cls().
-    """
-    while len(array) <= index:
-        array.append(cls())
-    array[index] = item
-
-
-@app.route("/ajax/savekey", methods=['POST'])
+@app.route("/api/savekey", methods=['POST'])
 def key_save():
     """
     mini-API for this view function
@@ -379,31 +343,29 @@ def key_save():
     }
     """
     # necessary only for option ONLY (see later)
-    entryind = int(request.form["entryind"])
-    # kid = request.form["kvpid"]
+    eind = int(request.form["entryind"])
     val = request.form["newvalue"]
     ind = int(request.form["index"])
     lid = request.form["listid"]
     # print("The list id is {} and the newvalue is {}".format(lid, val))
     the_list = Catalist.objects.get(listid=lid)
 
-    while len(the_list.contents) <= entryind:
-        the_list.contents.append(CatalistEntry())
-    the_entry = the_list.contents[entryind]
+    # pad the_list.contents if index eind out of bounds
+    pad_len = eind - len(the_list.contents) + 1
+    if pad_len > 0:
+        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_entry = the_list.contents[eind]
+
+    # do the same for the_entry.contents and ind
+    pad_len = ind - len(the_entry.contents) + 1
+    if pad_len > 0:
+        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
 
     # option ONLY
-    while len(the_entry.contents) <= ind:
-        the_entry.contents.append(CatalistKVP())
     the_entry.contents[ind].key = val
-
-    # try:
-    #     the_entry.contents[ind].key = val
-    # except IndexError:
-    #     new_kvp = CatalistKVP(key=val, value="")
-    #     the_entry.contents.append(new_kvp)
 
     # option ALL
     # for entry in the_list.contents:
@@ -413,36 +375,157 @@ def key_save():
     return jsonify()  # return a blank 200
 
 
-# maybe merge this with /ajax/savekey and have client pass an extra
+# maybe merge this with /api/savekey and have client pass an extra
 # key-val pair; this would be repeat significantly less code [txz]
-@app.route("/ajax/savevalue", methods=['POST'])
+@app.route("/api/savevalue", methods=['POST'])
 def value_save():
     """
     Save the value in a particular key-value pair.
 
     The API is virtually identical the that of key_save()
     """
-    entryind = int(request.form["entryind"])
+    eind = int(request.form["entryind"])
     val = request.form["newvalue"]
     ind = int(request.form["index"])
     lid = request.form["listid"]
     the_list = Catalist.objects.get(listid=lid)
 
-    while len(the_list.contents) <= entryind:
-        the_list.contents.append(CatalistEntry())
-    the_entry = the_list.contents[entryind]
+    # pad the_list.contents if index eind out of bounds
+    pad_len = eind - len(the_list.contents) + 1
+    if pad_len > 0:
+        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_entry = the_list.contents[eind]
 
-    try:
-        the_entry.contents[ind].value = val
-    except IndexError:
-        new_kvp = CatalistKVP(key="", value=val)
-        the_entry.contents.append(new_kvp)
+    pad_len = ind - len(the_entry.contents) + 1
+    if pad_len > 0:
+        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents[ind].value = val
 
     the_list.save()
     return jsonify()  # return a 200
 
 
-@app.route("/ajax/vote", methods=['POST'])
+@app.route("/api/saveentrytitle", methods=['POST'])
+def entry_title_save():
+    """
+    AJAXily save the title of an entry.
+
+    usage: POST a JS associative array (basically a dict) like so:
+    {
+        listid:  <the list id>,
+        entryind: <index of entry w.r.t. list (0-indexing)>,
+        newvalue: <new entry title>
+    }
+    """
+    req_json = request.form
+    lid, eind = [req_json[s] for s in ["listid", "entryind"]]
+    eind = int(eind)
+    val = req_json["newvalue"]
+    the_list = Catalist.objects.get(listid=lid)
+
+    pad_len = eind - len(the_list.contents) + 1
+    if pad_len > 0:
+        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_entry = the_list.contents[eind]
+    the_entry.title = val
+    the_list.save()
+    return jsonify()  # 200 OK ^_^
+
+
+@app.route("/api/savelisttitle", methods=['POST'])
+def list_title_save():
+    """
+    AJAXily save the title of a Catalist ^_^
+
+    usage: POST a JS assoc array like so:
+    {
+        listid: <the list id>,
+        newvalue: <our new title>
+    }
+    """
+    req_json = request.form
+    the_list = Catalist.objects.get(listid=req_json["listid"])
+    the_list.title = req_json["newvalue"]
+    the_list.save()
+    return jsonify()  # 200 OK ^_^
+
+
+@app.route("/api/deletelist", methods=['POST'])
+def list_delete():
+    """
+    Delete a Catalist.
+
+    usage: POST a JSON associative array as follows:
+    {
+        listid: <the id of the list to be deleted>
+    }
+    """
+    listid = request.form["listid"]
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        return "The list doesn't exist", 400
+    the_list.delete()
+    return 'OK'  # this should return a 200
+
+
+@app.route("/api/deleteentry", methods=['POST'])
+def entry_delete():
+    """
+    Delete an entry from a Catalist.
+
+    usage: POST a JSON associative array as follows:
+    {
+        listid: <the id of the Catalist>,
+        entryind: <the index of the entry to remove>
+    }
+    """
+    listid = request.form["listid"]
+    entryind = int(request.form["entryind"])
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        return "The list doesn't exist", 400
+    try:
+        removed = the_list.contents.pop(entryind)
+    except IndexError:
+        return "Entry index out of bounds", 400
+    the_list.save()
+    return 'OK'  # 200 OK
+
+
+@app.route("/api/deletekvp", methods=['POST'])
+def kvp_delete():
+    """
+    Delete a key-value pair from a Catalist entry.
+
+    usage: POST a JSON associative array as follows:
+    {
+        listid: <the id of the Catalist>,
+        entryind: <the index of the entry to remove>,
+        index: <the index of the kvp within the entry>
+    }
+    """
+    listid = request.form["listid"]
+    entryind = int(request.form["entryind"])
+    ind = int(request.form["index"])
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        return "The list doesn't exist", 400
+    try:
+        the_entry = the_list.contents[entryind]
+    except IndexError:
+        return "Entry index out of bounds"
+    try:
+        removed = the_entry.contents.pop(ind)
+    except IndexError:
+        return "KVP index out of bounds"
+    the_list.save()
+    return 'OK'  # 200 OK
+
+
+@app.route("/api/vote", methods=['POST'])
 def vote():
     """
     Two options:
@@ -498,7 +581,7 @@ def vote():
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
 
-@app.route("/ajax/autocomplete", methods=['POST'])
+@app.route("/api/autocomplete", methods=['POST'])
 def autocomplete():
     """
     completes a word fragment with a possible list type

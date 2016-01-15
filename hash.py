@@ -6,7 +6,7 @@ class UserManager():
 
     def get_user(self, uid):
         user = self._users.find_one({'uid': unicode(uid)})
-        if not (user == None):
+        if user is not None:
             salt = user['salt']
             return User(uid, salt)
         else:
@@ -18,8 +18,8 @@ class UserManager():
             salt = os.urandom(32).encode('hex')
             pw = hashlib.sha512(salt + newPW).hexdigest()
             users.update_one({'uid': uid},
-                             {'$set':{'pw': pw},
-                             '$set':{'salt': salt}})
+                             {'$set': {'pw': pw},
+                             '$set': {'salt': salt}})
             return True
         return False
 
@@ -28,7 +28,7 @@ class UserManager():
     def validate_pw(self, uid, pw):
         user = self._users.find_one({'uid': unicode(uid)})
         print ("Finding user...")
-        if not(user == None):
+        if user is not None:
             salt = user['salt']
             actual_hash = user['pw']
             test_hash = hashlib.sha512(salt + pw).hexdigest()
@@ -42,7 +42,8 @@ class UserManager():
         time = str(datetime.datetime.utcnow())
         salt = os.urandom(32).encode('hex')
         hash = hashlib.sha512(salt + pw).hexdigest()
-        user = {'uid': unicode(uid),
+        user = {
+            'uid': unicode(uid),
             'salt': salt,
             'pw': hash,
             'time': time}
