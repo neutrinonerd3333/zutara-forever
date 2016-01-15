@@ -2,7 +2,7 @@
     display: none; /* thank god for Chrome :P (and that they only check Chrome) */
 }
 .list {
-    position: absolute;
+    position: relative;
     left: 0;
     right: 0;
     margin-left: auto;

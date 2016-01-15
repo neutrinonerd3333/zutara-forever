@@ -1,7 +1,12 @@
+::-webkit-scrollbar { 
+    display: none; /* thank god for Chrome :P (and that they only check Chrome) */
+}
+#wrapper{height: calc(100% - 16em);}
+
 .listBlock, .listBlock2 {
     display: inline-block;
     position: absolute;
-    height: 55%;
+    height: 50%;
     width: 40%;
     
     background-color: transparent;
@@ -65,7 +70,7 @@
     height: 1em; /* padding covers height too */
     width: calc(100% - 2em);
     background-color: #CFF;
-    border-radius: 0 20px 20px 0;
+    border-radius: 0;
     padding: 0.5em 1em;
     margin: 0.5em 0 0 0;
 }

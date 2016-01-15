@@ -1,19 +1,22 @@
 html {
     height: 100%;
     min-height: 333px;
+    
+    background: #AEF; /* Old browsers */
+   
 }
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 20px;
     /* 1 em will become 20px everywhere else */
+    height: 100%;
+    margin: 0;
     
-    margin: 0 0 0 0;
+    background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #4BF 2em,#5CE calc(60% - 4em),#AEF calc(100% - 8em)); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #4BF 2em,#5CE calc(60% - 4em),#AEF calc(100% - 8em)); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     
-    background: #AEF; /* Old browsers */
-    background: -moz-linear-gradient(top, #4BF 0%, #5CE 60%, #AEF 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, #4BF 0%,#5CE 60%,#AEF 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #4BF 0%,#5CE 60%,#AEF 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    
+    background-attachment: fixed;
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
@@ -162,6 +165,13 @@ input:-moz-placeholder { color:#999; }
 :focus:-ms-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder{ color:transparent; }
 
+.topPlaceholder {
+    position: absolute;
+    top: 0;
+    height: 2em;
+    background-color: #4BF;
+    width: 100%;
+}
 .header {
     margin: 2em 3em 1em 3em;
     width: auto;
@@ -175,9 +185,20 @@ input:focus:-moz-placeholder{ color:transparent; }
     width: auto;
 }
 #wrapper {
-    height: 100%;
-    margin: 50px;
+    height: calc(100% - 4em);
+    margin: 50px 50px;
     width: auto;
+}
+
+.footer{
+    margin-top: 1em;
+	height: 4em;
+    width: 100%;
+    
+    background-color: #3CF;
+    display: block;
+    position: absolute;
+    bottom: 0em;
 }
 /*page margin 50px*/
 article {
@@ -192,11 +213,3 @@ article {
     display: none !important;
 }
 <!--means can be overriden-->
-
-.footer {
-    background-color: #FFF;
-    height: 5em;
-    position: absolute;
-    top: 0;
-    display: block;
-}

@@ -119,6 +119,7 @@ $(document).ready(function()
             $(this).next(".attributes").slideDown(500);
             $(this).attr("src","/static/img/up.svg");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
+            resize();
         }  
     });
     
@@ -145,6 +146,8 @@ $(document).ready(function()
 
         $(this).closest(".attribute").remove();
     });
+    
+    
 });
 
 function ifNoListMakeOne(callback){
@@ -171,10 +174,12 @@ function ifNoListMakeOne(callback){
 
 function addItem(){
     $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
+    resize();
 }
 
 function addAttribute(){
     $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
+    resize();
 }
 
 function saveKeyOrValue(that, toSave){
@@ -212,4 +217,14 @@ function deleteItem(){
 
 function deleteAttribute(){
     // do more ajax-y things
+}
+
+function resize() {
+    $("body").css({
+        "height": "100%",
+        "background-size":"100% 100%",
+        "background": "linear-gradient(to bottom, #4BF 0%,#5CE 60%,#AEF 100%",
+        "background": "-moz-linear-gradient(top, #4BF 0%, #5CE 60%, #AEF 100%)",
+        "background": "-webkit-linear-gradient(top, #4BF 0%,#5CE 60%,#AEF 100%)",
+    });
 }
