@@ -108,6 +108,7 @@ security = Security(app, user_datastore)
 # User Interaction Section
 #----------------------------------------------------
 
+
 @app.route("/signup", methods=['POST'])
 def signup():
     """
@@ -203,13 +204,17 @@ def getlist(listid):
 @flask_security.login_required
 def userlists():
     current_user = flask_security.core.current_user
-    lists = Catalist.objects(creator = current_user.uid).only('listid','title','created','last_visited').all()
-    if lists.first() == None:
-        return render_template('home.html', message="Oops! You have no lists saved! Would you like to create one?")
-    
+    lists = Catalist.objects(creator=current_user.uid).only(
+        'listid', 'title', 'created', 'last_visited').all()
+    if lists.first() is None:
+        return render_template(
+            'home.html',
+            message="Oops! You have no lists saved! " +
+                    "Would you like to create one?")
+
     lists = lists.order_by('last_visited').all()
 
-    n=0
+    n = 0
     urls = []
     titles = []
     last_visited = []
@@ -218,10 +223,10 @@ def userlists():
         # urls.append("/list/" + list.listid)
         urls.append("/preview/" + list.listid)
         titles.append(list.title)
-        
+
         c = list.created
         lv = list.last_visited
-        
+
         # formatting last visited
         if(lv.date() == date.today()):
             lv = lv.strftime("%I:%M %p")
@@ -232,12 +237,15 @@ def userlists():
 
         last_visited.append(lv)
         n += 1
-            
-    return render_template('mylists.html', n=n, titles=titles, last_visited=last_visited, urls=urls)
+
+    return render_template('mylists.html', n=n, titles=titles,
+                           last_visited=last_visited, urls=urls)
+
 
 @app.route("/preview/<listid>", methods=['GET'])
 def preview_list(listid):
     return render_template('preview.html')
+
 
 def get_id():
     """ Return name of current user """
@@ -276,13 +284,14 @@ def make_list():
     list_id = str(uuid_module.uuid4())
     title = ""
     time = datetime.utcnow()
-    
+
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
         uid = "Guest"
     else:
         uid = current_user.uid
-    new_list = Catalist(listid=list_id, created=time, last_visited=time, creator=uid)
+    new_list = Catalist(listid=list_id, created=time,
+                        last_visited=time, creator=uid)
     new_list.save()
     return jsonify(id=list_id)
 
