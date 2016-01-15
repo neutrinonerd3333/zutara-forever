@@ -10,9 +10,10 @@ if (n === 0) {
 
 $(document).ready(function()
 {
+    $(".list").one("mouseenter", welcome);
+    
     // creates list on first serious attempt at making a list
     // $(".list").one("focusout", ifNoListMakeOne);
-
     $(".list").on('focusout', ".key input", function(){
         var that = $(this);
         ifNoListMakeOne(function(){saveKeyOrValue(that, "key");});
@@ -227,4 +228,10 @@ function resize() {
         "background": "-moz-linear-gradient(top, #4BF 0%, #5CE 60%, #AEF 100%)",
         "background": "-webkit-linear-gradient(top, #4BF 0%,#5CE 60%,#AEF 100%)",
     });
+}
+
+function welcome() {
+    $("#link").hide();
+    $("#link").html("Welcome! Would you like a tutorial?");
+    $("#link").fadeIn(500);
 }
