@@ -6,7 +6,7 @@
 <div class="listItem">
     <!--list item-->
     <div class="itemTitle">
-        <input type="text" name="contents[][0]" placeholder="Item" value="{{entry.title}}">
+        <input type="text" name="contents[][0]" placeholder="Item" value="{{ entry.title|e }}">
         <!--<input type="text" name="items[title][]" placeholder="Item">-->
     </div>
     <img src="/static/img/down.svg">
@@ -16,10 +16,10 @@
         <div class="attribute">
             <!--single item attribute-->
             <div class="key"
-                ><input type="text" name="contents[][1][0]" placeholder="Key" value="{{ kvp.key }}"
+                ><input type="text" name="contents[][1][0]" placeholder="Key" value="{{ kvp.key|e }}"
             ></div
             ><div class="value"
-                ><input type="text" name="contents[][1][1]" placeholder="Value" value="{{ kvp.value }}"
+                ><input type="text" name="contents[][1][1]" placeholder="Value" value="{{ kvp.value|e }}"
             ></div
             ><div class="minus"></div>
         </div>

@@ -114,6 +114,7 @@ $(document).ready(function()
             $(this).next(".attributes").slideUp(500);
             $(this).css("background-position","0 -3em");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px");
+
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
             if(nums > 1)
@@ -139,7 +140,7 @@ $(document).ready(function()
         }
         // if currently down arrow, click should show attributes and switch
         // to up arrow
-        else{
+        else {
             $(this).next(".attributes").slideDown(500);
             $(this).css("background-position","-1.5em -3em");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");

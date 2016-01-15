@@ -1,14 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}
-404: Page not found
+404: Not found
 {% endblock %}
 
 {% block content %}
-
-<link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
-<p></p>
-<h3>Oops! It looks like what you're looking for isn't there! Return <a href="{{ url_for('index') }}">home</a>.</h3>
-
+<h3>Oops! We couldn't find what you were looking for! Click <a href="{{ url_for('index') }}">here</a> to return home.</h3>
 {% endblock %}
