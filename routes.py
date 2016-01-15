@@ -117,6 +117,32 @@ class Catalist(db.Document):
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
+
+# Permissions
+perm_list = ["none", "view", "edit", "own", "admin"]
+def cmp_permission(perm1, perm2):
+    """ Return a positive/0/negative integer when perm1 >/=/< perm2 """
+    return perm_list.index(perm1) - perm_list.index(perm2)
+
+
+admin_unames = ['rmwu', 'txz']
+def query_permission(user, catalist):
+    """
+    Gives the permission level a user has for a list
+    """
+    if user.uid in admin_unames:
+        return "admin"
+    elif user in catalist.owners:
+        return "own"
+    elif cmp_permission(catalist.public_level, "edit") >= 0 or \
+        user in catalist.editors:
+        return "edit"
+    elif cmp_permission(catalist.public_level, "view") >= 0 or \
+        user in catalist.viewers:
+        return "view"
+    return "none"
+
+
 #----------------------------------------------------
 # User Interaction Section
 #----------------------------------------------------
@@ -553,28 +579,6 @@ def vote():
     return jsonify(current_vote=vote_val, score=the_entry.score)
 
 
-perm_list = ["none", "view", "edit", "own", "admin"]
-def cmp_permission(perm1, perm2):
-    """ Return a positive/0/negative integer when perm1 >/=/< perm2 """
-    return perm_list.index(perm1) - perm_list.index(perm2)
-
-
-admin_unames = ['rmwu', 'txz']
-def query_permission(user, catalist):
-    """
-    Gives the permission level a user has for a list
-    """
-    if user.uid in admin_unames:
-        return "admin"
-    elif user in catalist.owners:
-        return "own"
-    elif cmp_permission(catalist.public_level, "edit") >= 0 or \
-        user in catalist.editors:
-        return "edit"
-    elif cmp_permission(catalist.public_level, "view") >= 0 or \
-        user in catalist.viewers:
-        return "view"
-    return "none"
 
 
 @app.route("/api/setpermissions", methods=['POST'])
