@@ -128,7 +128,8 @@ def cmp_permission(perm1, perm2):
 admin_unames = ['rmwu', 'txz']
 def query_permission(user, catalist):
     """
-    Gives the permission level a user has for a list
+    Gives the permission level a user has for a list.
+    "None" represents an anonymous user.
     """
     if user.uid in admin_unames:
         return "admin"
@@ -245,8 +246,10 @@ def userlists():
 
 def get_id():
     """ Return name of current user """
-    uid = flask_security.core.current_user.uid
-    return uid
+    try:
+        return flask_security.core.current_user.uid
+    except AttributeError:
+        return None
 
 app.jinja_env.globals.update(get_id=get_id)
 
@@ -579,8 +582,6 @@ def vote():
     return jsonify(current_vote=vote_val, score=the_entry.score)
 
 
-
-
 @app.route("/api/setpermissions", methods=['POST'])
 def permissions_set():
     """
@@ -602,7 +603,10 @@ def permissions_set():
     if perm not in perm_list:
         return "Invalid arguments", 400
 
-    uperm = query_permission(Users.objects.get(uid=uname), the_list)
+    try:
+        uperm = query_permission(Users.objects.get(uid=uname), the_list)
+    except DoesNotExist:
+        return "No permission", 403
     if cmp_permission(uperm, "own") < 0:
         return "No permission", 403
 
@@ -629,9 +633,6 @@ def permissions_set():
 
     # save the list
     the_list.save()
-
-
-
 
 
 
