@@ -24,7 +24,25 @@ $(document).ready(function()
         ifNoListMakeOne(function(){saveKeyOrValue(that, "value");});
     });
 
+    $(".list").on('focusin', ".itemTitle input", function(){
+        var icon = $(this).parent().next();
+        if(isArrowUp(icon)){
+            $(icon).css("background-position","-1.5em -6em");
+        }
+        else {
+            $(icon).css("background-position","0 -6em");
+        }
+        
+    });
     $(".list").on('focusout', ".itemTitle input", function(){
+        var icon = $(this).parent().next();
+        if(isArrowUp(icon)){
+            $(icon).css("background-position","-1.5em -3em");
+        }
+        else {
+            $(icon).css("background-position","0 -3em");
+        }
+        
         var that = $(this);
         ifNoListMakeOne(function(){
             var newval = that.val();
@@ -87,15 +105,7 @@ $(document).ready(function()
     {
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
-        var css = $(this).css("background-position");
-        // browser renders em into px, so 0 means left most = down arrow
-        if(css.charAt(0) === "0") {
-            arrowUp = false;
-        }
-        else {
-            arrowUp = true;
-        }
-        if(arrowUp){
+        if(isArrowUp($(this))){
             console.log("hi");
             $(this).next(".attributes").slideUp(500);
             $(this).css("background-position","0 -3em");
@@ -243,4 +253,15 @@ function welcome() {
     $("#link").hide();
     $("#link").html("Welcome! Would you like a tutorial?");
     $("#link").fadeIn(500);
+}
+
+function isArrowUp(icon) {
+    var css = $(icon).css("background-position");
+    // browser renders em into px, so 0 means left most = down arrow
+    if(css.charAt(0) === "0") {
+        return false;
+    }
+    else {
+        return true;
+    }
 }
