@@ -112,17 +112,12 @@
     top: .3em;
 }
 
-.attribute .minus {
-    background-image: url("/static/img/minus.svg");
-    background-size: contain;
+.icon-minus {
     position: relative;
     right: calc(-100% + 26px + .3em);
     top: -2em;
     
-    width: 1.5em;
-    height: 1.5em;
-    margin: 0;
-    padding: 0;
+    background-position: -4.5em -4.5em;
 }
 
 .list .lastListItem {

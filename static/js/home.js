@@ -82,16 +82,24 @@ $(document).ready(function()
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes
     var arrowUp = false;
+    
     $(".list").on("click", ".icon", function()
     {
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
+        var css = $(this).css("background-position");
+        // browser renders em into px, so 0 means left most = down arrow
+        if(css.charAt(0) === "0") {
+            arrowUp = false;
+        }
+        else {
+            arrowUp = true;
+        }
         if(arrowUp){
             console.log("hi");
             $(this).next(".attributes").slideUp(500);
             $(this).css("background-position","0 -3em");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px");
-            arrowUp = false;
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
             if(nums > 1)
@@ -121,13 +129,12 @@ $(document).ready(function()
             $(this).next(".attributes").slideDown(500);
             $(this).css("background-position","-1.5em -3em");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
-            arrowUp = true;
             resize();
         }  
     });
     
     // clicking minus will delete the current key-value pair
-    $(".list").on("click", ".minus", function(){
+    $(".list").on("click", ".icon-minus", function(){
         var item = $(this).closest(".listItem");
         var eind = $(".list .listItem").index(item);
         var siblings = $(this).closest(".attributes").children(".attribute");
@@ -176,12 +183,12 @@ function ifNoListMakeOne(callback){
 }
 
 function addItem(){
-    $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
+    $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
     resize();
 }
 
 function addAttribute(){
-    $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
+    $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
     resize();
 }
 
