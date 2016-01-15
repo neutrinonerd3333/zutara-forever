@@ -81,16 +81,17 @@ $(document).ready(function()
 
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes
-    $(".list").on("click", "img", function()
+    var arrowUp = false;
+    $(".list").on("click", ".icon", function()
     {
-        var file = $(this).attr("src");
-        
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
-        if(file==="/static/img/up.svg"){
+        if(arrowUp){
+            console.log("hi");
             $(this).next(".attributes").slideUp(500);
-            $(this).attr("src","/static/img/down.svg");
+            $(this).css("background-position","0 -3em");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px");
+            arrowUp = false;
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
             if(nums > 1)
@@ -118,8 +119,9 @@ $(document).ready(function()
         // to up arrow
         else{
             $(this).next(".attributes").slideDown(500);
-            $(this).attr("src","/static/img/up.svg");
+            $(this).css("background-position","-1.5em -3em");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
+            arrowUp = true;
             resize();
         }  
     });

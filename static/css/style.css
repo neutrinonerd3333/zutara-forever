@@ -22,6 +22,7 @@ body {
 }
 
 .login-container {
+    display: block;
     margin: 1em 1em 0 0;
     position: absolute;
     top: 0;

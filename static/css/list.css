@@ -91,6 +91,40 @@
     right: .3em;
     top: .3em;
 }
+.icon {
+    background-image: url("/static/img/icons.svg");
+    background-size: 10.5em 10.5em;
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    background-position: 0 -3em;
+    
+    display: block;
+    width: 1.5em;
+    height: 1.5em;
+    position: absolute;
+
+    padding: 0;
+    margin: 0;
+    z-index: 100;
+}
+.icon-down{
+    right: .3em;
+    top: .3em;
+}
+
+.attribute .minus {
+    background-image: url("/static/img/minus.svg");
+    background-size: contain;
+    position: relative;
+    right: calc(-100% + 26px + .3em);
+    top: -2em;
+    
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0;
+    padding: 0;
+}
+
 .list .lastListItem {
     height: 2em;
     border-radius: 20px;
