@@ -1,7 +1,8 @@
 ::-webkit-scrollbar { 
     display: none; /* thank god for Chrome :P (and that they only check Chrome) */
 }
-#wrapper{height: calc(100% - 16em);}
+#wrapper{height: 80%;}
+body {height: calc(100% - 2em);}
 
 .listBlock, .listBlock2 {
     display: inline-block;

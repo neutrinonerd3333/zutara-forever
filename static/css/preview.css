@@ -67,15 +67,6 @@ body {
     padding: 0;
     position: relative;
 }
-.listItem img{
-    width: 1.5em;
-    height: 1.5em;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    right: .3em;
-    top: .3em;
-}
 .list .listItem .itemTitle {
     position: relative;
     display: block;
@@ -83,7 +74,7 @@ body {
     height: 2em;
     background-color: transparent;
     
-    border-radius: 20px 20px 0 0;
+    border-radius: 0;
     padding: 0;
     margin: 0;
 }
@@ -92,13 +83,13 @@ body {
     padding: 0 1em;
     margin: 0;
     
-    border-radius: 20px;
+    border-radius: 20px 20px 0 0;
     height: 100%;
     width: calc(100% - 2em);
 }
 .list .listItem .attributes {
     border-radius: 0 0 20px 20px;
-    display: none;
+    display: show;
 }
 .attribute {
     width: 100%;
@@ -126,4 +117,40 @@ body {
     width: calc(100% - 2em);
     height: 100%;
     padding: 0 1em;
+}
+
+.icon {
+    background-image: url("/static/img/icons.svg");
+    background-size: 12em 4.5em;
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    background-position: -1.5em 0;
+    
+    display: block;
+    width: 1.5em;
+    height: 1.5em;
+    position: absolute;
+
+    padding: 0;
+    margin: 0;
+    z-index: 100;
+}
+.icon-down{
+    right: .3em;
+    top: .3em;
+}
+
+.icon-minus {
+    position: relative;
+    right: calc(-100% + 26px + .3em);
+    top: -2em;
+    
+    background-position: -4.5em -1.5em;
+}
+
+.icon-heart {
+    right: 2.1em;
+    top: .3em;
+    
+    background-position: -6em 0;
 }

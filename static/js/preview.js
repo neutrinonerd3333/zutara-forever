@@ -9,6 +9,17 @@ if (n === 0) {
     listid = pathname.slice(9);
 }
 
+function isArrowUp(icon) {
+    var css = $(icon).css("background-position");
+    // browser renders em into px, so 0 means left most = down arrow
+    if(css.charAt(0) === "0") {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 $(document).ready(function()
 {
     $(".list").on("click", ".icon-down", function()
@@ -49,7 +60,6 @@ $(document).ready(function()
             $(this).next(".attributes").slideDown(500);
             $(this).css("background-position","-1.5em 0");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
-            resize();
         }  
     });
     // clicking heart will add a vote to the item (or remove it if existing)
@@ -58,7 +68,6 @@ $(document).ready(function()
         $(this).css("background-position","-10.5em 0");
         var item = $(this).closest(".listItem");
         var eind = $(".list .listItem").index(item);
-        console.log(eind);
         $.ajax({
             url: "/api/vote",
             method: 'POST',
