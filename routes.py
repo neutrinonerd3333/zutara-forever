@@ -780,6 +780,19 @@ def permissions_set():
     the_list.save()
 
 
+@app.route("/api/getpermissions", methods=['POST'])
+def permissions_get():
+    """
+    Get the permission level a user has for a particular list.
+
+    POST the following:
+    {
+        listid: <the listid>
+    }
+    """
+    return query_cur_perm(request.form["listid"])
+
+
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
 
