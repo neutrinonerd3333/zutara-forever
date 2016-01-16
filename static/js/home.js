@@ -27,24 +27,24 @@ $(document).ready(function()
     $(".list").on('focusin', ".itemTitle input", function(){
         var icon = $(this).parent().next();
         var heart = $(this).parent().prev();
-        $(heart).css("background-position","-6em -6em");
-        if(isArrowUp(icon)){
-            $(icon).css("background-position","-1.5em -6em");
-        }
-        else {
-            $(icon).css("background-position","0 -6em");
-        }
-        
-    });
-    $(".list").on('focusout', ".itemTitle input", function(){
-        var icon = $(this).parent().next();
-        var heart = $(this).parent().prev();
         $(heart).css("background-position","-6em -3em");
         if(isArrowUp(icon)){
             $(icon).css("background-position","-1.5em -3em");
         }
         else {
             $(icon).css("background-position","0 -3em");
+        }
+        
+    });
+    $(".list").on('focusout', ".itemTitle input", function(){
+        var icon = $(this).parent().next();
+        var heart = $(this).parent().prev();
+        $(heart).css("background-position","-6em 0");
+        if(isArrowUp(icon)){
+            $(icon).css("background-position","-1.5em 0");
+        }
+        else {
+            $(icon).css("background-position","0 0");
         }
         
         var that = $(this);
@@ -110,9 +110,8 @@ $(document).ready(function()
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
         if(isArrowUp($(this))){
-            console.log("hi");
             $(this).next(".attributes").slideUp(500);
-            $(this).css("background-position","0 -3em");
+            $(this).css("background-position","0 0");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px");
 
             var nums = $(this).closest(".listItem").find(".attribute").length;
@@ -142,7 +141,7 @@ $(document).ready(function()
         // to up arrow
         else {
             $(this).next(".attributes").slideDown(500);
-            $(this).css("background-position","-1.5em -3em");
+            $(this).css("background-position","-1.5em 0");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
             resize();
         }  
@@ -150,6 +149,7 @@ $(document).ready(function()
     // clicking heart will add a vote to the item (or remove it if existing)
     $(".list").on("click", ".icon-heart", function(){
         alert("You clicked the heart!");
+        $(this).css("background-position","-10.5em 0");
         var item = $(this).closest(".listItem");
         var eind = $(".list .listItem").index(item);
         console.log(eind);

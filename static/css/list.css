@@ -93,10 +93,10 @@
 }
 .icon {
     background-image: url("/static/img/icons.svg");
-    background-size: 10.5em 10.5em;
+    background-size: 12em 4.5em;
     background-clip: border-box;
     background-repeat: no-repeat;
-    background-position: 0 -3em;
+    background-position: 0 0;
     
     display: block;
     width: 1.5em;
@@ -117,14 +117,14 @@
     right: calc(-100% + 26px + .3em);
     top: -2em;
     
-    background-position: -4.5em -4.5em;
+    background-position: -4.5em -1.5em;
 }
 
 .icon-heart {
     right: 2.1em;
     top: .3em;
     
-    background-position: -6em -3em;
+    background-position: -6em 0;
 }
 
 .list .lastListItem {
@@ -170,18 +170,6 @@
     margin: 0;
     border-radius: 0;
 }
-.attribute .minus {
-    background-image: url("/static/img/minus.svg");
-    background-size: contain;
-    position: relative;
-    right: calc(-100% + 26px + .3em);
-    top: -2em;
-    
-    width: 1.5em;
-    height: 1.5em;
-    margin: 0;
-    padding: 0;
-}
 .lastAttribute{
     height: 2em;
     border-radius: 0 0 20px 20px;
@@ -210,4 +198,8 @@
     width: calc(100% - 2em);
     height: 100%;
     padding: 0 1em;
+}
+.value input {
+    padding: 0 2.5em 0 1em;
+    width: calc(100% - 3.5em);
 }
