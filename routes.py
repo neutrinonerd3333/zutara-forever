@@ -396,11 +396,15 @@ def make_list():
 
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
-        uid = "Guest"
+        new_list = Catalist(listid=list_id, created=time,
+                            last_visited=time)
     else:
         uid = current_user.uid
-    new_list = Catalist(listid=list_id, created=time,
-                        last_visited=time, creator=uid)
+        new_list = Catalist(listid=list_id, created=time,
+                            last_visited=time, creator=uid)
+        user = User.objects.get(uid=uid)
+        new_list.owners.append(user)
+
     new_list.save()
     return jsonify(listid=list_id)
 
@@ -813,7 +817,8 @@ def permissions_get():
         listid: <the listid>
     }
     """
-    return query_cur_perm(request.form["listid"])
+    catalist = Catalist.objects.get(listid = request.form["listid"])
+    return query_cur_perm(catalist)
 
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
