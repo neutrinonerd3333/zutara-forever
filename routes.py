@@ -161,7 +161,7 @@ def signin():
         if flask_security.utils.verify_and_update_password(pw_hash, user):
             time = datetime.utcnow()
             user.last_active = time
-            print(user.last_active)
+            print("user last active {}".format(user.last_active))
             flask_security.utils.login_user(user, remember=None)
             message = ""
         else:
@@ -200,7 +200,6 @@ def getlist(listid):
     url = request.base_url
     the_list = Catalist.objects.get(listid=listid)
     msg = 'Access or share this list at<br><a href="{0}">{0}</a>'.format(url)
-    print(the_list.title)  # for debug
     return render_template('loadlist.html', listtitle=the_list.title,
                            entries=the_list.contents, message=msg)
 
@@ -348,17 +347,6 @@ def list_save():
     newlist.save()
     return redirect("/list/" + str(newlist.id), code=302)
 
-# seems like vestigial stuff: remove from API?
-# 
-# let's start small, since the receiving end is so picky
-# this one successfully receives the listItemTitle inputs
-# and does nothing with them at the moment
-# @app.route("/api/saveitems", methods=['POST'])
-# def items_save():
-#     list_items = request.form["items[title][]"]
-#     print(list_items)
-#     return "List Saved"
-
 
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
@@ -387,14 +375,12 @@ def key_save():
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
 
     # do the same for the_entry.contents and ind
     pad_len = ind - len(the_entry.contents) + 1
-    if pad_len > 0:
-        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
@@ -432,13 +418,11 @@ def value_save():
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
 
     pad_len = ind - len(the_entry.contents) + 1
-    if pad_len > 0:
-        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
     the_entry.contents[ind].value = val
 
     the_list.save()
@@ -469,8 +453,7 @@ def entry_title_save():
         return "The requested list does not exist", 400
 
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
     the_entry.title = val
     the_list.save()
