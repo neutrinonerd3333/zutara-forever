@@ -164,9 +164,9 @@ function ifNoListMakeOne(callback){
                 url = "http://" + location.host + rel_url
                 $("#link").html('Access or share your list at: <br><a href="'+url+'">'+url+"</a>");
                 
-                // replace the current url with another; use pushState with same args
-                // to simply change the url while preserving original in browser history
-                window.history.replaceState("", "Catalist", rel_url)
+                // use pushState with same args to change url while preserving
+                // original in browser history; replaceState does same w/o preserving
+                window.history.pushState("", "Catalist", rel_url)
                 callback()
             }
         });
