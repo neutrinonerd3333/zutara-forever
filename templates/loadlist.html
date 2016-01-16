@@ -24,7 +24,7 @@
             ><div class="minus"></div>
         </div>
         {% endfor %}
-        {% if length(entry.contents) is equalto 0 %}
+        {% if entry.contents|length is equalto 0 %}
         <div class="attribute">
             <div class="key"><input type="text" placeholder="Key"></div>
             <div class="value"><input type="text" placeholder="Value"></div>

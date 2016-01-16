@@ -197,11 +197,12 @@ def getlist(listid):
     Fetch the list with given listid from our database,
     display with template
     """
+    url = request.base_url
     the_list = Catalist.objects.get(listid=listid)
-    # print(the_list.contents)  # for debug
+    msg = 'Access or share this list at<br><a href="{0}">{0}</a>'.format(url)
     print(the_list.title)  # for debug
     return render_template('loadlist.html', listtitle=the_list.title,
-                           entries=the_list.contents)
+                           entries=the_list.contents, message=msg)
 
 
 @app.route("/mylists", methods=['GET'])
@@ -245,7 +246,8 @@ def userlists():
         n += 1
 
     return render_template('mylists.html', n=n, titles=titles,
-                           last_visited=last_visited, urls=urls, urls_actual=urls_actual)
+                           last_visited=last_visited, urls=urls,
+                           urls_actual=urls_actual)
 
 @app.route("/preview/<listid>", methods=['GET'])
 def preview_list(listid):
