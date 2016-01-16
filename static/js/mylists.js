@@ -2,22 +2,14 @@ $(document).ready(function()
 {
     
     // expands preview on click (should I make it click?) over url
-    $(".listBlock2").on("mouseenter", ".list", previewLink)
+    $(".listBlock2").on("mouseenter", ".list", previewLink);
     
-    // upon clicking the last list item (with a plus sign), a new
-    // list item will automatically be added to the bottom of the list
-    $(".list").on("click", ".lastListItem", addItem);
+    // view toolbox on hover
+    $(".listWrapper").on("mouseenter", showToolbox);
     
-    // upon clicking the last item attribute, a new item
-    // attribute entry will be automatically added to the bottom
-    // of the list
-    $(".list").on("click", ".lastAttribute", addAttribute);
+    // hide toolbox on leave
+    $(".listWrapper").on("mouseleave", hideToolbox);
     
-    // testing Ajax connection for now
-	/*$(".list").on("focusout",function(){
-        $("#catalist").ajaxSubmit();
-	});*/
-
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes
     $(".list").on("click", "img", function()
@@ -71,47 +63,19 @@ $(document).ready(function()
         $(this).closest(".attribute").remove();
     });
 });
-
-function ifNoListMakeOne(){
-    if(listid===null){
-        $.ajax({
-            url: "/ajax/makelist",
-            method: 'GET',
-            data: {
-                title: $(".listtitle input").val()
-            },
-            success: function(data, status, jqxhr){
-                // get list id, which we want to be a global var
-                listid = data.id;
-                // put the url in later >.<
-                $("#link").html('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
-                console.log('http://0.0.0.0:6005/list/' + listid);
-            }
-        });
-    }
-}
-
 function previewLink()
 {
     var url = $(this).find("input").attr("value");
     console.log(url);
-    $(this).parent().parent().parent().find("iframe").attr("src",url);
+    $(this).parent().parent().parent().parent().find("iframe").attr("src",url);
 }
-
-function addItem()
+function showToolbox()
 {
-    $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
+    var tools = $(this).find(".toolbox");
+    tools.show();
 }
-
-function addAttribute()
+function hideToolbox()
 {
-    $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
-}
-
-function deleteItem(){
-    // do ajax-y things
-}
-
-function deleteAttribute(){
-    // do more ajax-y things
+    var tools = $(this).find(".toolbox");
+    tools.hide();
 }

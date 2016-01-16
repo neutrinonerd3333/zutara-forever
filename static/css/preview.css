@@ -61,7 +61,7 @@ body {
 .list .listItem {
     width: 100%;
     min-height: 2em;
-    background-color: rgba(150, 150, 255, 0);
+    background-color: transparent;
     border-radius: 20px;
     margin-bottom: 1em;
     padding: 0;

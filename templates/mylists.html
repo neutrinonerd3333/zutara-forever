@@ -24,11 +24,16 @@ My Lists
         </div>
         <div class="scrollWrapper">
         {% for i in range(n) %}
+        <div class="listWrapper">
         <div class="list">
             <input type="hidden" value={{urls[i]}}>
             <a href={{urls_actual[i]}}><div class="listTitle">{{titles[i]}}</div></a
             ><div class="listTime">{{last_visited[i]}}</div
         ></div>
+        <div class="toolbox">
+            <div class="icon-share icon"></div>
+            <div class="icon-link icon"></div><input type="text">
+        </div></div>
         {% endfor %}
         </div>
     </div>
