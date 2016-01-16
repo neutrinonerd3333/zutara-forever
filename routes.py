@@ -92,7 +92,8 @@ list_title_max_len = 128
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=list_title_max_len, default="untitled list")
+    title = db.StringField(max_length=list_title_max_len,
+                           default="untitled list")
     created = db.DateTimeField(required=True)  # when list was created
 
     # delete lists that haven't been visited for a long time
@@ -143,10 +144,10 @@ def query_permission(user, catalist):
     elif user in catalist.owners:
         return "own"
     elif cmp_permission(catalist.public_level, "edit") >= 0 or \
-        user in catalist.editors:
+            user in catalist.editors:
         return "edit"
     elif cmp_permission(catalist.public_level, "view") >= 0 or \
-        user in catalist.viewers:
+            user in catalist.viewers:
         return "view"
     return "none"
 
@@ -295,6 +296,7 @@ def userlists():
                            last_visited=last_visited, urls=urls,
                            urls_actual=urls_actual)
 
+
 @app.route("/preview/<listid>", methods=['GET'])
 def preview_list(listid):
     return render_template('preview.html')
@@ -373,7 +375,6 @@ def handle_invalid_usage(error):
 #----------------------------------------------------------
 # THE API!!!
 #----------------------------------------------------------
-
 
 
 @app.route("/api/makelist", methods=['GET'])
@@ -777,7 +778,6 @@ def permissions_set():
 
     # save the list
     the_list.save()
-
 
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
