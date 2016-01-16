@@ -248,7 +248,15 @@ def userlists():
 
 @app.route("/preview/<listid>", methods=['GET'])
 def preview_list(listid):
-    return render_template('preview.html')
+    """
+        Fetch the list with given listid from our database,
+        display with template
+        """
+    the_list = Catalist.objects.get(listid=listid)
+    # print(the_list.contents)  # for debug
+    print(the_list.title)  # for debug
+    return render_template('preview.html', listtitle=the_list.title,
+                           entries=the_list.contents)
 
 
 def get_id():

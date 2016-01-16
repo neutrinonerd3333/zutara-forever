@@ -5,23 +5,23 @@
 {% for entry in entries %}
 <div class="listItem">
     <!--list item-->
+    <div class="icon-heart icon"></div> 
     <div class="itemTitle">
-        <input type="text" name="contents[][0]" placeholder="Item" value="{{ entry.title|e }}">
-        <!--<input type="text" name="items[title][]" placeholder="Item">-->
+        <input type="text" placeholder="Item" value="{{ entry.title|e }}">
     </div>
-    <img src="/static/img/down.svg">
+    <div class="icon-down icon"></div> 
     <div class="attributes">
         <!--all item attributes-->
         {% for kvp in entry.contents %}
         <div class="attribute">
             <!--single item attribute-->
             <div class="key"
-                ><input type="text" name="contents[][1][0]" placeholder="Key" value="{{ kvp.key|e }}"
+                ><input type="text" placeholder="Key" value="{{ kvp.key|e }}"
             ></div
             ><div class="value"
-                ><input type="text" name="contents[][1][1]" placeholder="Value" value="{{ kvp.value|e }}"
+                ><input type="text" placeholder="Value" value="{{ kvp.value|e }}"
             ></div
-            ><div class="minus"></div>
+            ><div class="icon-minus icon"></div>
         </div>
         {% endfor %}
         <div class="lastAttribute">
