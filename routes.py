@@ -144,6 +144,10 @@ def query_permission(user, catalist):
     return "none"
 
 
+def query_cur_perm(catalist):
+    return query_permission(flask_security.core.current_user, catalist)
+
+
 #----------------------------------------------------
 # User Interaction Section
 #----------------------------------------------------
@@ -346,6 +350,7 @@ def key_save():
         newvalue: <new value of key>
     }
     """
+
     # necessary only for option ONLY (see later)
     eind = int(request.form["entryind"])
     val = request.form["newvalue"]
