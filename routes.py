@@ -398,40 +398,41 @@ def make_list():
 
 
 # DEV NOTE: maybe make this a regular route, not AJAX
-@app.route("/api/savelist", methods=['POST'])
-def list_save():
-    """
-    For saving an entire list.
+# @app.route("/api/savelist", methods=['POST'])
+# def list_save():
+#     """
+#     For saving an entire list.
 
-    usage:
-    {
-        title: <thetitle>,
-        contents: [
-            *[title, [*[attrname, attrval]]]
-        ]
-    }
-    """
-    list_title = request.form["title"]
-    list_contents = request.form["contents[]"]
-    formatted_list_contents = []
-    for entry in list_contents:
-        temp = CatalistEntry(title=entry[0])
-        keys = [], kvps = []
-        for index, (k, v) in enumerate(entry[1]):
-            keys.append(key)
-            kvps.append(CatalistKVP(kvpid=hash(list_title + str(index)),
-                                    key=k, value=v))
-        temp.contents = kvps
-        formatted_list_contents.append(temp)
-    newlist = Catalist(title=list_title, contents=formatted_list_contents)
-    newlist.save()
-    return redirect("/list/" + str(newlist.id), code=302)
+#     usage:
+#     {
+#         title: <thetitle>,
+#         contents: [
+#             *[title, [*[attrname, attrval]]]
+#         ]
+#     }
+#     """
+#     list_title = request.form["title"]
+#     list_contents = request.form["contents[]"]
+#     formatted_list_contents = []
+#     for entry in list_contents:
+#         temp = CatalistEntry(title=entry[0])
+#         keys = [], kvps = []
+#         for index, (k, v) in enumerate(entry[1]):
+#             keys.append(key)
+#             kvps.append(CatalistKVP(kvpid=hash(list_title + str(index)),
+#                                     key=k, value=v))
+#         temp.contents = kvps
+#         formatted_list_contents.append(temp)
+#     newlist = Catalist(title=list_title, contents=formatted_list_contents)
+#     newlist.save()
+#     return redirect("/list/" + str(newlist.id), code=302)
 
 
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
     """
-    mini-API for this view function
+    Save a key. Requires >=edit permission.
+
     POST a JS associative array (basically a dict) like so:
     {
         listid:  <the list id>,
@@ -447,12 +448,14 @@ def key_save():
         val = request.form["newvalue"][:key_max_len]
         ind = int(request.form["index"])
         lid = request.form["listid"]
+        the_list = Catalist.objects.get(listid=lid)
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
-    try:
-        the_list = Catalist.objects.get(listid=lid)
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
@@ -482,7 +485,8 @@ def key_save():
 @app.route("/api/savevalue", methods=['POST'])
 def value_save():
     """
-    Save the value in a particular key-value pair.
+    Save the value in a particular key-value pair. Requires
+    >= edit permission
 
     The API is virtually identical the that of key_save()
     """
@@ -496,6 +500,9 @@ def value_save():
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
@@ -513,7 +520,7 @@ def value_save():
 @app.route("/api/saveentrytitle", methods=['POST'])
 def entry_title_save():
     """
-    AJAXily save the title of an entry.
+    AJAXily save the title of an entry. requires >= edit permission
 
     usage: POST a JS associative array (basically a dict) like so:
     {
@@ -533,6 +540,9 @@ def entry_title_save():
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
 
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
     pad_len = eind - len(the_list.contents) + 1
     the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
@@ -545,6 +555,7 @@ def entry_title_save():
 def list_title_save():
     """
     AJAXily save the title of a Catalist ^_^
+    requires >= edit permission
 
     usage: POST a JS assoc array like so:
     {
@@ -560,6 +571,9 @@ def list_title_save():
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
 
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
     the_list.title = req_json["newvalue"][:list_title_max_len]
     the_list.save()
     return jsonify()  # 200 OK ^_^
@@ -568,7 +582,7 @@ def list_title_save():
 @app.route("/api/deletelist", methods=['POST'])
 def list_delete():
     """
-    Delete a Catalist.
+    Delete a Catalist. Requires >= own permission
 
     usage: POST a JSON associative array as follows:
     {
@@ -582,6 +596,8 @@ def list_delete():
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
+    if cmp_permission(query_cur_perm(the_list), "own") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
     the_list.delete()
     return 'OK'  # this should return a 200
 
@@ -589,7 +605,7 @@ def list_delete():
 @app.route("/api/deleteentry", methods=['POST'])
 def entry_delete():
     """
-    Delete an entry from a Catalist.
+    Delete an entry from a Catalist. Requires >= edit permission
 
     usage: POST a JSON associative array as follows:
     {
@@ -601,6 +617,8 @@ def entry_delete():
         listid = request.form["listid"]
         entryind = int(request.form["entryind"])
         the_list = Catalist.objects.get(listid=listid)
+        if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+            raise InvalidAPIUsage("Forbidden", status_code=403)
         removed = the_list.contents.pop(entryind)
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
@@ -616,6 +634,7 @@ def entry_delete():
 def kvp_delete():
     """
     Delete a key-value pair from a Catalist entry.
+    Requires >= edit permission
 
     usage: POST a JSON associative array as follows:
     {
@@ -632,6 +651,9 @@ def kvp_delete():
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     try:
         the_entry = the_list.contents[entryind]
@@ -653,6 +675,7 @@ def vote():
     Two options:
     1) Update the database to incorporate a user's vote on an entry.
     2) Find the user's current vote and the current score of the entry.
+    Requires >= view permission
 
     usage: POST the following
     {
@@ -670,6 +693,9 @@ def vote():
     the_entry = Catalist(listid=listid).contents(
         id=request.form["entryid"])
     curscore = the_entry.score
+
+    if cmp_permission(query_cur_perm(the_list), "view") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     # find the current vote, possibly removing user from up/downvoters lists
     cur_vote = 0
@@ -704,7 +730,7 @@ def vote():
 def permissions_set():
     """
     {
-        Set permissions for a user. The user must 
+        Set permissions for a user. Requires >= own permission
 
         listid: <listid>,
         target: <username of user to set perms with>,
@@ -719,14 +745,14 @@ def permissions_set():
     the_list = Catalist.objects.get(listid=listid)
 
     if perm not in perm_list:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
 
     try:
         uperm = query_permission(Users.objects.get(uid=uname), the_list)
     except DoesNotExist:
-        return "No permission", 403
+        raise InvalidAPIUsage("No such user")
     if cmp_permission(uperm, "own") < 0:
-        return "No permission", 403
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     the_target = Users.objects.get(uid=target)
     target_cur_perm = query_permission(the_target, the_list)
