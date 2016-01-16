@@ -62,7 +62,7 @@ $(document).ready(function()
                     newvalue: newval
                 },
                 success: function(data, status, jqxhr){
-                    console.log("entry title " + newval + " saved to entry " + entryind);
+                    // console.log("entry title " + newval + " saved to entry " + entryind);
                 }
             });
         });
@@ -81,7 +81,7 @@ $(document).ready(function()
                     newvalue: newval
                 },
                 success: function(data, status, jqxhr){
-                    console.log("list title " + newval + " saved to list " + listid);
+                    // console.log("list title " + newval + " saved to list " + listid);
                 }
             });
         });
@@ -204,10 +204,14 @@ function ifNoListMakeOne(callback){
             },
             success: function(data, status, jqxhr){
                 // get list id, which we want to be a global var
+
                 listid = data.listid;
-                // put the url in later >.<
-                $("#link").html('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
-                console.log('http://0.0.0.0:6005/list/' + listid);
+                rel_url = "/list/" + listid
+                url = "http://" + location.host + rel_url
+                $("#link").html('Access or share your list at: <br><a href="'+url+'">'+url+"</a>");
+                // use pushState with same args to change url while preserving
+                // original in browser history; replaceState does same w/o preserving
+                window.history.pushState("", "Catalist", rel_url)
                 callback()
             }
         });
@@ -233,6 +237,7 @@ function saveKeyOrValue(that, toSave){
 
     var newval = that.val();
 
+    /* this code is rather ugly -- maybe elegantize lol */
     var listitem = that.parents().eq(4-1);
     var kvps = that.parents().eq(3-1);
     var this_kvp = that.parents().eq(2-1);
@@ -250,7 +255,7 @@ function saveKeyOrValue(that, toSave){
             newvalue: newval
         },
         success: function(data, status, jqxhr){
-            console.log(toSave + " " + newval + " saved to position " + ind) // for debug
+            // console.log(toSave + " " + newval + " saved to position " + ind) // for debug
         }
     })
 }

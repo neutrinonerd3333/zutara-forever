@@ -24,13 +24,48 @@
             ><div class="icon-minus icon"></div>
         </div>
         {% endfor %}
+        {% if entry.contents|length is equalto 0 %}
+        <div class="attribute">
+            <!--single item attribute-->
+            <div class="key"
+                ><input type="text" name="contents[][1][0]" placeholder="Key"
+            ></div
+            ><div class="value"
+                ><input type="text" name="contents[][1][1]" placeholder="Value"
+            ></div
+            ><div class="minus"></div>
+        </div>
+        {% endif %}
         <div class="lastAttribute">
             <input type="text" value=" +" disabled>
         </div>
     </div>
 </div>
 {% endfor %}
-
+{% if entries|length is equalto 0 %}
+<div class="listItem">
+    <!--list item-->
+    <div class="itemTitle">
+        <input type="text" name="contents[][0]" placeholder="Item">
+    </div>
+    <img src="/static/img/down.svg">
+    <div class="attributes">
+        <div class="attribute">
+            <!--single item attribute-->
+            <div class="key"
+                ><input type="text" name="contents[][1][0]" placeholder="Key"
+            ></div
+            ><div class="value"
+                ><input type="text" name="contents[][1][1]" placeholder="Value"
+            ></div
+            ><div class="minus"></div>
+        </div>
+        <div class="lastAttribute">
+            <input type="text" value=" +" disabled>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 

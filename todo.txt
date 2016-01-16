@@ -13,9 +13,7 @@ agenda Jan 14:
 * add an "about" page ... ?
 * add a "contact us" page so people can report bugs and stuff
 * database cleaning: lists that aren't used for a while should be removed; similar for users (how to handle references to deleted users?)
-* figure out hosting
 * debug!
-* implement this? http://flask.pocoo.org/docs/0.10/patterns/apierrors/
 * implement email notification of errors
     - see http://flask.pocoo.org/docs/0.10/errorhandling/#error-mails
 

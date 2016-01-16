@@ -67,13 +67,16 @@ body {height: calc(100% - 2em);}
     font-weight: normal;
     margin: 0;
 }
+.listWrapper {
+    margin: 0;
+}
 .list {
     height: 1em; /* padding covers height too */
     width: calc(100% - 2em);
     background-color: #CFF;
     border-radius: 0;
     padding: 0.5em 1em;
-    margin: 0 0 0 0;
+    margin: 0;
     display: block;
 }
 .list:hover{
@@ -88,14 +91,6 @@ body {height: calc(100% - 2em);}
     text-align: center;
     font-weight: normal;
 }
-.toolbox {
-    width: 100%;
-    height: 4.5em;
-    
-    background-color: #9DF;
-
-    display: none;
-}
 iframe {
     display: block;
     border: none;
@@ -103,10 +98,10 @@ iframe {
 }
 .icon {
     background-image: url("/static/img/icons.svg");
-    background-size: 12em 4.5em;
+    background-size: 13.5em 4.5em;
     background-clip: border-box;
     background-repeat: no-repeat;
-    background-position: -7.5em 0;
+    background-position: -12em 0;
     
     display: block;
     width: 1.5em;
@@ -125,14 +120,21 @@ iframe {
 .icon-link {
     background-position: -9em 0;
     left: .5em;
-    top: 1em;
+    top: -0.5em;
+}
+.toolbox {
+    width: 100%;
+    height: 4.5em;
+    
+    background-color: #9DF;
+    display: none;
 }
 .toolbox input {
     width: calc(100% - 5em);
     height: 2em;
     display: inline-block;
     position: relative;
-    top: -0.6em;
+    top: -2.5em;
     right: -1em;
 
     color: #666; 
@@ -141,14 +143,27 @@ iframe {
     outline: none;
     padding: 0 .5em;
     
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #9DF;
     transition: background .25s ease-in-out;
     -moz-transition: background .25s ease-in-out;
     -webkit-transition: background .25s ease-in-out;
 }
-.toolbox * input:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.toolbox input:hover, .toolbox input:focus {
+    background-color: #fff;
 }
-.toolbox * input:focus {
-    background-color: rgba(255, 255, 255, 0.5);
+.toolbox .permissions {
+    width: calc(100% - 5em);
+    height: 2em;
+    display: block;
+    position: relative;
+    border: solid #000;
+    left: 3em;
+    top: -1.4em;
+
+    background-color: #fff;
+    color: #666; 
+    font-size: 16px;
+    border: 0;
+    outline: none;
+    padding: 0 .5em;
 }

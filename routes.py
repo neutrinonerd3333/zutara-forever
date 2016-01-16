@@ -45,7 +45,7 @@ mongo = PyMongo(app)
 
 
 class Role(db.Document, RoleMixin):
-    """ A class for user roles (e.g. User, Admin, ...) """
+    """ A class for user roles (e.g. user, admin, ...) """
     name = db.StringField(max_length=80, unique=True)
     description = db.StringField(max_length=255)
 
@@ -53,8 +53,8 @@ class Role(db.Document, RoleMixin):
 class User(db.Document, UserMixin):
     """ A class for users. Can have any/none of these attributes. """
     firstname = db.StringField(max_length=40)
-    email = db.StringField(max_length=100, unique=True)
     lastname = db.StringField(max_length=40)
+    email = db.StringField(max_length=100, unique=True)
     uid = db.StringField(max_length=40, unique=True)
     password = db.StringField(max_length=255)  # because this is a hash
     active = db.BooleanField(default=True)  # set False for user confirmation
@@ -92,7 +92,8 @@ list_title_max_len = 128
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=list_title_max_len, default="untitled list")
+    title = db.StringField(max_length=list_title_max_len,
+                           default="untitled list")
     created = db.DateTimeField(required=True)  # when list was created
 
     # delete lists that haven't been visited for a long time
@@ -101,11 +102,58 @@ class Catalist(db.Document):
     # keys = db.ListField(db.StringField(max_length=20))
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
+    # PERMISSIONS
+    # hierarchy: admin/own/edit/view/none
+
+    # the permission the public has with the list
+    public_level = db.StringField(choices=["edit", "view", "none"],
+                                  default="edit")
+
+    # people with owner permission (i.e. can modify list permissions)
+    owners = db.ListField(db.ReferenceField(User))
+
+    # people with edit permission
+    editors = db.ListField(db.ReferenceField(User))
+
+    # people with view permission
+    viewers = db.ListField(db.ReferenceField(User))
+
     creator = db.StringField(max_length=40)
 
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
+
+
+# Permissions
+perm_list = ["none", "view", "edit", "own", "admin"]
+def cmp_permission(perm1, perm2):
+    """ Return a positive/0/negative integer when perm1 >/=/< perm2 """
+    return perm_list.index(perm1) - perm_list.index(perm2)
+
+
+admin_unames = ['rmwu', 'txz']
+def query_permission(user, catalist):
+    """
+    Gives the permission level a user has for a list.
+    "None" represents an anonymous user.
+    """
+    if user.uid in admin_unames:
+        return "admin"
+    elif user in catalist.owners:
+        return "own"
+    elif cmp_permission(catalist.public_level, "edit") >= 0 or \
+            user in catalist.editors:
+        return "edit"
+    elif cmp_permission(catalist.public_level, "view") >= 0 or \
+            user in catalist.viewers:
+        return "view"
+    return "none"
+
+
+def query_cur_perm(catalist):
+    return query_permission(flask_security.core.current_user, catalist)
+
 
 #----------------------------------------------------
 # User Interaction Section
@@ -160,7 +208,7 @@ def signin():
         if flask_security.utils.verify_and_update_password(pw_hash, user):
             time = datetime.utcnow()
             user.last_active = time
-            print(user.last_active)
+            print("user last active {}".format(user.last_active))
             flask_security.utils.login_user(user, remember=None)
             message = ""
         else:
@@ -196,11 +244,11 @@ def getlist(listid):
     Fetch the list with given listid from our database,
     display with template
     """
+    url = request.base_url
     the_list = Catalist.objects.get(listid=listid)
-    # print(the_list.contents)  # for debug
-    print(the_list.title)  # for debug
+    msg = 'Access or share this list at<br><a href="{0}">{0}</a>'.format(url)
     return render_template('loadlist.html', listtitle=the_list.title,
-                           entries=the_list.contents)
+                           entries=the_list.contents, message=msg)
 
 
 @app.route("/mylists", methods=['GET'])
@@ -244,7 +292,9 @@ def userlists():
         n += 1
 
     return render_template('mylists.html', n=n, titles=titles,
-                           last_visited=last_visited, urls=urls, urls_actual=urls_actual)
+                           last_visited=last_visited, urls=urls,
+                           urls_actual=urls_actual)
+
 
 @app.route("/preview/<listid>", methods=['GET'])
 def preview_list(listid):
@@ -261,11 +311,18 @@ def preview_list(listid):
 
 def get_id():
     """ Return name of current user """
-    current_user = flask_security.core.current_user
-    uid = current_user.uid
-    return uid
+    try:
+        return flask_security.core.current_user.uid
+    except AttributeError:
+        return None
 
 app.jinja_env.globals.update(get_id=get_id)
+
+
+@app.route("/about", methods=['GET', 'POST'])
+def about():
+    """ About us. """
+    return render_template('about.html')
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -297,6 +354,31 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
+
+# shamelessly pillaged from Flask docs
+# http://flask.pocoo.org/docs/0.10/patterns/apierrors/
+class InvalidAPIUsage(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        return rv
+
+
+@app.errorhandler(InvalidAPIUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
 #----------------------------------------------------------
 # THE API!!!
 #----------------------------------------------------------
@@ -324,51 +406,41 @@ def make_list():
 
 
 # DEV NOTE: maybe make this a regular route, not AJAX
-@app.route("/api/savelist", methods=['POST'])
-def list_save():
-    """
-    For saving an entire list.
+# @app.route("/api/savelist", methods=['POST'])
+# def list_save():
+#     """
+#     For saving an entire list.
 
-    usage:
-    {
-        title: <thetitle>,
-        contents: [
-            *[title, [*[attrname, attrval]]]
-        ]
-    }
-    """
-    list_title = request.form["title"]
-    list_contents = request.form["contents[]"]
-    formatted_list_contents = []
-    for entry in list_contents:
-        temp = CatalistEntry(title=entry[0])
-        keys = [], kvps = []
-        for index, (k, v) in enumerate(entry[1]):
-            keys.append(key)
-            kvps.append(CatalistKVP(kvpid=hash(list_title + str(index)),
-                                    key=k, value=v))
-        temp.contents = kvps
-        formatted_list_contents.append(temp)
-    newlist = Catalist(title=list_title, contents=formatted_list_contents)
-    newlist.save()
-    return redirect("/list/" + str(newlist.id), code=302)
-
-# seems like vestigial stuff: remove from API?
-# 
-# let's start small, since the receiving end is so picky
-# this one successfully receives the listItemTitle inputs
-# and does nothing with them at the moment
-# @app.route("/api/saveitems", methods=['POST'])
-# def items_save():
-#     list_items = request.form["items[title][]"]
-#     print(list_items)
-#     return "List Saved"
+#     usage:
+#     {
+#         title: <thetitle>,
+#         contents: [
+#             *[title, [*[attrname, attrval]]]
+#         ]
+#     }
+#     """
+#     list_title = request.form["title"]
+#     list_contents = request.form["contents[]"]
+#     formatted_list_contents = []
+#     for entry in list_contents:
+#         temp = CatalistEntry(title=entry[0])
+#         keys = [], kvps = []
+#         for index, (k, v) in enumerate(entry[1]):
+#             keys.append(key)
+#             kvps.append(CatalistKVP(kvpid=hash(list_title + str(index)),
+#                                     key=k, value=v))
+#         temp.contents = kvps
+#         formatted_list_contents.append(temp)
+#     newlist = Catalist(title=list_title, contents=formatted_list_contents)
+#     newlist.save()
+#     return redirect("/list/" + str(newlist.id), code=302)
 
 
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
     """
-    mini-API for this view function
+    Save a key. Requires >=edit permission.
+
     POST a JS associative array (basically a dict) like so:
     {
         listid:  <the list id>,
@@ -377,29 +449,30 @@ def key_save():
         newvalue: <new value of key>
     }
     """
+
     # necessary only for option ONLY (see later)
     try:
         eind = int(request.form["entryind"])
         val = request.form["newvalue"][:key_max_len]
         ind = int(request.form["index"])
         lid = request.form["listid"]
-    except KeyError:
-        return "Invalid arguments", 400
-    try:
         the_list = Catalist.objects.get(listid=lid)
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The requested list does not exist", 400
+        raise InvalidAPIUsage("List does not exist")
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
 
     # do the same for the_entry.contents and ind
     pad_len = ind - len(the_entry.contents) + 1
-    if pad_len > 0:
-        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
@@ -420,7 +493,8 @@ def key_save():
 @app.route("/api/savevalue", methods=['POST'])
 def value_save():
     """
-    Save the value in a particular key-value pair.
+    Save the value in a particular key-value pair. Requires
+    >= edit permission
 
     The API is virtually identical the that of key_save()
     """
@@ -431,19 +505,20 @@ def value_save():
         lid = request.form["listid"]
         the_list = Catalist.objects.get(listid=lid)
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The requested list does not exist", 400
+        raise InvalidAPIUsage("List does not exist")
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
 
     pad_len = ind - len(the_entry.contents) + 1
-    if pad_len > 0:
-        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
     the_entry.contents[ind].value = val
 
     the_list.save()
@@ -453,7 +528,7 @@ def value_save():
 @app.route("/api/saveentrytitle", methods=['POST'])
 def entry_title_save():
     """
-    AJAXily save the title of an entry.
+    AJAXily save the title of an entry. requires >= edit permission
 
     usage: POST a JS associative array (basically a dict) like so:
     {
@@ -469,13 +544,15 @@ def entry_title_save():
         val = req_json["newvalue"][:entry_title_max_len]
         the_list = Catalist.objects.get(listid=lid)
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The requested list does not exist", 400
+        raise InvalidAPIUsage("List does not exist")
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
     the_entry.title = val
     the_list.save()
@@ -486,6 +563,7 @@ def entry_title_save():
 def list_title_save():
     """
     AJAXily save the title of a Catalist ^_^
+    requires >= edit permission
 
     usage: POST a JS assoc array like so:
     {
@@ -497,9 +575,12 @@ def list_title_save():
     try:
         the_list = Catalist.objects.get(listid=req_json["listid"])
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The requested list does not exist", 400
+        raise InvalidAPIUsage("List does not exist")
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     the_list.title = req_json["newvalue"][:list_title_max_len]
     the_list.save()
@@ -509,7 +590,7 @@ def list_title_save():
 @app.route("/api/deletelist", methods=['POST'])
 def list_delete():
     """
-    Delete a Catalist.
+    Delete a Catalist. Requires >= own permission
 
     usage: POST a JSON associative array as follows:
     {
@@ -520,9 +601,11 @@ def list_delete():
         listid = request.form["listid"]
         the_list = Catalist.objects.get(listid=listid)
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The list doesn't exist", 400
+        raise InvalidAPIUsage("List does not exist")
+    if cmp_permission(query_cur_perm(the_list), "own") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
     the_list.delete()
     return 'OK'  # this should return a 200
 
@@ -530,7 +613,7 @@ def list_delete():
 @app.route("/api/deleteentry", methods=['POST'])
 def entry_delete():
     """
-    Delete an entry from a Catalist.
+    Delete an entry from a Catalist. Requires >= edit permission
 
     usage: POST a JSON associative array as follows:
     {
@@ -542,13 +625,15 @@ def entry_delete():
         listid = request.form["listid"]
         entryind = int(request.form["entryind"])
         the_list = Catalist.objects.get(listid=listid)
+        if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+            raise InvalidAPIUsage("Forbidden", status_code=403)
         removed = the_list.contents.pop(entryind)
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The list doesn't exist", 400
+        raise InvalidAPIUsage("List does not exist")
     except IndexError:
-        return "Entry index out of bounds", 400
+        raise InvalidAPIUsage("Entry index out of bounds")
     the_list.save()
     return 'OK'  # 200 OK
 
@@ -557,6 +642,7 @@ def entry_delete():
 def kvp_delete():
     """
     Delete a key-value pair from a Catalist entry.
+    Requires >= edit permission
 
     usage: POST a JSON associative array as follows:
     {
@@ -570,9 +656,12 @@ def kvp_delete():
         ind = int(request.form["index"])
         the_list = Catalist.objects.get(listid=request.form["listid"])
     except KeyError, ValueError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The list doesn't exist", 400
+        raise InvalidAPIUsage("List does not exist")
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
 
     try:
         the_entry = the_list.contents[entryind]
@@ -594,6 +683,7 @@ def vote():
     Two options:
     1) Update the database to incorporate a user's vote on an entry.
     2) Find the user's current vote and the current score of the entry.
+    Requires >= view permission
 
     usage: POST the following
     {
@@ -626,6 +716,9 @@ def vote():
 
     curscore = the_entry.score
 
+    if cmp_permission(query_cur_perm(the_list), "view") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
     # find the current vote, possibly removing user from up/downvoters lists
     # code works until  here and then 500s due to update_one being a method
     # of the queryset instead of the document
@@ -655,6 +748,72 @@ def vote():
     the_entry.save()
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
+
+
+@app.route("/api/setpermissions", methods=['POST'])
+def permissions_set():
+    """
+    {
+        Set permissions for a user. Requires >= own permission
+
+        listid: <listid>,
+        target: <username of user to set perms with>,
+        permission: {none | view | edit | own | admin}
+    }
+    """
+    uname = get_id()
+    listid = request.form["listid"]
+    perm = request.form["permission"]
+    target = request.form["target"]
+
+    the_list = Catalist.objects.get(listid=listid)
+
+    if perm not in perm_list:
+        raise InvalidAPIUsage("Invalid arguments")
+
+    try:
+        uperm = query_permission(Users.objects.get(uid=uname), the_list)
+    except DoesNotExist:
+        raise InvalidAPIUsage("No such user")
+    if cmp_permission(uperm, "own") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
+    the_target = Users.objects.get(uid=target)
+    target_cur_perm = query_permission(the_target, the_list)
+    if target_cur_perm == perm:
+        return "OK"  # 200 OK
+
+    # if target user is currently on own/edit/view, remove user from that
+    if target_cur_perm in ["own", "view"]:
+        getattr(the_list, target_cur_perm + "ers").remove(the_target)
+    elif target_cur_perm == "edit":
+        the_list.editors.remove(the_target)
+
+    # add target user to appropriate new privilege lists
+    if perm in ["own", "view"]:
+        getattr(the_list, perm + "ers").append(the_target)
+    elif perm == "edit":
+        the_list.editors.append(the_target)
+
+    # if owners is now empty, make the list publicly editable
+    if len(the_list.owners) == 0:
+        the_list.public_level = "edit"
+
+    # save the list
+    the_list.save()
+
+
+@app.route("/api/getpermissions", methods=['POST'])
+def permissions_get():
+    """
+    Get the permission level a user has for a particular list.
+
+    POST the following:
+    {
+        listid: <the listid>
+    }
+    """
+    return query_cur_perm(request.form["listid"])
 
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]

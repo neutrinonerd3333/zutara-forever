@@ -10,6 +10,13 @@ $(document).ready(function()
     // hide toolbox on leave
     $(".listWrapper").on("mouseleave", hideToolbox);
     
+    // copy url to clipboard upon clicking in it
+    $(".toolbox").on("click", "input", function(){
+        $(this).select();
+        document.execCommand("copy");
+        alert("Link copied to clipboard!");
+    });
+    
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes
     $(".list").on("click", "img", function()
@@ -66,7 +73,6 @@ $(document).ready(function()
 function previewLink()
 {
     var url = $(this).find("input").attr("value");
-    console.log(url);
     $(this).parent().parent().parent().parent().find("iframe").attr("src",url);
 }
 function showToolbox()
