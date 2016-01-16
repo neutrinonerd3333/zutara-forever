@@ -291,9 +291,35 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
+
+# shamelessly pillaged from Flask docs
+# http://flask.pocoo.org/docs/0.10/patterns/apierrors/
+class InvalidUsage(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        return rv
+
+
+@app.errorhandler(InvalidAPIUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
 #----------------------------------------------------------
 # THE API!!!
 #----------------------------------------------------------
+
 
 
 @app.route("/api/makelist", methods=['GET'])
@@ -367,11 +393,11 @@ def key_save():
         ind = int(request.form["index"])
         lid = request.form["listid"]
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     try:
         the_list = Catalist.objects.get(listid=lid)
     except DoesNotExist:
-        return "The requested list does not exist", 400
+        raise InvalidAPIUsage("List does not exist")
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
@@ -412,9 +438,9 @@ def value_save():
         lid = request.form["listid"]
         the_list = Catalist.objects.get(listid=lid)
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The requested list does not exist", 400
+        raise InvalidAPIUsage("List does not exist")
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
@@ -448,9 +474,9 @@ def entry_title_save():
         val = req_json["newvalue"][:entry_title_max_len]
         the_list = Catalist.objects.get(listid=lid)
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The requested list does not exist", 400
+        raise InvalidAPIUsage("List does not exist")
 
     pad_len = eind - len(the_list.contents) + 1
     the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
@@ -475,9 +501,9 @@ def list_title_save():
     try:
         the_list = Catalist.objects.get(listid=req_json["listid"])
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The requested list does not exist", 400
+        raise InvalidAPIUsage("List does not exist")
 
     the_list.title = req_json["newvalue"][:list_title_max_len]
     the_list.save()
@@ -498,9 +524,9 @@ def list_delete():
         listid = request.form["listid"]
         the_list = Catalist.objects.get(listid=listid)
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The list doesn't exist", 400
+        raise InvalidAPIUsage("List does not exist")
     the_list.delete()
     return 'OK'  # this should return a 200
 
@@ -522,11 +548,11 @@ def entry_delete():
         the_list = Catalist.objects.get(listid=listid)
         removed = the_list.contents.pop(entryind)
     except KeyError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The list doesn't exist", 400
+        raise InvalidAPIUsage("List does not exist")
     except IndexError:
-        return "Entry index out of bounds", 400
+        raise InvalidAPIUsage("Entry index out of bounds")
     the_list.save()
     return 'OK'  # 200 OK
 
@@ -548,9 +574,9 @@ def kvp_delete():
         ind = int(request.form["index"])
         the_list = Catalist.objects.get(listid=request.form["listid"])
     except KeyError, ValueError:
-        return "Invalid arguments", 400
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The list doesn't exist", 400
+        raise InvalidAPIUsage("List does not exist")
 
     try:
         the_entry = the_list.contents[entryind]
