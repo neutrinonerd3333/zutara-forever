@@ -294,7 +294,7 @@ def internal_server_error(e):
 
 # shamelessly pillaged from Flask docs
 # http://flask.pocoo.org/docs/0.10/patterns/apierrors/
-class InvalidUsage(Exception):
+class InvalidAPIUsage(Exception):
     status_code = 400
 
     def __init__(self, message, status_code=None, payload=None):

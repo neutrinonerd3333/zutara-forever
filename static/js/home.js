@@ -39,7 +39,7 @@ $(document).ready(function()
                     newvalue: newval
                 },
                 success: function(data, status, jqxhr){
-                    console.log("entry title " + newval + " saved to entry " + entryind);
+                    // console.log("entry title " + newval + " saved to entry " + entryind);
                 }
             });
         });
@@ -58,7 +58,7 @@ $(document).ready(function()
                     newvalue: newval
                 },
                 success: function(data, status, jqxhr){
-                    console.log("list title " + newval + " saved to list " + listid);
+                    // console.log("list title " + newval + " saved to list " + listid);
                 }
             });
         });
@@ -162,7 +162,7 @@ function ifNoListMakeOne(callback){
                 listid = data.id;
                 // put the url in later >.<
                 $("#link").html('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
-                console.log('http://0.0.0.0:6005/list/' + listid);
+                // console.log('http://0.0.0.0:6005/list/' + listid);
                 callback()
             }
         });
@@ -203,7 +203,7 @@ function saveKeyOrValue(that, toSave){
             newvalue: newval
         },
         success: function(data, status, jqxhr){
-            console.log(toSave + " " + newval + " saved to position " + ind) // for debug
+            // console.log(toSave + " " + newval + " saved to position " + ind) // for debug
         }
     })
 }
