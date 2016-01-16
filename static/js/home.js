@@ -10,7 +10,6 @@ if (n === 0) {
 
 $(document).ready(function()
 {
-
     // creates list on first serious attempt at making a list
     // $(".list").one("focusout", ifNoListMakeOne);
 
@@ -40,7 +39,7 @@ $(document).ready(function()
                     newvalue: newval
                 },
                 success: function(data, status, jqxhr){
-                    console.log("entry title " + newval + " saved to entry " + entryind);
+                    // console.log("entry title " + newval + " saved to entry " + entryind);
                 }
             });
         });
@@ -59,7 +58,7 @@ $(document).ready(function()
                     newvalue: newval
                 },
                 success: function(data, status, jqxhr){
-                    console.log("list title " + newval + " saved to list " + listid);
+                    // console.log("list title " + newval + " saved to list " + listid);
                 }
             });
         });
@@ -88,9 +87,11 @@ $(document).ready(function()
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
         if(file==="/static/img/up.svg"){
-            $(this).next(".attributes").slideUp(500);
+            var that = $(this);
+            $(this).next(".attributes").slideUp(500, function(){
+                that.prev(".itemTitle").find("input").css("border-radius","20px");
+            });
             $(this).attr("src","/static/img/down.svg");
-            $(this).prev(".itemTitle").find("input").css("border-radius","20px");
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
             if(nums > 1)
@@ -116,7 +117,7 @@ $(document).ready(function()
         }
         // if currently down arrow, click should show attributes and switch
         // to up arrow
-        else{
+        else {
             $(this).next(".attributes").slideDown(500);
             $(this).attr("src","/static/img/up.svg");
             $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
@@ -159,9 +160,13 @@ function ifNoListMakeOne(callback){
             success: function(data, status, jqxhr){
                 // get list id, which we want to be a global var
                 listid = data.id;
-                // put the url in later >.<
-                $("#link").append('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
-                console.log('http://0.0.0.0:6005/list/' + listid);
+                rel_url = "/list/" + listid
+                url = "http://" + location.host + rel_url
+                $("#link").html('Access or share your list at: <br><a href="'+url+'">'+url+"</a>");
+                
+                // use pushState with same args to change url while preserving
+                // original in browser history; replaceState does same w/o preserving
+                window.history.pushState("", "Catalist", rel_url)
                 callback()
             }
         });
@@ -185,6 +190,7 @@ function saveKeyOrValue(that, toSave){
 
     var newval = that.val();
 
+    /* this code is rather ugly -- maybe elegantize lol */
     var listitem = that.parents().eq(4-1);
     var kvps = that.parents().eq(3-1);
     var this_kvp = that.parents().eq(2-1);
@@ -202,7 +208,7 @@ function saveKeyOrValue(that, toSave){
             newvalue: newval
         },
         success: function(data, status, jqxhr){
-            console.log(toSave + " " + newval + " saved to position " + ind) // for debug
+            // console.log(toSave + " " + newval + " saved to position " + ind) // for debug
         }
     })
 }

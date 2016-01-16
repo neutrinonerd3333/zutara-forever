@@ -4,6 +4,7 @@
 
 from __future__ import division, print_function
 from datetime import datetime
+from datetime import date
 # from glob import glob
 
 import uuid as uuid_module
@@ -30,6 +31,7 @@ app.config['MONGODB_SETTINGS'] = {
 }
 
 app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
+app.config['SECURITY_PASSWORD_SALT'] = "eddb960e-269c-4458-8e08-c1027d8b290"
 
 # we'll need this later for actual app
 HOSTNAME = '0.0.0.0:6005'
@@ -54,7 +56,7 @@ class User(db.Document, UserMixin):
     lastname = db.StringField(max_length=40)
     email = db.StringField(max_length=100, unique=True)
     uid = db.StringField(max_length=40, unique=True)
-    password = db.StringField(max_length=20)  # limit length
+    password = db.StringField(max_length=255)  # because this is a hash
     active = db.BooleanField(default=True)  # set False for user confirmation
     confirmed_at = db.DateTimeField()
 
@@ -64,29 +66,33 @@ class User(db.Document, UserMixin):
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
 
+key_max_len = 32
+val_max_len = 1024
 class CatalistKVP(db.EmbeddedDocument):
     """ A class for individual key-value pairs in our Catalist entries """
     # id is implicit in mongoengine, but we want to
     # share kvpid's across (CatalistEntry)s
     kvpid = db.StringField(max_length=40)
-    key = db.StringField(max_length=40, default="")
-    value = db.StringField(max_length=200, default="")
+    key = db.StringField(max_length=key_max_len, default="")
+    value = db.StringField(max_length=val_max_len, default="")
 
 
+entry_title_max_len = 128
 class CatalistEntry(db.EmbeddedDocument):
     """ A class for the entries in our Catalists """
     # entryid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=80, default="")
+    title = db.StringField(max_length=entry_title_max_len, default="")
     contents = db.EmbeddedDocumentListField(CatalistKVP, default=[])
     score = db.IntField(default=0)
     upvoters = db.ListField(db.ReferenceField(User), default=[])
     downvoters = db.ListField(db.ReferenceField(User), default=[])
 
 
+list_title_max_len = 128
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
-    title = db.StringField(max_length=100, default="")
+    title = db.StringField(max_length=list_title_max_len, default="untitled list")
     created = db.DateTimeField(required=True)  # when list was created
 
     # delete lists that haven't been visited for a long time
@@ -111,6 +117,7 @@ class Catalist(db.Document):
     # people with view permission
     viewers = db.ListField(db.ReferenceField(User))
 
+    creator = db.StringField(max_length=40)
 
 
 # Setup Flask-Security
@@ -161,6 +168,7 @@ def signup():
     """
     user_id = request.form['uid']
     pw = request.form['password']
+    pw_hash = flask_security.utils.get_hmac(pw)
     email = request.form['email']
     time = datetime.utcnow()
 
@@ -171,14 +179,14 @@ def signup():
                                message="Sorry, that username is taken!")
     except mongoengine.DoesNotExist:
         try:
-            # if user exists, then can't sign up with same username
+            # if user exists, then can't sign up with same email
             user = User.objects.get(email=unicode(email))
             return render_template(
                 'register.html',
                 message="Sorry, that email is taken! " +
                 "Did you forget your password?")
         except:
-            user_datastore.create_user(uid=user_id, password=pw,
+            user_datastore.create_user(uid=user_id, password=pw_hash,
                                        last_active=time, email=email)
     # if multiple objects, then something just screwed up
     except:
@@ -192,14 +200,15 @@ def signin():
     """ Sign the user in, given valid credentials. """
     user_id = request.form['uid']
     pw = request.form['password']
+    pw_hash = flask_security.utils.get_hmac(pw)
     whoops = "You have entered a wrong username or password. Please try again."
     try:
         # if user exists, then sign in
         user = User.objects.get(uid=unicode(user_id))
-        if flask_security.utils.verify_and_update_password(pw, user):
+        if flask_security.utils.verify_and_update_password(pw_hash, user):
             time = datetime.utcnow()
             user.last_active = time
-            print(user.last_active)
+            print("user last active {}".format(user.last_active))
             flask_security.utils.login_user(user, remember=None)
             message = ""
         else:
@@ -235,17 +244,60 @@ def getlist(listid):
     Fetch the list with given listid from our database,
     display with template
     """
+    url = request.base_url
     the_list = Catalist.objects.get(listid=listid)
-    # print(the_list.contents)  # for debug
-    print(the_list.title)  # for debug
+    msg = 'Access or share this list at<br><a href="{0}">{0}</a>'.format(url)
     return render_template('loadlist.html', listtitle=the_list.title,
-                           entries=the_list.contents)
+                           entries=the_list.contents, message=msg)
 
 
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
-    return render_template('userlists.html')
+    current_user = flask_security.core.current_user
+    lists = Catalist.objects(creator=current_user.uid).only(
+        'listid', 'title', 'created', 'last_visited').all()
+    if lists.first() is None:
+        return render_template(
+            'home.html',
+            message="Oops! You have no lists saved! " +
+                    "Would you like to create one?")
+
+    lists = lists.order_by('last_visited').all()
+
+    n = 0
+    urls = []
+    urls_actual = []
+    titles = []
+    last_visited = []
+
+    for list in lists:
+        # urls.append("/list/" + list.listid)
+        urls.append("/preview/" + list.listid)
+        urls_actual.append("/list/" + list.listid)
+        titles.append(list.title)
+
+        c = list.created
+        lv = list.last_visited
+
+        # formatting last visited
+        if(lv.date() == date.today()):
+            lv = lv.strftime("%I:%M %p")
+        else:
+            lv = lv.strftime("%I:%M %p, %x")
+        if lv[0:1] == "0":
+            lv = lv[1:]
+
+        last_visited.append(lv)
+        n += 1
+
+    return render_template('mylists.html', n=n, titles=titles,
+                           last_visited=last_visited, urls=urls,
+                           urls_actual=urls_actual)
+
+@app.route("/preview/<listid>", methods=['GET'])
+def preview_list(listid):
+    return render_template('preview.html')
 
 
 def get_id():
@@ -274,13 +326,54 @@ def index():
 #----------------------------------------------------------
 
 
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template('403.html'), 403
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
+@app.errorhandler(410)
+def page_not_found(e):
+    return render_template('410.html'), 410
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
+
+
+# shamelessly pillaged from Flask docs
+# http://flask.pocoo.org/docs/0.10/patterns/apierrors/
+class InvalidAPIUsage(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        return rv
+
+
+@app.errorhandler(InvalidAPIUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
 #----------------------------------------------------------
 # THE API!!!
 #----------------------------------------------------------
+
 
 
 @app.route("/api/makelist", methods=['GET'])
@@ -292,7 +385,14 @@ def make_list():
     list_id = str(uuid_module.uuid4())
     title = ""
     time = datetime.utcnow()
-    new_list = Catalist(listid=list_id, created=time, last_visited=time)
+
+    current_user = flask_security.core.current_user
+    if not current_user.is_authenticated:
+        uid = "Guest"
+    else:
+        uid = current_user.uid
+    new_list = Catalist(listid=list_id, created=time,
+                        last_visited=time, creator=uid)
     new_list.save()
     return jsonify(id=list_id)
 
@@ -303,7 +403,7 @@ def list_save():
     """
     For saving an entire list.
 
-    syntax:
+    usage:
     {
         title: <thetitle>,
         contents: [
@@ -328,16 +428,6 @@ def list_save():
     return redirect("/list/" + str(newlist.id), code=302)
 
 
-# let's start small, since the receiving end is so picky
-# this one successfully receives the listItemTitle inputs
-# and does nothing with them at the moment
-@app.route("/api/saveitems", methods=['POST'])
-def items_save():
-    list_items = request.form["items[title][]"]
-    print(list_items)
-    return "List Saved"
-
-
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
     """
@@ -352,23 +442,26 @@ def key_save():
     """
 
     # necessary only for option ONLY (see later)
-    eind = int(request.form["entryind"])
-    val = request.form["newvalue"]
-    ind = int(request.form["index"])
-    lid = request.form["listid"]
-    # print("The list id is {} and the newvalue is {}".format(lid, val))
-    the_list = Catalist.objects.get(listid=lid)
+    try:
+        eind = int(request.form["entryind"])
+        val = request.form["newvalue"][:key_max_len]
+        ind = int(request.form["index"])
+        lid = request.form["listid"]
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+    try:
+        the_list = Catalist.objects.get(listid=lid)
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
 
     # do the same for the_entry.contents and ind
     pad_len = ind - len(the_entry.contents) + 1
-    if pad_len > 0:
-        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
 
     # two options for updating key name: either we update it
     # for this entry ONLY or update it for ALL entries
@@ -393,21 +486,24 @@ def value_save():
 
     The API is virtually identical the that of key_save()
     """
-    eind = int(request.form["entryind"])
-    val = request.form["newvalue"]
-    ind = int(request.form["index"])
-    lid = request.form["listid"]
-    the_list = Catalist.objects.get(listid=lid)
+    try:
+        eind = int(request.form["entryind"])
+        val = request.form["newvalue"][:val_max_len]
+        ind = int(request.form["index"])
+        lid = request.form["listid"]
+        the_list = Catalist.objects.get(listid=lid)
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
 
     pad_len = ind - len(the_entry.contents) + 1
-    if pad_len > 0:
-        the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
+    the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
     the_entry.contents[ind].value = val
 
     the_list.save()
@@ -426,15 +522,19 @@ def entry_title_save():
         newvalue: <new entry title>
     }
     """
-    req_json = request.form
-    lid, eind = [req_json[s] for s in ["listid", "entryind"]]
-    eind = int(eind)
-    val = req_json["newvalue"]
-    the_list = Catalist.objects.get(listid=lid)
+    try:
+        req_json = request.form
+        lid, eind = [req_json[s] for s in ["listid", "entryind"]]
+        eind = int(eind)
+        val = req_json["newvalue"][:entry_title_max_len]
+        the_list = Catalist.objects.get(listid=lid)
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     pad_len = eind - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
     the_entry.title = val
     the_list.save()
@@ -453,8 +553,14 @@ def list_title_save():
     }
     """
     req_json = request.form
-    the_list = Catalist.objects.get(listid=req_json["listid"])
-    the_list.title = req_json["newvalue"]
+    try:
+        the_list = Catalist.objects.get(listid=req_json["listid"])
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
+
+    the_list.title = req_json["newvalue"][:list_title_max_len]
     the_list.save()
     return jsonify()  # 200 OK ^_^
 
@@ -469,11 +575,13 @@ def list_delete():
         listid: <the id of the list to be deleted>
     }
     """
-    listid = request.form["listid"]
     try:
+        listid = request.form["listid"]
         the_list = Catalist.objects.get(listid=listid)
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The list doesn't exist", 400
+        raise InvalidAPIUsage("List does not exist")
     the_list.delete()
     return 'OK'  # this should return a 200
 
@@ -489,16 +597,17 @@ def entry_delete():
         entryind: <the index of the entry to remove>
     }
     """
-    listid = request.form["listid"]
-    entryind = int(request.form["entryind"])
     try:
+        listid = request.form["listid"]
+        entryind = int(request.form["entryind"])
         the_list = Catalist.objects.get(listid=listid)
-    except DoesNotExist:
-        return "The list doesn't exist", 400
-    try:
         removed = the_list.contents.pop(entryind)
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
     except IndexError:
-        return "Entry index out of bounds", 400
+        raise InvalidAPIUsage("Entry index out of bounds")
     the_list.save()
     return 'OK'  # 200 OK
 
@@ -515,21 +624,25 @@ def kvp_delete():
         index: <the index of the kvp within the entry>
     }
     """
-    listid = request.form["listid"]
-    entryind = int(request.form["entryind"])
-    ind = int(request.form["index"])
     try:
-        the_list = Catalist.objects.get(listid=listid)
+        entryind = int(request.form["entryind"])
+        ind = int(request.form["index"])
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except KeyError, ValueError:
+        raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        return "The list doesn't exist", 400
+        raise InvalidAPIUsage("List does not exist")
+
     try:
         the_entry = the_list.contents[entryind]
     except IndexError:
         return "Entry index out of bounds"
+
     try:
         removed = the_entry.contents.pop(ind)
     except IndexError:
         return "KVP index out of bounds"
+
     the_list.save()
     return 'OK'  # 200 OK
 

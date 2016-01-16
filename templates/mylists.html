@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}
+My Lists
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/mylists.js') }}"></script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/mylists.css') }}">
+
+<p align="center"><h2><div id="link">{{ message }}</div></h2></p>
+
+<section id="wrapper">
+    <!--src of iframe will be edited in jquery later upon choosing a list to preview-->
+    <div class="listBlock">
+        <div class="blockTitle">LIVE PREVIEW</div>
+        <div class="scrollWrapper">
+            <iframe src={{urls[0]}} width = "100%" height = "200px"></iframe>
+        </div>
+    </div>
+    <div class="listBlock2">
+        <div class="blockTitle">LISTS</div>
+        <div class="listHead">
+            <div class="titles">Titles</div><div class="times">Last Modified</div>
+        </div>
+        <div class="scrollWrapper">
+        {% for i in range(n) %}
+        <div class="list">
+            <input type="hidden" value={{urls[i]}}>
+            <a href={{urls_actual[i]}}><div class="listTitle">{{titles[i]}}</div></a
+            ><div class="listTime">{{last_visited[i]}}</div
+        ></div>
+        {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
