@@ -22,7 +22,12 @@ $(document).ready(function()
 function previewLink()
 {
     var url = $(this).find("input").attr("value");
-    $(this).parent().parent().parent().parent().find("iframe").attr("src",url);
+    var preview = $(this).parent().parent().parent().parent().find("iframe");
+    // don't want the preview to keep flickering if same link
+    if($(preview).attr("src") !== url)
+    {
+        $(preview).attr("src",url);
+    }
 }
 function showToolbox()
 {
@@ -61,4 +66,30 @@ function hideToolbox()
 {
     var tools = $(this).find(".toolbox");
     tools.hide();
+}
+function deleteList(listid)
+{
+    // verify once more that the user is indeed the owner of the list
+    var isOwner = False;
+    $.ajax({
+        url: "/api/getpermissions",
+        method: 'POST',
+        data: {
+            listid: listid,
+        },
+        success: function(data, status, jqxhr){
+            isOwner = True;
+        }
+    })
+    $.ajax({
+        url: "/api/deletelist",
+        method: 'POST',
+        data: {
+            listid: listid,
+        },
+        success: function(data, status, jqxhr){
+            alert("You have deleted list " + listid);
+            location.reload(true); // reload from server not cache
+        }
+    })
 }

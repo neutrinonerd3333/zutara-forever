@@ -3,8 +3,7 @@
 #----------------------------------------------------------
 
 from __future__ import division, print_function
-from datetime import datetime
-from datetime import date
+from datetime import datetime, date, timedelta
 # from glob import glob
 
 import uuid as uuid_module
@@ -279,16 +278,16 @@ def userlists():
         permissions.append(query_cur_perm(list))
         titles.append(list.title)
 
-        c = list.created
+        today = datetime.utcnow()
         lv = list.last_visited
-
         # formatting last visited
-        if(lv.date() == date.today()):
-            lv = lv.strftime("%I:%M %p")
+        if(lv.day == today.day):
+            lv = str(today.hour - lv.hour) + " hours ago"
         else:
-            lv = lv.strftime("%I:%M %p, %x")
-        if lv[0:1] == "0":
-            lv = lv[1:]
+            # days since January 1
+            lv = lv.timetuple()
+            today = today.timetuple()
+            lv = str(today[7] - lv[7]) + " days ago"
 
         last_visited.append(lv)
         n += 1
@@ -307,7 +306,7 @@ def preview_list(listid):
         """
     the_list = Catalist.objects.get(listid=listid)
     # print(the_list.contents)  # for debug
-    print(the_list.title)  # for debug
+    # print(the_list.title)  # for debug
     return render_template('preview.html', listtitle=the_list.title,
                            entries=the_list.contents)
 
