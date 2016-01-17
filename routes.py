@@ -278,18 +278,29 @@ def userlists():
         permissions.append(query_cur_perm(list))
         titles.append(list.title)
 
-        today = datetime.utcnow()
-        lv = list.last_visited
+        today = datetime.utcnow().timetuple()
+        lv = list.last_visited.timetuple()
         # formatting last visited
-        if(lv.day == today.day):
-            lv = str(today.hour - lv.hour) + " hours ago"
+        if(lv[7]==today[7]): # same day
+            timeSince = today[3] - lv[3]
+            if(timeSince==0): # same hour
+                timeSince = today[4] - lv[4]
+                if timeSince==1:
+                    since = "1 minute ago"
+                else:
+                    since = str(timeSince) + " minutes ago"
+            elif (timeSince==1):
+                since = "1 hour ago"
+            else:
+                since = str(timeSince) + " hours ago"
         else:
             # days since January 1
-            lv = lv.timetuple()
-            today = today.timetuple()
-            lv = str(today[7] - lv[7]) + " days ago"
-
-        last_visited.append(lv)
+            timeSince = today[7] - lv[7]
+            if timeSince==1:
+                since = "1 day ago"
+            else:
+                since = str(timeSince) + " days ago"
+        last_visited.append(since)
         n += 1
 
     return render_template('mylists.html', n=n, titles=titles,
