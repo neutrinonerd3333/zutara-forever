@@ -2,33 +2,18 @@
 TO DO LIST FOR CATALIST
 =======================
 
-agenda Jan 14:
+agenda Jan 17:
 * fix some ui issues [long lists hit bottom of page, the list seems a bit too small]
 * make UI responsive? as in it should still look nice with a smaller window, different device, diff browser, etc.
 * [in progress] fully flesh out "My Lists"
     - human friendly relative timing?
         http://stackoverflow.com/questions/7641791/javascript-library-for-human-friendly-relative-date-formatting
-* start working on permissions
+* permissions UI
 * invite system for lists?
-* add an "about" page ... ?
-* add a "contact us" page so people can report bugs and stuff
 * database cleaning: lists that aren't used for a while should be removed; similar for users (how to handle references to deleted users?)
 * debug!
 * implement email notification of errors
     - see http://flask.pocoo.org/docs/0.10/errorhandling/#error-mails
-
-
-011216
-[I think this is done -txz] Properly format all the responses from server, on client side
-Get name of user instead of inserted_id
-That gray still bothers me: will eventually find an alternative
-Test out loadlist and related
-
-* * * * *
-DESIGN
-* * * * *
-
-Should we make .list a uniform, grayish color? (use a color picker to figure out the hex value of a nice part of the div)
 
 
 * * * * *
