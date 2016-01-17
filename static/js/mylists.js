@@ -20,7 +20,7 @@ $(document).ready(function()
 });
 function previewLink()
 {
-    var url = $(this).find("input").attr("value");
+    var url = $(this).first("input").next().attr("value");
     var preview = $(this).parent().parent().parent().parent().find("iframe");
     // don't want the preview to keep flickering if same link
     if($(preview).attr("src") !== url)
@@ -33,26 +33,27 @@ function showToolbox()
     var tools = $(this).find(".toolbox");
     tools.show();
     
-    var url = $(this).first("input[type='hidden']").val();
-    // cut out "/preview/"
-    listid = url.slice(9);
+    var url = $(this).find(".list input").val();
+    // cut out "/list/"
+    listid = url.slice(6);
+    
     var perm = $(tools).find("input[type='hidden']").val();
     // wipe out hidden input so don't have to keep repeating script
     if(perm != undefined)
     {
         if(perm==="own")
         {
-            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-view icon"></div> <div class="icon-edit icon"></div> <div class="icon-link icon"></div> <div class="icon-trash icon"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="view" type="text"> <input class="editors" id="edit" type="text"> <input class="editors" id="url" type="text"> <input class="editors" id="delete" type="text" placeholder="Type &quot;delete&quot; to delete list."> </div>');
+            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-view icon"></div> <div class="icon-edit icon"></div> <div class="icon-link icon"></div> <div class="icon-trash icon"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="view" type="text"> <input class="editors" id="edit" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <input class="editors" id="delete" type="text" placeholder="Type &quot;delete&quot; to delete list."> </div>');
             $(tools).css("height","11em");
         }
         else if(perm==="edit")
         {
-            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-link-2 icon"></div> </div> <div class="permissions"> <div class="line">You may edit and view this list.</div> <input class="editors" id="url" type="text"> </div>');
+            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-link-2 icon"></div> </div> <div class="permissions"> <div class="line">You may edit and view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
             $(tools).css("height","5em");
         }
         else if(perm==="view")
         {
-            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-link-2 icon"></div> </div> <div class="permissions"> <div class="line">You may view this list.</div> <input class="editors" id="url" type="text"> </div>');
+            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-link-2 icon"></div> </div> <div class="permissions"> <div class="line">You may view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
             $(tools).css("height","5em");
         }
     }
