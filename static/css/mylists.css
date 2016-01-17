@@ -34,6 +34,7 @@ body {height: calc(100% - 2em);}
     left: 50%;
     right: 20%;
     border-radius: 0 20px 0 0;
+    overflow: hidden;
 }
 .blockTitle {
     position: absolute;
@@ -153,17 +154,17 @@ iframe {
 }
 .toolbox .permissions {
     width: calc(100% - 5em);
-    height: 2em;
-    display: block;
+    height: 1.5em; /* top padding */
     position: relative;
-    border: solid #000;
     left: 3em;
     top: -1.4em;
-
-    background-color: #fff;
-    color: #666; 
-    font-size: 16px;
+    display: block;
+    
     border: 0;
     outline: none;
-    padding: 0 .5em;
+    padding: .5em .5em 0;
+    
+    color: #666;
+    font-size: 16px;
+    text-align: left;
 }

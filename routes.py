@@ -270,11 +270,13 @@ def userlists():
     urls_actual = []
     titles = []
     last_visited = []
+    permissions = []
 
     for list in lists:
         # urls.append("/list/" + list.listid)
         urls.append("/preview/" + list.listid)
         urls_actual.append("/list/" + list.listid)
+        permissions.append(query_cur_perm(list))
         titles.append(list.title)
 
         c = list.created
@@ -293,7 +295,8 @@ def userlists():
 
     return render_template('mylists.html', n=n, titles=titles,
                            last_visited=last_visited, urls=urls,
-                           urls_actual=urls_actual)
+                           urls_actual=urls_actual,
+                           permissions=permissions)
 
 
 @app.route("/preview/<listid>", methods=['GET'])

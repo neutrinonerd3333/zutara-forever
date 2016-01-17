@@ -29,30 +29,36 @@ function showToolbox()
     var tools = $(this).find(".toolbox");
     tools.show();
     
-    var url = $(this).find("input[type='hidden']").val();
+    var url = $(this).first("input[type='hidden']").val();
     var listid = url.slice(9);
-    var perm = getPermissions(listid);
-    console.log(perm);
+    var perm = $(tools).find("input[type='hidden']").val();
+    // wipe out hidden input so don't have to keep repeating script
+    if(perm != undefined)
+    {
+        console.log(perm);
+
+        var permBox = $(tools).find(".permissions");
+        if(perm==="own")
+        {
+            $(tools).css("height","8em");
+            $(permBox).css("height","6em");
+            $(permBox).html("You are the owner of this list.");
+        }
+        else if(perm==="edit")
+        {
+            $(permBox).html("You may view and edit this list.");
+            $(tools).css("height","8em");
+            $(permBox).css("height","6em");
+            $(permBox).html("You are the owner of this list.<br>Add editor.<br>Add viewer.<br>Delete list.");
+        }
+        else if(perm==="view")
+        {
+            $(permBox).html("You may view this list.");
+        }
+    }
 }
 function hideToolbox()
 {
     var tools = $(this).find(".toolbox");
     tools.hide();
-}
-function displayPermissions()
-{
-    var permBox = $(".permissions")
-}
-function getPermissions(listid)
-{
-    $.ajax({
-        url: "/api/getpermissions",
-        method: 'POST',
-        data: {
-            listid: listid,
-        },
-        success: function(data, status, jqxhr){
-            console.log(data)
-        }
-    })
 }
