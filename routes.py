@@ -83,7 +83,6 @@ class CatalistKVP(db.EmbeddedDocument):
 
 class CatalistEntry(db.EmbeddedDocument):
     """ A class for the entries in our Catalists """
-    # entryid = db.StringField(max_length=40, unique=True)
     title = db.StringField(max_length=entry_title_max_len, default="")
     contents = db.EmbeddedDocumentListField(CatalistKVP, default=[])
     score = db.IntField(default=0)
@@ -97,11 +96,8 @@ class Catalist(db.Document):
     title = db.StringField(max_length=list_title_max_len,
                            default="untitled list")
     created = db.DateTimeField(required=True)  # when list was created
-
-    # delete lists that haven't been visited for a long time
+    creator = db.StringField(max_length=40)
     last_visited = db.DateTimeField(required=True)
-
-    # keys = db.ListField(db.StringField(max_length=20))
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
     # PERMISSIONS
@@ -111,16 +107,11 @@ class Catalist(db.Document):
     public_level = db.StringField(choices=["edit", "view", "none"],
                                   default="edit")
 
-    # people with owner permission (i.e. can modify list permissions)
+    # people with own/edit/view permission
     owners = db.ListField(db.ReferenceField(User))
-
-    # people with edit permission
     editors = db.ListField(db.ReferenceField(User))
-
-    # people with view permission
     viewers = db.ListField(db.ReferenceField(User))
 
-    creator = db.StringField(max_length=40)
 
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
@@ -131,8 +122,18 @@ security = Security(app, user_datastore)
 # Permissions
 # ----------------------------------------------------------
 
-
+#: A list of all permission levels, from lowest to highest.
+#: The levels:
+#:
+#: 1. none  -- no permission
+#: 2. view  -- permission to view a list
+#: 3. edit  -- permission to edit a list
+#: 4. own   -- permission to change permission for a list
+#: 5. admin -- can do anything
 perm_list = ["none", "view", "edit", "own", "admin"]
+
+#: Currently admins are determined by residency on this list.
+#: Hacky, I know. .__.
 admin_unames = ['rmwu', 'txz']
 
 
@@ -432,37 +433,6 @@ def make_list():
 
     new_list.save()
     return jsonify(listid=list_id)
-
-
-# DEV NOTE: maybe make this a regular route, not AJAX
-# @app.route("/api/savelist", methods=['POST'])
-# def list_save():
-#     """
-#     For saving an entire list.
-
-#     usage:
-#     {
-#         title: <thetitle>,
-#         contents: [
-#             *[title, [*[attrname, attrval]]]
-#         ]
-#     }
-#     """
-#     list_title = request.form["title"]
-#     list_contents = request.form["contents[]"]
-#     formatted_list_contents = []
-#     for entry in list_contents:
-#         temp = CatalistEntry(title=entry[0])
-#         keys = [], kvps = []
-#         for index, (k, v) in enumerate(entry[1]):
-#             keys.append(key)
-#             kvps.append(CatalistKVP(kvpid=hash(list_title + str(index)),
-#                                     key=k, value=v))
-#         temp.contents = kvps
-#         formatted_list_contents.append(temp)
-#     newlist = Catalist(title=list_title, contents=formatted_list_contents)
-#     newlist.save()
-#     return redirect("/list/" + str(newlist.id), code=302)
 
 
 @app.route("/api/savekey", methods=['POST'])
