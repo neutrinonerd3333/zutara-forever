@@ -10,7 +10,7 @@ if (n === 0) {
 
 $(document).ready(function()
 {
-    $(".list").one("mouseenter", welcome);
+    //$(".list").one("mouseenter", welcome);
     
     // creates list on first serious attempt at making a list
     // $(".list").one("focusout", ifNoListMakeOne);
@@ -147,25 +147,7 @@ $(document).ready(function()
         }  
     });
     // clicking heart will add a vote to the item (or remove it if existing)
-    $(".list").on("click", ".icon-heart", function(){
-        alert("You clicked the heart!");
-        $(this).css("background-position","-10.5em 0");
-        var item = $(this).closest(".listItem");
-        var eind = $(".list .listItem").index(item);
-        console.log(eind);
-        $.ajax({
-            url: "/api/vote",
-            method: 'POST',
-            data: {
-                listid: listid,
-                entryind: eind,
-                vote: 1
-            },
-            success: function(data, status, jqxhr){
-                console.log("Current score is " + data.score);
-            }
-        });
-    });
+    $(".list").on("click", ".icon-heart", addVote);
     
     // clicking minus will delete the current key-value pair
     $(".list").on("click", ".icon-minus", function(){
@@ -258,6 +240,27 @@ function saveKeyOrValue(that, toSave){
             // console.log(toSave + " " + newval + " saved to position " + ind) // for debug
         }
     })
+}
+
+function addVote(){
+    alert("You clicked the heart!");
+        
+        var item = $(this).closest(".listItem");
+        var eind = $(".list .listItem").index(item);
+        console.log(eind);
+        $.ajax({
+            url: "/api/vote",
+            method: 'POST',
+            data: {
+                listid: listid,
+                entryind: eind,
+                vote: 1
+            },
+            success: function(data, status, jqxhr){
+                $(this).css("background-position","-10.5em 0");
+                console.log("Current score is " + data.score);
+            }
+        });
 }
 
 function deleteItem(){
