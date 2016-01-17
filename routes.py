@@ -265,6 +265,33 @@ def getlist(listid):
                            entries=the_list.contents, message=msg)
 
 
+def human_readable_time_since(tiem):
+    """ Give a human-readable representation of time elapsed since *tiem* """
+    today = datetime.utcnow().timetuple()
+    lv = tiem.timetuple()
+    # formatting last visited
+    if(lv[7] == today[7]):  # same day
+        timeSince = today[3] - lv[3]
+        if(timeSince == 0):  # same hour
+            timeSince = today[4] - lv[4]
+            if timeSince == 1:
+                since = "1 minute ago"
+            else:
+                since = str(timeSince) + " minutes ago"
+        elif (timeSince == 1):
+            since = "1 hour ago"
+        else:
+            since = str(timeSince) + " hours ago"
+    else:
+        # days since January 1
+        timeSince = today[7] - lv[7]
+        if timeSince == 1:
+            since = "1 day ago"
+        else:
+            since = str(timeSince) + " days ago"
+    return since
+
+
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
@@ -281,46 +308,14 @@ def userlists():
 
     lists = lists.order_by('-last_visited').all()
 
-    n = 0
-    urls = []
-    urls_actual = []
-    titles = []
-    last_visited = []
-    permissions = []
+    urls = ["/preview/" + catalist.listid for catalist in lists]
+    urls_actual = ["/list/" + catalist.listid for catalist in lists]
+    titles = [catalist.title for catalist in lists]
+    last_visited = [human_readable_time_since(catalist.last_visited)
+                    for catalist in lists]
+    permissions = [query_cur_perm(catalist) for catalist in lists]
 
-    for catalist in lists:
-        # urls.append("/list/" + list.listid)
-        urls.append("/preview/" + catalist.listid)
-        urls_actual.append("/list/" + catalist.listid)
-        permissions.append(query_cur_perm(catalist))
-        titles.append(catalist.title)
-
-        today = datetime.utcnow().timetuple()
-        lv = catalist.last_visited.timetuple()
-        # formatting last visited
-        if(lv[7] == today[7]):  # same day
-            timeSince = today[3] - lv[3]
-            if(timeSince == 0):  # same hour
-                timeSince = today[4] - lv[4]
-                if timeSince == 1:
-                    since = "1 minute ago"
-                else:
-                    since = str(timeSince) + " minutes ago"
-            elif (timeSince == 1):
-                since = "1 hour ago"
-            else:
-                since = str(timeSince) + " hours ago"
-        else:
-            # days since January 1
-            timeSince = today[7] - lv[7]
-            if timeSince == 1:
-                since = "1 day ago"
-            else:
-                since = str(timeSince) + " days ago"
-        last_visited.append(since)
-        n += 1
-
-    return render_template('mylists.html', n=n, titles=titles,
+    return render_template('mylists.html', n=len(lists), titles=titles,
                            last_visited=last_visited, urls=urls,
                            urls_actual=urls_actual,
                            permissions=permissions)
