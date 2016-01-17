@@ -14,6 +14,7 @@ agenda Jan 17:
 * debug!
 * implement email notification of errors
     - see http://flask.pocoo.org/docs/0.10/errorhandling/#error-mails
+* resolve concurrency issues (should we make list editing a mutex operation? how to prevent deadlock?)
 
 
 * * * * *
