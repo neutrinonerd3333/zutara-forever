@@ -20,7 +20,7 @@ $(document).ready(function()
 });
 function previewLink()
 {
-    var url = $(this).first("input").next().attr("value");
+    var url = $(this).find("input").next().attr("value");
     var preview = $(this).parent().parent().parent().parent().find("iframe");
     // don't want the preview to keep flickering if same link
     if($(preview).attr("src") !== url)
@@ -38,6 +38,8 @@ function showToolbox()
     listid = url.slice(6);
     
     var perm = $(tools).find("input[type='hidden']").val();
+    console.log(perm);
+    
     // wipe out hidden input so don't have to keep repeating script
     if(perm != undefined)
     {

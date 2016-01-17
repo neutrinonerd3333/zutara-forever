@@ -61,11 +61,21 @@ h3, h3 a {
     text-align: center;
     color: hsl(200, 100%, 95%);
     letter-spacing: 0.35px;
+    display: inline-block;
 }
 h3 a {
     font-weight: normal;
 }
-
+.errorContainer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+    width: auto;
+    text-align: center;
+}
 #link {
     margin-bottom: -2em;
     text-align: center;
@@ -77,7 +87,6 @@ a {
 a:hover {
     color: #fff;
 }
-
 .textcontainer {
     /* basically a rehash of .list from list.css */
     position: absolute;

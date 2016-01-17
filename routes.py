@@ -191,7 +191,8 @@ def signup():
     except:
         return render_template('error.html')  # DNE yet
 
-    return render_template('home.html')
+    return render_template('./security/login_user.html',
+            message="You have successfully signed up! Please login now.")
 
 
 @app.route("/signin", methods=['POST'])
@@ -255,14 +256,14 @@ def getlist(listid):
 def userlists():
     current_user = flask_security.core.current_user
     lists = Catalist.objects(creator=current_user.uid).only(
-        'listid', 'title', 'created', 'last_visited').all()
+        'listid', 'title', 'last_visited').all()
     if lists.first() is None:
         return render_template(
             'home.html',
             message="Oops! You have no lists saved! " +
                     "Would you like to create one?")
 
-    lists = lists.order_by('last_visited').all()
+    lists = lists.order_by('-last_visited').all()
 
     n = 0
     urls = []
@@ -271,15 +272,15 @@ def userlists():
     last_visited = []
     permissions = []
 
-    for list in lists:
+    for catalist in lists:
         # urls.append("/list/" + list.listid)
-        urls.append("/preview/" + list.listid)
-        urls_actual.append("/list/" + list.listid)
-        permissions.append(query_cur_perm(list))
-        titles.append(list.title)
+        urls.append("/preview/" + catalist.listid)
+        urls_actual.append("/list/" + catalist.listid)
+        permissions.append(query_cur_perm(catalist))
+        titles.append(catalist.title)
 
         today = datetime.utcnow().timetuple()
-        lv = list.last_visited.timetuple()
+        lv = catalist.last_visited.timetuple()
         # formatting last visited
         if(lv[7]==today[7]): # same day
             timeSince = today[3] - lv[3]
