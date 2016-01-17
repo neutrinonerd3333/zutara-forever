@@ -709,15 +709,26 @@ def vote():
     usage: POST the following
     {
         listid: <listid>,
-        entryid: <entryid>,
+        entryind: <entryind>,
         userid: <userid>,
         vote: {1 (upvote) | 0 (no vote) |
                -1 (downvote) | 100 (get the current vote)}
     }
+
+    returns:
+    if vote == 100 {
+        current_vote: <the user's current vote>,
+        score: <the entry's current score>
+    }
+    if vote != 100 {
+        current_vote: <the vote just made>,
+        score: <the entry's new score>
+    }
     """
+
     listid = request.form["listid"]
-    entryid = int(request.form["entryid"])
-    print(entryid)
+    entryind = int(request.form["entryind"])
+    print(entryind)
     # uid = request.form["userid"]
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
@@ -725,17 +736,18 @@ def vote():
     else:
         uid = current_user.uid
     vote_val = int(request.form["vote"])
-    the_user = User.objects(uid=uid)
+    if vote_val not in (-1, 0, 1, 100):
+        raise InvalidAPIUsage("Invalid vote value")
+    the_user = User.objects.get(uid=uid)
 
     the_list = Catalist.objects.get(listid=listid)
 
     # pad the_list.contents if index eind out of bounds
-    pad_len = entryid - len(the_list.contents) + 1
-    if pad_len > 0:
-        the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
-    the_entry = the_list.contents[entryid]
+    pad_len = entryind - len(the_list.contents) + 1
+    the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
+    the_entry = the_list.contents[entryind]
 
-    curscore = the_entry.score
+    curscore = getattr(the_entry, "score", 0)
 
     if cmp_permission(query_cur_perm(the_list), "view") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
@@ -747,11 +759,11 @@ def vote():
     if the_user in the_entry.upvoters:
         cur_vote = 1
         if vote_val in (-1, 0, 1):
-            the_entry.update_one(pull__upvoters=the_user)
+            the_entry.upvoters.remove(the_user)
     elif the_user in the_entry.downvoters:
         cur_vote = -1
         if vote_val in (-1, 0, 1):
-            the_entry.update_one(pull__downvoters=the_user)
+            the_entry.downvoters.remove(the_user)
 
     # do we only want to look up some values?
     # TODO maybe change this to NaN instead of 100?
@@ -760,13 +772,13 @@ def vote():
 
     # stick the user in the correct list
     if vote_val == 1:
-        the_entry.update_one(push__upvoters=the_user)
+        the_entry.upvoters.append(the_user)
     elif vote_val == -1:
-        the_entry.update_one(push__downvoters=the_user)
+        the_entry.downvoters.append(the_user)
 
     # update the score in the database
     the_entry.score += (vote_val - cur_vote)
-    the_entry.save()
+    the_list.save()
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
 
@@ -822,6 +834,7 @@ def permissions_set():
 
     # save the list
     the_list.save()
+    return "OK"  # 200 OK
 
 
 @app.route("/api/getpermissions", methods=['POST'])

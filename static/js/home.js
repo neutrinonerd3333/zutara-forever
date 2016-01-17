@@ -158,11 +158,11 @@ $(document).ready(function()
             method: 'POST',
             data: {
                 listid: listid,
-                entryid: eind,
+                entryind: eind,
                 vote: 1
             },
             success: function(data, status, jqxhr){
-                console.log("Current score is " + score);
+                console.log("Current score is " + data.score);
             }
         });
     });
