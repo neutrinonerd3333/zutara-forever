@@ -131,7 +131,7 @@ security = Security(app, user_datastore)
 # Permissions
 # ----------------------------------------------------------
 
-# the set of permissions we have
+
 perm_list = ["none", "view", "edit", "own", "admin"]
 admin_unames = ['rmwu', 'txz']
 
@@ -146,6 +146,10 @@ def query_permission(user, catalist):
     Gives the permission level a user has for a list.
     "None" represents an anonymous user.
     """
+    # handle anonymous users
+    if user.is_anonymous:
+        return catalist.public_level
+
     if user.uid in admin_unames:
         return "admin"
     elif user in catalist.owners:
@@ -251,12 +255,11 @@ def register():
 
 @app.route("/list/<listid>", methods=['GET'])
 def getlist(listid):
-    """
-    Fetch the list with given listid from our database,
-    display with template
-    """
+    """ Display a list with given listid from our database. """
     url = request.base_url
     the_list = Catalist.objects.get(listid=listid)
+    if cmp_permission(query_cur_perm(the_list), "view") < 0:
+        abort(403)
     msg = 'Access or share this list at<br><a href="{0}">{0}</a>'.format(url)
     return render_template('loadlist.html', listtitle=the_list.title,
                            entries=the_list.contents, message=msg)
@@ -265,6 +268,8 @@ def getlist(listid):
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
+    """ A page displaying all lists belonging to the user. """
+
     current_user = flask_security.core.current_user
     lists = Catalist.objects(creator=current_user.uid).only(
         'listid', 'title', 'last_visited').all()
@@ -324,12 +329,12 @@ def userlists():
 @app.route("/preview/<listid>", methods=['GET'])
 def preview_list(listid):
     """
-        Fetch the list with given listid from our database,
-        display with template
-        """
+    Fetch the list with given listid from our database,
+    display with template
+    """
     the_list = Catalist.objects.get(listid=listid)
-    # print(the_list.contents)  # for debug
-    # print(the_list.title)  # for debug
+    if cmp_permission(query_cur_perm(the_list), "view") < 0:
+        abort(403)
     return render_template('preview.html', listtitle=the_list.title,
                            entries=the_list.contents)
 
@@ -585,7 +590,7 @@ def entry_title_save():
     the_entry = the_list.contents[eind]
     the_entry.title = val
     the_list.save()
-    return jsonify()  # 200 OK ^_^
+    return "OK"  # 200 OK ^_^
 
 
 @app.route("/api/savelisttitle", methods=['POST'])
