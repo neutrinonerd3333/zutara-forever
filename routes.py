@@ -820,7 +820,7 @@ def permissions_get():
         listid: <the listid>
     }
     """
-    catalist = Catalist.objects.get(listid = request.form["listid"])
+    catalist = Catalist.objects.get(listid=request.form["listid"])
     return query_cur_perm(catalist)
 
 
