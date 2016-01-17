@@ -101,7 +101,6 @@ class Catalist(db.Document):
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
     # PERMISSIONS
-    # hierarchy: admin/own/edit/view/none
 
     # the permission the public has with the list
     public_level = db.StringField(choices=["edit", "view", "none"],
@@ -267,7 +266,11 @@ def getlist(listid):
 
 
 def human_readable_time_since(tiem):
-    """ Give a human-readable representation of time elapsed since *tiem* """
+    """
+    Give a human-readable representation of time elapsed since a given time
+
+    :param tiem: a :attr:`datetime` object representing the given time.
+    """
     today = datetime.utcnow().timetuple()
     lv = tiem.timetuple()
     # formatting last visited
@@ -381,9 +384,12 @@ def internal_server_error(e):
     return render_template('500.html'), 500
 
 
-# shamelessly pillaged from Flask docs
-# http://flask.pocoo.org/docs/0.10/patterns/apierrors/
 class InvalidAPIUsage(Exception):
+    """
+    A class for exceptions to raise in invalid API usage.
+    Shamelessly pillaged from `Flask's documentation
+    <http://flask.pocoo.org/docs/0.10/patterns/apierrors/>`_
+    """
     status_code = 400
 
     def __init__(self, message, status_code=None, payload=None):
@@ -438,7 +444,7 @@ def make_list():
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
     """
-    Save a key. Requires >=edit permission.
+    Save a key. Requires at least edit permission.
 
     POST a JS associative array (basically a dict) like so:
     {
@@ -449,14 +455,13 @@ def key_save():
     }
     """
 
-    # necessary only for option ONLY (see later)
     try:
         eind = int(request.form["entryind"])
         val = request.form["newvalue"][:key_max_len]
         ind = int(request.form["index"])
         lid = request.form["listid"]
         the_list = Catalist.objects.get(listid=lid)
-    except KeyError:
+    except KeyError, ValueError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
@@ -493,7 +498,7 @@ def key_save():
 def value_save():
     """
     Save the value in a particular key-value pair. Requires
-    >= edit permission
+    at least edit permission.
 
     The API is virtually identical the that of key_save()
     """
@@ -503,7 +508,7 @@ def value_save():
         ind = int(request.form["index"])
         lid = request.form["listid"]
         the_list = Catalist.objects.get(listid=lid)
-    except KeyError:
+    except KeyError, ValueError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
@@ -527,7 +532,7 @@ def value_save():
 @app.route("/api/saveentrytitle", methods=['POST'])
 def entry_title_save():
     """
-    AJAXily save the title of an entry. requires >= edit permission
+    AJAXily save the title of an entry. Requires at least edit permission
 
     usage: POST a JS associative array (basically a dict) like so:
     {
@@ -562,7 +567,7 @@ def entry_title_save():
 def list_title_save():
     """
     AJAXily save the title of a Catalist ^_^
-    requires >= edit permission
+    Requires at least edit permission.
 
     usage: POST a JS assoc array like so:
     {
@@ -589,7 +594,7 @@ def list_title_save():
 @app.route("/api/deletelist", methods=['POST'])
 def list_delete():
     """
-    Delete a Catalist. Requires >= own permission
+    Delete a Catalist. Requires at least own permission
 
     usage: POST a JSON associative array as follows:
     {
@@ -612,7 +617,7 @@ def list_delete():
 @app.route("/api/deleteentry", methods=['POST'])
 def entry_delete():
     """
-    Delete an entry from a Catalist. Requires >= edit permission
+    Delete an entry from a Catalist. Requires at least edit permission.
 
     usage: POST a JSON associative array as follows:
     {
@@ -641,7 +646,7 @@ def entry_delete():
 def kvp_delete():
     """
     Delete a key-value pair from a Catalist entry.
-    Requires >= edit permission
+    Requires at least edit permission.
 
     usage: POST a JSON associative array as follows:
     {
@@ -680,9 +685,9 @@ def kvp_delete():
 def vote():
     """
     Two options:
-    1) Update the database to incorporate a user's vote on an entry.
-    2) Find the user's current vote and the current score of the entry.
-    Requires >= view permission
+    1. Update the database to incorporate a user's vote on an entry.
+    2. Find the user's current vote and the current score of the entry.
+    Requires at least view permission
 
     usage: POST the following
     {
@@ -693,7 +698,7 @@ def vote():
                -1 (downvote) | 100 (get the current vote)}
     }
 
-    returns:
+    :return: a response with the following forms:
     if vote == 100 {
         current_vote: <the user's current vote>,
         score: <the entry's current score>
@@ -765,7 +770,7 @@ def vote():
 def permissions_set():
     """
     {
-        Set permissions for a user. Requires >= own permission
+        Set permissions for a user. Requires at least own permission
 
         listid: <listid>,
         target: <username of user to set perms with>,
