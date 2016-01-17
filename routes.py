@@ -65,8 +65,13 @@ class User(db.Document, UserMixin):
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
 
+# maximum lengths
 key_max_len = 32
 val_max_len = 1024
+entry_title_max_len = 128
+list_title_max_len = 128
+
+
 class CatalistKVP(db.EmbeddedDocument):
     """ A class for individual key-value pairs in our Catalist entries """
     # id is implicit in mongoengine, but we want to
@@ -76,7 +81,6 @@ class CatalistKVP(db.EmbeddedDocument):
     value = db.StringField(max_length=val_max_len, default="")
 
 
-entry_title_max_len = 128
 class CatalistEntry(db.EmbeddedDocument):
     """ A class for the entries in our Catalists """
     # entryid = db.StringField(max_length=40, unique=True)
@@ -87,7 +91,6 @@ class CatalistEntry(db.EmbeddedDocument):
     downvoters = db.ListField(db.ReferenceField(User), default=[])
 
 
-list_title_max_len = 128
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
     listid = db.StringField(max_length=40, unique=True)
@@ -151,6 +154,7 @@ def query_permission(user, catalist):
 
 
 def query_cur_perm(catalist):
+    """ Finds the permission the current user has for list *catalist* """
     return query_permission(flask_security.core.current_user, catalist)
 
 
@@ -825,13 +829,18 @@ def permissions_get():
     """
     Get the permission level a user has for a particular list.
 
-    POST the following:
+    usage: POST the following:
     {
         listid: <the listid>
     }
+
+    returns:
+    {
+        permission: <the current permission>
+    }
     """
     catalist = Catalist.objects.get(listid=request.form["listid"])
-    return query_cur_perm(catalist)
+    return jsonify(permission=query_cur_perm(catalist))
 
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
