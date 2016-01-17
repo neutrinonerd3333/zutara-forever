@@ -1,6 +1,6 @@
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Module Imports
-#----------------------------------------------------------
+# ----------------------------------------------------------
 
 from __future__ import division, print_function
 from datetime import datetime, date, timedelta
@@ -18,9 +18,9 @@ import flask.ext.security as flask_security
 
 import json
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Flask Configuration
-#----------------------------------------------------------
+# ----------------------------------------------------------
 
 app = Flask(__name__)
 
@@ -38,9 +38,9 @@ HOSTNAME = '0.0.0.0:6005'
 db = MongoEngine(app)
 mongo = PyMongo(app)
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Flask-Security and MongoEngine Setup
-#----------------------------------------------------------
+# ----------------------------------------------------------
 
 
 class Role(db.Document, RoleMixin):
@@ -127,14 +127,20 @@ user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
 
+# ----------------------------------------------------------
 # Permissions
+# ----------------------------------------------------------
+
+# the set of permissions we have
 perm_list = ["none", "view", "edit", "own", "admin"]
+admin_unames = ['rmwu', 'txz']
+
+
 def cmp_permission(perm1, perm2):
     """ Return a positive/0/negative integer when perm1 >/=/< perm2 """
     return perm_list.index(perm1) - perm_list.index(perm2)
 
 
-admin_unames = ['rmwu', 'txz']
 def query_permission(user, catalist):
     """
     Gives the permission level a user has for a list.
@@ -158,9 +164,9 @@ def query_cur_perm(catalist):
     return query_permission(flask_security.core.current_user, catalist)
 
 
-#----------------------------------------------------
+# ----------------------------------------------------------
 # User Interaction Section
-#----------------------------------------------------
+# ----------------------------------------------------------
 
 
 @app.route("/signup", methods=['POST'])
@@ -196,7 +202,8 @@ def signup():
         return render_template('error.html')  # DNE yet
 
     return render_template('./security/login_user.html',
-            message="You have successfully signed up! Please login now.")
+                           message="You have successfully signed up! " +
+                                   "Please login now.")
 
 
 @app.route("/signin", methods=['POST'])
@@ -286,22 +293,22 @@ def userlists():
         today = datetime.utcnow().timetuple()
         lv = catalist.last_visited.timetuple()
         # formatting last visited
-        if(lv[7]==today[7]): # same day
+        if(lv[7] == today[7]):  # same day
             timeSince = today[3] - lv[3]
-            if(timeSince==0): # same hour
+            if(timeSince == 0):  # same hour
                 timeSince = today[4] - lv[4]
-                if timeSince==1:
+                if timeSince == 1:
                     since = "1 minute ago"
                 else:
                     since = str(timeSince) + " minutes ago"
-            elif (timeSince==1):
+            elif (timeSince == 1):
                 since = "1 hour ago"
             else:
                 since = str(timeSince) + " hours ago"
         else:
             # days since January 1
             timeSince = today[7] - lv[7]
-            if timeSince==1:
+            if timeSince == 1:
                 since = "1 day ago"
             else:
                 since = str(timeSince) + " days ago"
@@ -348,9 +355,9 @@ def index():
     """ Our homepage! """
     return render_template('home.html')
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Error Handlers
-#----------------------------------------------------------
+# ----------------------------------------------------------
 
 
 @app.errorhandler(403)
@@ -397,9 +404,9 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # THE API!!!
-#----------------------------------------------------------
+# ----------------------------------------------------------
 
 
 @app.route("/api/makelist", methods=['GET'])
@@ -860,6 +867,7 @@ def permissions_get():
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
 
+
 @app.route("/api/autocomplete", methods=['POST'])
 def autocomplete():
     """
@@ -877,8 +885,8 @@ def autocomplete():
     response = jsonify(completions=completions)
     return response
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Start Application
-#----------------------------------------------------------
+# ----------------------------------------------------------
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=6005, debug=True)
