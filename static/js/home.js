@@ -55,8 +55,18 @@ $(document).ready(function() {
 
     // upon clicking the last item attribute, a new item
     // attribute entry will be automatically added to the bottom
-    // of the list
-    $(".list").on("click", ".lastAttribute", addAttribute);
+    // of the list    
+    $(".list").on('focusin', ".attribute * input", function() {
+        var curAttribute = $(this).closest(".attribute");
+        // starts at 0 cuz nothing else in attributes
+        var attrInd = $(curAttribute).index() + 1;
+        var totalItems = $(this).closest(".listItem").find(".attribute").length;
+        
+        if(totalItems===attrInd)
+        {
+            addAttribute(curAttribute);
+        }
+    });
 
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes
@@ -65,7 +75,8 @@ $(document).ready(function() {
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
         if (isArrowUp($(this))) {
-            $(this).next(".attributes").slideUp(500);
+            var attrs = $(this).next(".attributes");
+            $(attrs).slideUp(500);
             $(this).css("background-position", "0 0");
             $(this).prev(".itemTitle").find("input").css("border-radius", "20px");
 
@@ -73,10 +84,10 @@ $(document).ready(function() {
             // if more than one entry, check if any are empty
             if (nums > 1) {
                 // find attributes following arrow img
-                var atts = $(this).next(".attributes").find(".attribute");
+                var atts = $(attrs).find(".attribute");
                 // find the input fields under the key and value divs
-                var keys = $(this).next(".attributes").find(".key :input");
-                var vals = $(this).next(".attributes").find(".value :input");
+                var keys = $(attrs).find(".key :input");
+                var vals = $(attrs).find(".value :input");
 
                 for (var i = atts.length - 1; i >= 0; i--) {
                     // get values of each attribute
@@ -87,6 +98,8 @@ $(document).ready(function() {
                         $(atts[i]).remove();
                     }
                 }
+                var newLength = $(attrs).find(".attribute").length;
+                if(newLength===0) { appendAttribute(attrs); }
             }
         }
         // if currently down arrow, click should show attributes and switch
@@ -219,19 +232,21 @@ function isLastItem() {
     var curListItem = $(this).closest(".listItem");
     var totalItems = $(this).closest(".list").find(".listItem").length;
     var itemInd = $(curListItem).index(); // this starts at 1
-    console.log(itemInd);
-    console.log(totalItems);
-    console.log(totalItems===itemInd);
     return totalItems===itemInd;
 }
 
 function addItem(curListItem) {
-    $(curListItem).after("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
+    $(curListItem).after("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
     resize();
 }
 
-function addAttribute() {
-    $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+function addAttribute(curAttribute) {
+    $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+    resize();
+}
+
+function appendAttribute(parentElement) {
+    $(parentElement).append("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
     resize();
 }
 
@@ -270,7 +285,6 @@ function addVote() {
 
     var item = $(this).closest(".listItem");
     var eind = $(".list .listItem").index(item);
-    console.log(eind);
     $.ajax({
         url: "/api/vote",
         method: 'POST',
