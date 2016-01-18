@@ -417,11 +417,10 @@ def handle_invalid_usage(error):
 # ----------------------------------------------------------
 
 
-@app.route("/api/makelist", methods=['GET'])
-def make_list():
-    """
-    Upon making the first edit, an empty list will be
-    created for the insertion of more data
+def create_list():
+    """ Create a new list and return the assigned listid
+
+    Returns: the assigned listid
     """
     list_id = str(uuid_module.uuid4())
     title = ""
@@ -439,8 +438,54 @@ def make_list():
         new_list.owners.append(user)
 
     new_list.save()
+    return list_id
+
+
+@app.route("/api/makelist", methods=['GET'])
+def make_list():
+    """
+    Upon making the first edit, an empty list will be
+    created for the insertion of more data
+    """
+    list_id = create_list()
     return jsonify(listid=list_id)
 
+
+@app.route("/api/savelist", methods=['POST'])
+def list_save():
+    """
+    For saving an entire list.
+
+    usage:
+    {
+        title: <thetitle>,
+        contents: [
+            *[title, [*[attrname, attrval]]]
+        ]
+        (optionally) , listid: <the lstid to save to>
+    }
+
+    Returns: the given or assigned listid
+    """
+    the_listid = request.form.get("listid", create_list())
+    the_list = Catalist.objects.get(listid=the_listid)
+
+    list_title = request.form["title"]
+    list_contents = request.form["contents"]
+
+    # pad list_contents, modify titles as necessary
+    # for each entry, pad contents, modify as necessary
+
+    for entry in list_contents:
+        temp = CatalistEntry(title=entry[0])
+        keys = [], kvps = []
+        for index, (k, v) in enumerate(entry[1]):
+            keys.append(key)
+            kvps.append(CatalistKVP(key=k, value=v))
+        temp.contents = kvps
+
+    newlist.save()
+    return jsonify(listid=listid)
 
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
