@@ -120,40 +120,38 @@ $(document).ready(function() {
     $(".list").on("click", ".icon-minus", function() {
         var item = $(this).closest(".listItem");
         
-        var curAttribute = $(this).closest(".attribute");
-        // starts at 0 cuz nothing else in attributes
-        var attrInd = $(curAttribute).index() + 1;
         var totalItems = $(this).closest(".listItem").find(".attribute").length;
-        
-        if(totalItems===attrInd) {
-            $("#link").html("Oops! you can't delete the last attribute!");
-            return;
+        if(totalItems > 1)
+        {
+            var eind = $(".list .listItem").index(item);
+            var siblings = $(this).closest(".attributes").children(".attribute");
+            var kvpind = siblings.index($(this).closest(".attribute"));
+
+            // delete from database
+            $.ajax({
+                url: "/api/deletekvp",
+                method: 'POST',
+                data: {
+                    listid: listid,
+                    entryind: eind,
+                    index: kvpind
+                },
+                success: function(data, status, jqxhr) {
+                    // console.log("deleted kvp at entry " + eind + " index " + kvpind);
+                }
+            });
+
+            $(this).closest(".attribute").remove();
         }
-        
-        var eind = $(".list .listItem").index(item);
-        var siblings = $(this).closest(".attributes").children(".attribute");
-        var kvpind = siblings.index($(this).closest(".attribute"));
-
-        // delete from database
-        $.ajax({
-            url: "/api/deletekvp",
-            method: 'POST',
-            data: {
-                listid: listid,
-                entryind: eind,
-                index: kvpind
-            },
-            success: function(data, status, jqxhr) {
-                // console.log("deleted kvp at entry " + eind + " index " + kvpind);
-            }
-        });
-
-        $(this).closest(".attribute").remove();
+        else
+        {
+            $("#link").html("Oops! you can't delete the last entry!");
+        }
     });
 });
 
 function askToMakeList() {
-    $("#link").html("Would you like to save this list? <div class='yes'>Yes</div> / <div class='no'>No</div>");
+    $("#link").html("<div class='yes'>Click here to save,</div> or <div class='no'>Just messing around</div>");
 }
 
 // all event bindings will be attached upon saving the list
