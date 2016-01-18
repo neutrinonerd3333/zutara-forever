@@ -12,7 +12,6 @@ from flask import Flask, render_template, jsonify, \
 
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.mongoengine import *
-from flask.ext.pymongo import PyMongo
 from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required
 import flask.ext.security as flask_security
@@ -37,7 +36,6 @@ app.config['SECURITY_PASSWORD_SALT'] = "eddb960e-269c-4458-8e08-c1027d8b290"
 HOSTNAME = '0.0.0.0:6005'
 
 db = MongoEngine(app)
-mongo = PyMongo(app)
 
 # ----------------------------------------------------------
 # Flask-Security and MongoEngine Setup

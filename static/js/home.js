@@ -333,5 +333,10 @@ function isArrowUp(icon) {
         return true;
     }
 }
-function buttonColorChange() {
+
+function isHeartFilled(icon) {
+    var css = $(icon).css("background-position");
+    // filled heart is more to the right than unfilled
+    if (css.charAt(0)) > 40) {
+    }
 }
