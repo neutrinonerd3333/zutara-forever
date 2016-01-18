@@ -6,8 +6,7 @@
 <title>Catalist</title>
 <!--external stylesheets and scripts-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!--<script src="{{ url_for('static',filename='js/jquery.js')}}"></script>-->
-    <script src="{{ url_for('static',filename='js/preview.js')}}"></script>
+<script src="{{ url_for('static',filename='js/preview.js')}}"></script>
 <!--page icon-->
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-16.png') }}" sizes="16x16">
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-32.png') }}" sizes="32x32">
@@ -19,27 +18,33 @@
 <section id="wrapper">
     <div class="list">
         <div class="listTitle">
-            <input type="text" placeholder="Title" disabled>
+            <input type="text" placeholder="Title" value="{{ listtitle|e }}" disabled>
         </div>
+        {% for entry in entries %}
         <div class="listItem">
             <!--list item-->
+            <div class="icon-heart icon"></div> 
             <div class="itemTitle">
-                <input type="text" placeholder="Item" disabled>
+                <input type="text" placeholder="Item" value="{{ entry.title|e }}" disabled>
             </div>
-            <img src="/static/img/down.svg">
+            <div class="icon-down icon"></div> 
             <div class="attributes">
                 <!--all item attributes-->
+                {% for kvp in entry.contents %}
                 <div class="attribute">
                     <!--single item attribute-->
                     <div class="key"
-                        ><input type="text" placeholder="Key" disabled
+                        ><input type="text" placeholder="Key" value="{{ kvp.key|e }}" disabled
                     ></div
                     ><div class="value"
-                        ><input type="text" placeholder="Value" disabled
+                        ><input type="text" placeholder="Value" value="{{ kvp.value|e }}" disabled
                     ></div
                     >
                 </div>
+                {% endfor %}
             </div>
+        </div>
+        {% endfor %}
         </div>
     </div>
 </section>

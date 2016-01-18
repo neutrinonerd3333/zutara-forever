@@ -4,5 +4,6 @@
 {% endblock %}
 
 {% block content %}
-<h3>Oops! It looks like we messed something up D: Click <a href="{{ url_for('index') }}">here</a> to return home.</h3>
+<div class="errorContainer">
+<h3>Oops! We couldn't find what you were looking for! Click <a href="{{ url_for('index') }}">here</a> to return home.</h3></div>
 {% endblock %}

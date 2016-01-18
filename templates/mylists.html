@@ -22,13 +22,20 @@ My Lists
         <div class="listHead">
             <div class="titles">Titles</div><div class="times">Last Modified</div>
         </div>
-        <div class="scrollWrapper">
+            
         {% for i in range(n) %}
+        <div class="listWrapper">
         <div class="list">
+            <input type="hidden" value={{ urls_actual[i] }}>
             <input type="hidden" value={{urls[i]}}>
+    
             <a href={{urls_actual[i]}}><div class="listTitle">{{titles[i]}}</div></a
             ><div class="listTime">{{last_visited[i]}}</div
         ></div>
+        <div class="toolbox">
+            <input type="hidden" value={{permissions[i]}}>
+        </div>
+        </div>
         {% endfor %}
         </div>
     </div>

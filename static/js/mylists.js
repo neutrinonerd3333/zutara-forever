@@ -1,117 +1,125 @@
+var listid = 0;
 $(document).ready(function()
 {
     
     // expands preview on click (should I make it click?) over url
-    $(".listBlock2").on("mouseenter", ".list", previewLink)
+    $(".listBlock2").on("mouseenter", ".list", previewLink);
     
-    // upon clicking the last list item (with a plus sign), a new
-    // list item will automatically be added to the bottom of the list
-    $(".list").on("click", ".lastListItem", addItem);
+    // view toolbox on hover
+    $(".listWrapper").on("mouseenter", showToolbox);
     
-    // upon clicking the last item attribute, a new item
-    // attribute entry will be automatically added to the bottom
-    // of the list
-    $(".list").on("click", ".lastAttribute", addAttribute);
+    // hide toolbox on leave
+    $(".listWrapper").on("mouseleave", hideToolbox);
     
-    // testing Ajax connection for now
-	/*$(".list").on("focusout",function(){
-        $("#catalist").ajaxSubmit();
-	});*/
-
-    // clicking the down arrow will show attributes
-    // clicking the up arrow will hide the attributes
-    $(".list").on("click", "img", function()
-    {
-        var file = $(this).attr("src");
-        
-        // if currently up arrow, click should hide attributes and switch
-        // to up arrow
-        if(file==="/static/img/up.svg")
-        {
-            $(this).next(".attributes").slideUp(500);
-            $(this).attr("src","/static/img/down.svg");
-            $(this).prev(".itemTitle").find("input").css("border-radius","20px");
-            var nums = $(this).closest(".listItem").find(".attribute").length;
-            // if more than one entry, check if any are empty
-            if(nums > 1)
-            {
-                // find attributes following arrow img
-                var atts = $(this).next(".attributes").find(".attribute");
-                // find the input fields under the key and value divs
-                var keys = $(this).next(".attributes").find(".key :input");
-                var vals = $(this).next(".attributes").find(".value :input");
-                
-                for(var i = atts.length-1; i >= 0; i--)
-                {
-                    // get values of each attribute
-                    key = $(keys[i]).val();
-                    value = $(vals[i]).val();
-                    // check if whole row empty
-                    if(key.length===0 && value.length===0)
-                    {
-                        $(atts[i]).remove();
-                    }
-                }
-            }
-        }
-        // if currently down arrow, click should show attributes and switch
-        // to up arrow
-        else
-        {
-            $(this).next(".attributes").slideDown(500);
-            $(this).attr("src","/static/img/up.svg");
-            $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
-        }
-        
-    });
+    // copy url to clipboard upon clicking in it
+    $(".toolbox").on("click", "input", useButtons);
     
-    // clicking minus will delete the current entry
-    $(".list").on("click", ".minus", function()
-    {
-        $(this).closest(".attribute").remove();
-    });
+    // focusout saves permissions and checks for delete
+    $(".toolbox").on("focusout", "input", saveSettings);
+    
 });
-
-function ifNoListMakeOne(){
-    if(listid===null){
-        $.ajax({
-            url: "/ajax/makelist",
-            method: 'GET',
-            data: {
-                title: $(".listtitle input").val()
-            },
-            success: function(data, status, jqxhr){
-                // get list id, which we want to be a global var
-                listid = data.id;
-                // put the url in later >.<
-                $("#link").html('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
-                console.log('http://0.0.0.0:6005/list/' + listid);
-            }
-        });
-    }
-}
-
 function previewLink()
 {
-    var url = $(this).find("input").attr("value");
-    console.log(url);
-    $(this).parent().parent().parent().find("iframe").attr("src",url);
+    var url = $(this).find("input").next().attr("value");
+    var preview = $(this).parent().parent().parent().parent().find("iframe");
+    // don't want the preview to keep flickering if same link
+    if($(preview).attr("src") !== url)
+    {
+        $(preview).attr("src",url);
+    }
 }
-
-function addItem()
+function showToolbox()
 {
-    $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
+    var tools = $(this).find(".toolbox");
+    tools.show();
+    
+    var url = $(this).find(".list input").val();
+    // cut out "/list/"
+    listid = url.slice(6);
+    
+    var perm = $(tools).find("input[type='hidden']").val();
+    console.log(perm);
+    
+    // wipe out hidden input so don't have to keep repeating script
+    if(perm != undefined)
+    {
+        if(perm==="own")
+        {
+            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-view icon"></div> <div class="icon-edit icon"></div> <div class="icon-link icon"></div> <div class="icon-trash icon"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="view" type="text"> <input class="editors" id="edit" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <input class="editors" id="delete" type="text" placeholder="Type &quot;delete&quot; to delete list."> </div>');
+            $(tools).css("height","11em");
+        }
+        else if(perm==="edit")
+        {
+            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-link-2 icon"></div> </div> <div class="permissions"> <div class="line">You may edit and view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
+            $(tools).css("height","5em");
+        }
+        else if(perm==="view")
+        {
+            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-link-2 icon"></div> </div> <div class="permissions"> <div class="line">You may view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
+            $(tools).css("height","5em");
+        }
+    }
 }
-
-function addAttribute()
+function hideToolbox()
 {
-    $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
+    var tools = $(this).find(".toolbox");
+    tools.hide();
 }
-
-function deleteItem(){
-    // do ajax-y things
+function useButtons()
+{
+    // url gets copied to clipboard every time
+    if($(this).attr("id")==="url")
+    {
+        $(this).select();
+        document.execCommand("copy");
+        alert("Link copied to clipboard!");
+    }
 }
-
-function deleteAttribute(){
-    // do more ajax-y things
+function saveSettings()
+{
+    if($(this).attr("id")==="delete")
+    {
+        if($(this).val()==="delete")
+        {
+            deleteList(listid);
+        }
+    }
+    else if($(this).attr("id")==="view")
+    {
+    }
+    else if($(this).attr("id")==="edit")
+    {
+    }
+}
+function deleteList(listid)
+{
+    // verify once more that the user is indeed the owner of the list
+    var isOwner = false;
+    $.ajax({
+        url: "/api/getpermissions",
+        method: 'POST',
+        data: {
+            listid: listid,
+        },
+        success: function(data, status, jqxhr){
+            isOwner = true;
+        }
+    })
+    if(isOwner)
+    {
+        if (confirm("Are you sure you want to permanently delete your list?"))
+        {
+            $.ajax({
+                url: "/api/deletelist",
+                method: 'POST',
+                data: {
+                    listid: listid,
+                },
+                success: function(data, status, jqxhr){
+                    alert("You have deleted list " + listid);
+                    location.reload(true); // reload from server not cache
+                }
+            });
+        }
+    }
 }

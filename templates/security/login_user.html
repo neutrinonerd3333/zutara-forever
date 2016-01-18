@@ -8,7 +8,6 @@ User Login
 <article>
 {% if not (current_user.is_authenticated) %}
         <div class="register-container">
-            <div class="errormsg">{{ message }}</div> <!--For error messages-->
             <form action="/signin" method="POST" onsubmit="return signin(this)">
                 <div class="register">
                     <input type="text" class="inputField" name="uid" placeholder="Username" required>
@@ -23,7 +22,7 @@ User Login
 {% endif %}
     
 {% if (current_user.is_authenticated) %}
-    <h3>You have successfully logged in! Click <a href='/'>here</a> to return to home.</h3>
+    <div class="errorContainer"><h3>You have successfully logged in! Click <a href='/'>here</a> to return to home.</h3></div>
 {% endif %}
 </article>
 </section>

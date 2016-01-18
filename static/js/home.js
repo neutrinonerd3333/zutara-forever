@@ -8,125 +8,128 @@ if (n === 0) {
     listid = pathname.slice(6);
 }
 
-$(document).ready(function()
-{
-    // creates list on first serious attempt at making a list
-    // $(".list").one("focusout", ifNoListMakeOne);
+$(document).ready(function() {
+    if(listid===null)
+    {
+        //$(".list").one("mouseenter", welcome);
+        $(".list").one("focusout", askToMakeList);
 
-    $(".list").on('focusout', ".key input", function(){
-        var that = $(this);
-        ifNoListMakeOne(function(){saveKeyOrValue(that, "key");});
+        // if they want to save, save the whole list and enable live save
+        // $(".list").on('click', ".yes", makeList);
+        $("body").on('click', ".yes", makeList);
+
+        // if they don't want to save, then make sure they don't want to
+        $("body").on('click', ".no", noSave);
+    }
+    // button cosmetics and add new
+    $(".list").on('focusin', ".itemTitle input", function() {
+        var icon = $(this).parent().next();
+        var heart = $(this).parent().prev();
+        $(heart).css("background-position", "-6em -3em");
+        if (isArrowUp(icon)) {
+            $(icon).css("background-position", "-1.5em -3em");
+        } else {
+            $(icon).css("background-position", "0 -3em");
+        }
+        
+        var curListItem = $(this).closest(".listItem");
+        // this starts at 1 cuz div before it
+        var itemInd = $(curListItem).index();
+        var totalItems = $(this).closest(".list").find(".listItem").length;
+        
+        if(totalItems===itemInd)
+        {
+            addItem(curListItem);
+        }
     });
-
-    $(".list").on('focusout', ".value input", function(){
-        var that = $(this);
-        ifNoListMakeOne(function(){saveKeyOrValue(that, "value");});
-    });
-
-    $(".list").on('focusout', ".itemTitle input", function(){
-        var that = $(this);
-        ifNoListMakeOne(function(){
-            var newval = that.val();
-            var grandpa = that.parents().eq(2-1);
-            var entryind = $(".list .listItem").index(grandpa);
-
-            $.ajax({
-                url: "/api/saveentrytitle",
-                method: 'POST',
-                data: {
-                    listid: listid,
-                    entryind: entryind,
-                    newvalue: newval
-                },
-                success: function(data, status, jqxhr){
-                    console.log("entry title " + newval + " saved to entry " + entryind);
-                }
-            });
-        });
-    });
-
-    // no need to do "on" because we won't have multiple listTitle's
-    $(".listTitle input").focusout(function(){
-        var that = $(this);
-        ifNoListMakeOne(function(){
-            var newval = that.val();
-            $.ajax({
-                url: "/api/savelisttitle",
-                method: 'POST',
-                data: {
-                    listid: listid,
-                    newvalue: newval
-                },
-                success: function(data, status, jqxhr){
-                    console.log("list title " + newval + " saved to list " + listid);
-                }
-            });
-        });
-    });
-
-
-    /* DOM Manipulation
-     * add items
-     */
     
-    // upon clicking the last list item (with a plus sign), a new
-    // list item will automatically be added to the bottom of the list
-    $(".list").on("click", ".lastListItem", addItem);
-    
+    $(".list").on('focusout', ".itemTitle input", function() {
+        var icon = $(this).parent().next();
+        var heart = $(this).parent().prev();
+        $(heart).css("background-position", "-6em 0");
+        if (isArrowUp(icon)) {
+            $(icon).css("background-position", "-1.5em 0");
+        } else {
+            $(icon).css("background-position", "0 0");
+        }
+    });
+    /* DOM Manipulation, add items */
+
     // upon clicking the last item attribute, a new item
     // attribute entry will be automatically added to the bottom
-    // of the list
-    $(".list").on("click", ".lastAttribute", addAttribute);
+    // of the list    
+    $(".list").on('focusin', ".attribute * input", function() {
+        var curAttribute = $(this).closest(".attribute");
+        // starts at 0 cuz nothing else in attributes
+        var attrInd = $(curAttribute).index() + 1;
+        var totalItems = $(this).closest(".listItem").find(".attribute").length;
+        
+        if(totalItems===attrInd)
+        {
+            addAttribute(curAttribute);
+        }
+    });
 
     // clicking the down arrow will show attributes
     // clicking the up arrow will hide the attributes
-    $(".list").on("click", "img", function()
-    {
-        var file = $(this).attr("src");
-        
+
+    $(".list").on("click", ".icon-down", function() {
         // if currently up arrow, click should hide attributes and switch
         // to up arrow
-        if(file==="/static/img/up.svg"){
-            var that = $(this);
-            $(this).next(".attributes").slideUp(500, function(){
-                that.prev(".itemTitle").find("input").css("border-radius","20px");
-            });
-            $(this).attr("src","/static/img/down.svg");
+        if (isArrowUp($(this))) {
+            var attrs = $(this).next(".attributes");
+            $(attrs).slideUp(500);
+            $(this).css("background-position", "0 0");
+            $(this).prev(".itemTitle").find("input").css("border-radius", "20px");
+
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
-            if(nums > 1)
-            {
+            if (nums > 1) {
                 // find attributes following arrow img
-                var atts = $(this).next(".attributes").find(".attribute");
+                var atts = $(attrs).find(".attribute");
                 // find the input fields under the key and value divs
-                var keys = $(this).next(".attributes").find(".key :input");
-                var vals = $(this).next(".attributes").find(".value :input");
-                
-                for(var i = atts.length-1; i >= 0; i--)
-                {
+                var keys = $(attrs).find(".key :input");
+                var vals = $(attrs).find(".value :input");
+
+                for (var i = atts.length - 1; i >= 0; i--) {
                     // get values of each attribute
                     key = $(keys[i]).val();
                     value = $(vals[i]).val();
                     // check if whole row empty
-                    if(key.length===0 && value.length===0)
-                    {
+                    if (key.length === 0 && value.length === 0) {
                         $(atts[i]).remove();
                     }
                 }
+                var newLength = $(attrs).find(".attribute").length;
+                if(newLength===0) { appendAttribute(attrs); }
             }
         }
         // if currently down arrow, click should show attributes and switch
         // to up arrow
         else {
             $(this).next(".attributes").slideDown(500);
-            $(this).attr("src","/static/img/up.svg");
-            $(this).prev(".itemTitle").find("input").css("border-radius","20px 20px 0 0");
-        }  
+            $(this).css("background-position", "-1.5em 0");
+            $(this).prev(".itemTitle").find("input").css("border-radius", "20px 20px 0 0");
+            resize();
+        }
     });
-    
+    // clicking heart will add a vote to the item (or remove it if existing)
+    $(".list").on("click", ".icon-heart", vote);
+
     // clicking minus will delete the current key-value pair
-    $(".list").on("click", ".minus", function(){
+    $(".list").on("click", ".icon-minus", function() {
         var item = $(this).closest(".listItem");
+        
+        var curAttribute = $(this).closest(".attribute");
+        // starts at 0 cuz nothing else in attributes
+        var attrInd = $(curAttribute).index() + 1;
+        var totalItems = $(this).closest(".listItem").find(".attribute").length;
+        
+        if(totalItems===attrInd) {
+            $("#link").html("Oops! you can't delete the last attribute!");
+            return;
+        }
+        
         var eind = $(".list .listItem").index(item);
         var siblings = $(this).closest(".attributes").children(".attribute");
         var kvpind = siblings.index($(this).closest(".attribute"));
@@ -140,7 +143,7 @@ $(document).ready(function()
                 entryind: eind,
                 index: kvpind
             },
-            success: function(data, status, jqxhr){
+            success: function(data, status, jqxhr) {
                 // console.log("deleted kvp at entry " + eind + " index " + kvpind);
             }
         });
@@ -149,47 +152,131 @@ $(document).ready(function()
     });
 });
 
-function ifNoListMakeOne(callback){
-    if(listid===null){
+function askToMakeList() {
+    $("#link").html("Would you like to save this list? <div class='yes'>Yes</div> / <div class='no'>No</div>");
+}
+
+// all event bindings will be attached upon saving the list
+// so since list MUST exist, no need to call ifNoListMakeOne
+function enableLiveSave() {
+    $(".list").off('click', ".yes")
+    $(".list").off('click', ".no")
+
+    // binding to save key and value
+    $(".list").on('focusout', ".key input", function() {
+        var that = $(this);
+        saveKeyOrValue(that, "key");
+    });
+    $(".list").on('focusout', ".value input", function() {
+        var that = $(this);
+        saveKeyOrValue(that, "value");
+    });
+
+    // binding to save title
+    $(".list").on('focusout', ".itemTitle input", function() {
+        var that = $(this);
+        var newval = that.val();
+        var grandpa = that.parents().eq(2 - 1);
+        var entryind = $(".list .listItem").index(grandpa);
+
         $.ajax({
-            url: "/api/makelist",
-            method: 'GET',
+            url: "/api/saveentrytitle",
+            method: 'POST',
             data: {
-                title: $(".listtitle input").val()
+                listid: listid,
+                entryind: entryind,
+                newvalue: newval
             },
-            success: function(data, status, jqxhr){
-                // get list id, which we want to be a global var
-                listid = data.id;
-                // put the url in later >.<
-                $("#link").html('Access or share your list at: <br><a href="http://0.0.0.0:6005/list/' + listid + '">http://0.0.0.0:6005/list/' + listid + "</a>");
-                console.log('http://0.0.0.0:6005/list/' + listid);
-                callback()
+            success: function(data, status, jqxhr) {
+                // console.log("entry title " + newval + " saved to entry " + entryind);
             }
         });
-    } else {
-        callback();
+    });
+
+    // no need to do "on" because we won't have multiple listTitle's
+    $(".listTitle input").focusout(function() {
+        var that = $(this);
+        var newval = that.val();
+        $.ajax({
+            url: "/api/savelisttitle",
+            method: 'POST',
+            data: {
+                listid: listid,
+                newvalue: newval
+            },
+            success: function(data, status, jqxhr) {
+                // console.log("list title " + newval + " saved to list " + listid);
+            }
+        });
+    });
+}
+
+function noSave() {
+    if (confirm("Are you sure you don't want to save this list?")) {
+        $(".list").off("focusout");
+        $("#link").html("If you change your mind, <div class='yes'>click here to save</div>.");
     }
 }
 
-function addItem(){
-    $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <img src='/static/img/down.svg'> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
+function makeList() {
+    $.ajax({
+        url: "/api/makelist",
+        method: 'GET',
+        data: {
+            title: $(".listTitle input").val()
+        },
+        success: function(data, status, jqxhr) {
+            // get list id, which we want to be a global var
+
+            listid = data.listid;
+            rel_url = "/list/" + listid
+            url = "http://" + location.host + rel_url
+            $("#link").html('Access or share this list at: <br><a href="' + url + '">' + url + "</a>");
+            // use pushState with same args to change url while preserving
+            // original in browser history; replaceState does same w/o preserving
+            window.history.pushState("", "Catalist", rel_url)
+        }
+    });
+    enableLiveSave();
 }
 
-function addAttribute(){
-    $(this).before("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='minus'></div></div>");
+// figures out whether selected item is last one
+function isLastItem() {
+    var curListItem = $(this).closest(".listItem");
+    var totalItems = $(this).closest(".list").find(".listItem").length;
+    var itemInd = $(curListItem).index(); // this starts at 1
+    return totalItems===itemInd;
 }
 
-function saveKeyOrValue(that, toSave){
-    if (toSave !== "key" && toSave !== "value"){
+function addItem(curListItem) {
+    $(curListItem).after("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
+    resize();
+}
+
+function addAttribute(curAttribute) {
+    $(curAttribute).css("border-radius", "0");
+    $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+    $(curAttribute).next().css("border-radius", "0 0 20px 20px");
+    resize();
+}
+
+function appendAttribute(parentElement) {
+    $(parentElement).append("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+    resize();
+}
+
+function saveKeyOrValue(that, toSave) {
+    if (toSave !== "key" && toSave !== "value") {
         throw "ValueError: argument of saveKeyOrValue must be 'key' or 'value'";
     }
 
     var newval = that.val();
 
-    var listitem = that.parents().eq(4-1);
-    var kvps = that.parents().eq(3-1);
-    var this_kvp = that.parents().eq(2-1);
-    
+    /* this code is rather ugly -- maybe elegantize lol */
+    var listitem = that.parents().eq(4 - 1);
+    var kvps = that.parents().eq(3 - 1);
+    var this_kvp = that.parents().eq(2 - 1);
+
     var ind = kvps.children().index(this_kvp);
     var entryind = $(".list .listItem").index(listitem);
 
@@ -202,16 +289,104 @@ function saveKeyOrValue(that, toSave){
             entryind: entryind,
             newvalue: newval
         },
-        success: function(data, status, jqxhr){
-            console.log(toSave + " " + newval + " saved to position " + ind) // for debug
+        success: function(data, status, jqxhr) {
+            // console.log(toSave + " " + newval + " saved to position " + ind) // for debug
         }
     })
 }
 
-function deleteItem(){
+function vote() {
+    var that = $(this);
+    if(isHeartFilled(that)){
+        deleteVote(that);
+    }
+    else{
+        addVote(that);
+    }
+}
+
+function addVote(that) {
+    var item = $(that).closest(".listItem");
+    var eind = $(".list .listItem").index(item);
+    $.ajax({
+        url: "/api/vote",
+        method: 'POST',
+        data: {
+            listid: listid,
+            entryind: eind,
+            vote: 1
+        },
+        success: function(data, status, jqxhr) {
+            $(that).css("background-position", "-10.5em 0");
+            $("#link").html("Heart!");
+            console.log("Current score is " + data.score);
+            return true;
+        }
+    });
+    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
+}
+// undo vote, need to update backend with this
+function deleteVote(that) {
+    var item = $(that).closest(".listItem");
+    var eind = $(".list .listItem").index(item);
+    $.ajax({
+        url: "/api/vote",
+        method: 'POST',
+        data: {
+            listid: listid,
+            entryind: eind,
+            vote: 0
+        },
+        success: function(data, status, jqxhr) {
+            $(that).css("background-position", "-6em 0");
+            $("#link").html("Unvote!");
+            console.log("Current score is " + data.score);
+            return true;
+        }
+    });
+    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
+}
+
+function deleteItem() {
     // do ajax-y things
 }
 
-function deleteAttribute(){
+function deleteAttribute() {
     // do more ajax-y things
+}
+
+function resize() {
+    $("body").css({
+        "height": "100%",
+        "background-size": "100% 100%",
+        "background": "linear-gradient(to bottom, #4BF 0%,#5CE 60%,#AEF 100%",
+        "background": "-moz-linear-gradient(top, #4BF 0%, #5CE 60%, #AEF 100%)",
+        "background": "-webkit-linear-gradient(top, #4BF 0%,#5CE 60%,#AEF 100%)",
+    });
+}
+
+function welcome() {
+    $("#link").hide();
+    $("#link").html("Welcome! Would you like a tutorial?");
+    $("#link").fadeIn(500);
+}
+
+function isArrowUp(icon) {
+    var css = $(icon).css("background-position");
+    // browser renders em into px, so 0 means left most = down arrow
+    if (css.charAt(0) === "0") {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function isHeartFilled(heart) {
+    var css = $(heart).css("background-position");
+
+    if (parseInt(css.substring(0, 3)) < -15) {
+        return true;
+    } else {
+        return false;
+    }
 }
