@@ -125,11 +125,11 @@ security = Security(app, user_datastore)
 #: A list of all permission levels, from lowest to highest.
 #: The levels:
 #:
-#: 1. none  -- no permission
-#: 2. view  -- permission to view a list
-#: 3. edit  -- permission to edit a list
-#: 4. own   -- permission to change permission for a list
-#: 5. admin -- can do anything
+#: #. none  -- no permission
+#: #. view  -- permission to view a list
+#: #. edit  -- permission to edit a list
+#: #. own   -- permission to change permission for a list
+#: #. admin -- can do anything
 perm_list = ["none", "view", "edit", "own", "admin"]
 
 #: Currently admins are determined by residency on this list.
