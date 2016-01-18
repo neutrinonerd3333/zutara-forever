@@ -1,26 +1,29 @@
 html {
     height: 100%;
     min-height: 333px;
-    
-    background: #AEF; /* Old browsers */
-   
+    background: #AEF;
+    /* Old browsers */
 }
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 20px;
     /* 1 em will become 20px everywhere else */
+    
     height: 100%;
     margin: 0;
+    background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em));
+    /* FF3.6-15 */
     
-    background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, #4BF 2em,#5CE calc(60% - 4em),#AEF calc(100% - 8em)); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #4BF 2em,#5CE calc(60% - 4em),#AEF calc(100% - 8em)); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em));
+    /* Chrome10-25,Safari5.1-6 */
+    
+    background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em));
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     
     background-attachment: fixed;
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
-
 .login-container {
     display: block;
     margin: 1em 1em 0 0;
@@ -31,18 +34,16 @@ body {
     font-weight: lighter;
     letter-spacing: 0.2px;
 }
-
 .login-container div {
     padding: 4px;
     text-align: right;
     font-size: 0.8em;
 }
-
-h1, a {
+h1,
+a {
     text-align: center;
     color: #cef;
     margin: 0;
-    
     text-decoration: none;
 }
 h1 {
@@ -50,12 +51,14 @@ h1 {
     font-weight: lighter;
     letter-spacing: 0.2px;
 }
-h2, h2 a {
+h2,
+h2 a {
     font-size: 1em;
     font-weight: lighter;
     color: #CEF;
 }
-h3, h3 a {
+h3,
+h3 a {
     font-size: 1em;
     font-weight: lighter;
     text-align: center;
@@ -82,6 +85,7 @@ h3 a {
 }
 a {
     /*font-size: 0.8em;*/
+    
     font-weight: lighter;
 }
 a:hover {
@@ -89,46 +93,44 @@ a:hover {
 }
 .textcontainer {
     /* basically a rehash of .list from list.css */
+    
     position: absolute;
     left: 0;
     right: 0;
     margin-left: auto;
     margin-right: auto;
-    font-size: 17px; /* change this later? */
-    padding: 1em;
+    font-size: 17px;
+    /* change this later? */
     
+    padding: 1em;
     width: 40%;
     min-width: 500px;
     height: 60%;
     min-height: 400px;
     display: block;
-    
     /*background-color: #CEF;
     border: 10px;  imo scrolling directly into the bg looks cut off so border?
     border-style: solid;
     border-color: #FFF;
     border-radius: 20px;
     padding: 10px;*/
-    
     /*color: #cef;*/
+    
     color: hsl(200, 100%, 95%);
-    
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    
     overflow: auto;
 }
-
 .textcontainer p {
     font-weight: 100;
     letter-spacing: 0.5px;
 }
-
 .textcontainer a {
     color: inherit;
     font-weight: 200;
 }
-.textcontainer a:hover { color: #fff;}
-
+.textcontainer a:hover {
+    color: #fff;
+}
 .register-container {
     color: #666;
     width: 100%;
@@ -157,13 +159,13 @@ a:hover {
     -moz-transition: background .25s ease-in-out;
     -webkit-transition: background .25s ease-in-out;
 }
-.register .inputLabel, .errormsg{
+.register .inputLabel,
+.errormsg {
     text-align: center;
     display: none;
     font-size: 0.6em;
     width: 15em;
     color: #cff;
-    
     margin: -5px 0 5px 0;
     margin-left: auto;
     margin-right: auto;
@@ -210,17 +212,30 @@ a:hover {
     background-color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
 }
-
-::-webkit-input-placeholder { color:#999; }
-::-moz-placeholder { color:#999; }
-:-ms-input-placeholder { color:#999; }
-input:-moz-placeholder { color:#999; }
-
-:focus::-webkit-input-placeholder { color:transparent; }
-:focus::-moz-placeholder { color:transparent; }
-:focus:-ms-input-placeholder { color:transparent; }
-input:focus:-moz-placeholder{ color:transparent; }
-
+::-webkit-input-placeholder {
+    color: #999;
+}
+::-moz-placeholder {
+    color: #999;
+}
+:-ms-input-placeholder {
+    color: #999;
+}
+input:-moz-placeholder {
+    color: #999;
+}
+:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+:focus::-moz-placeholder {
+    color: transparent;
+}
+:focus:-ms-input-placeholder {
+    color: transparent;
+}
+input:focus:-moz-placeholder {
+    color: transparent;
+}
 .topPlaceholder {
     position: absolute;
     top: 0;
@@ -234,7 +249,6 @@ input:focus:-moz-placeholder{ color:transparent; }
 }
 .header img {
     display: block;
-
     margin-left: auto;
     margin-right: auto;
     height: 3em;
@@ -245,18 +259,17 @@ input:focus:-moz-placeholder{ color:transparent; }
     margin: 50px 50px;
     width: auto;
 }
-
-.footer{
+.footer {
     margin-top: 1em;
-	height: 4em;
+    height: 4em;
     width: 100%;
-    
     background-color: #3CF;
     display: block;
     position: absolute;
     bottom: 0em;
 }
 /*page margin 50px*/
+
 article {
     min-height: 300px
 }

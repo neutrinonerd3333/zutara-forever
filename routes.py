@@ -260,7 +260,7 @@ def getlist(listid):
     the_list = Catalist.objects.get(listid=listid)
     if cmp_permission(query_cur_perm(the_list), "view") < 0:
         abort(403)
-    msg = 'Access or share this list at<br><a href="{0}">{0}</a>'.format(url)
+    msg = 'Access or share this list at:<br><a href="{0}">{0}</a>'.format(url)
     return render_template('loadlist.html', listtitle=the_list.title,
                            entries=the_list.contents, message=msg)
 

@@ -1,4 +1,4 @@
-var listid = 0
+var listid = 0;
 $(document).ready(function()
 {
     
