@@ -454,8 +454,10 @@ def make_list():
 @app.route("/api/savelist", methods=['POST'])
 def list_save():
     """
-    Save an entire list.
-
+    Save an entire list. If listid is provided, the list is
+    written onto the referenced list. Otherwise, a new list is
+    created. In both cases the listid to which we saved the list
+    is returned.
     usage:
     {
         title: <thetitle>,
@@ -482,7 +484,7 @@ def list_save():
                 CatalistKVP(key=k, value=v)
                 for k, v in entry[1]
             ])
-        for entry in request.form["contents"]
+        for entry in request.form.getlist("contents")
     ]
 
     the_list.save()
