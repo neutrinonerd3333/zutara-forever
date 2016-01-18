@@ -98,7 +98,7 @@ class Catalist(db.Document):
                            default="untitled list")
     created = db.DateTimeField(required=True)  # when list was created
     creator = db.StringField(max_length=40)  # should be implemented as RefField(User)
-    last_modified = db.DateTimeField(required=True)
+    last_visited = db.DateTimeField(required=True)
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
     # PERMISSIONS
@@ -308,14 +308,14 @@ def userlists():
 
     current_user = flask_security.core.current_user
     lists = Catalist.objects(creator=current_user.uid).only(
-        'listid', 'title', 'last_modified').all()
+        'listid', 'title', 'last_visited').all()
     if lists.first() is None:
         return render_template(
             'home.html',
             message="Oops! You have no lists saved! " +
                     "Would you like to create one?")
 
-    lists = lists.order_by('-last_modified').all()
+    lists = lists.order_by('-last_visited').all()
     return render_template('mylists.html', lists=lists, host=HOSTNAME)
 
 
@@ -422,15 +422,15 @@ def create_list():
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
         new_list = Catalist(listid=list_id, created=time,
-                            last_modified=time)
+                            last_visited=time)
     else:
         uid = current_user.uid
         new_list = Catalist(listid=list_id, created=time,
-                            last_modified=time, creator=uid)
+                            last_visited=time, creator=uid)
         user = User.objects.get(uid=uid)
         new_list.owners.append(user)
 
-    new_list.last_modified = datetime.utcnow()
+    new_list.last_visited = datetime.utcnow()
     new_list.save()
     return list_id
 
@@ -472,7 +472,7 @@ def list_save():
     the_listid = request.form.get("listid", create_list())
     the_list = Catalist.objects.get(listid=the_listid)
     the_list.title = request.form["title"]
-    the_list.last_modified = datetime.utcnow()
+    the_list.last_visited = datetime.utcnow()
 
     the_list.contents = [
         CatalistEntry(title=entry[0], contents=[
@@ -482,7 +482,7 @@ def list_save():
         for entry in request.form.getlist("contents")
     ]
 
-    the_list.last_modified = datetime.utcnow()
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return jsonify(listid=the_listid)
 
@@ -533,7 +533,7 @@ def key_save():
     # for entry in the_list.contents:
     #     entry.contents[ind].key = val
 
-    the_list.last_modified = datetime.utcnow()
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return jsonify()  # return a blank 200
 
@@ -571,7 +571,7 @@ def value_save():
     the_entry.contents += [CatalistKVP() for i in xrange(pad_len)]
     the_entry.contents[ind].value = val
 
-    the_list.last_modified = datetime.utcnow()
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return jsonify()  # return a 200
 
@@ -606,7 +606,7 @@ def entry_title_save():
     the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
     the_entry.title = val
-    the_list.last_modified = datetime.utcnow()
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return "OK"  # 200 OK ^_^
 
@@ -635,7 +635,7 @@ def list_title_save():
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
     the_list.title = req_json["newvalue"][:list_title_max_len]
-    the_list.last_modified = datetime.utcnow()
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return jsonify()  # 200 OK ^_^
 
@@ -687,7 +687,7 @@ def entry_delete():
         raise InvalidAPIUsage("List does not exist")
     except IndexError:
         raise InvalidAPIUsage("Entry index out of bounds")
-    the_list.last_modified = datetime.utcnow()
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return 'OK'  # 200 OK
 
@@ -727,7 +727,7 @@ def kvp_delete():
     except IndexError:
         return "KVP index out of bounds"
 
-    the_list.last_modified = datetime.utcnow()
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return 'OK'  # 200 OK
 
@@ -820,7 +820,7 @@ def vote():
     # update the score in the database
     the_entry.score += (vote_val - cur_vote)
     # should voting count as "modifying the list"? prob not?
-    # the_list.last_modified = datetime.utcnow()
+    # the_list.last_visited = datetime.utcnow()
     the_list.save()
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
@@ -877,7 +877,7 @@ def permissions_set():
 
     # save the list
     # should permission editing count as "modification"? prob not
-    # the_list.last_modified = datetime.utcnow()
+    # the_list.last_visited = datetime.utcnow()
     the_list.save()
     return "OK"  # 200 OK
 
