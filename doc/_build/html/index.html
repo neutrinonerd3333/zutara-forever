@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Catalist’s documentation! &mdash; Catalist 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Catalist 0.0 documentation" href="#" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-catalist-s-documentation">
+<h1>Welcome to Catalist&#8217;s documentation!<a class="headerlink" href="#welcome-to-catalist-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<span class="target" id="module-routes"></span><dl class="class">
+<dt id="routes.Catalist">
+<em class="property">class </em><code class="descclassname">routes.</code><code class="descname">Catalist</code><span class="sig-paren">(</span><em>*args</em>, <em>**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#Catalist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.Catalist" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for our lists (Catalists :P)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="routes.CatalistEntry">
+<em class="property">class </em><code class="descclassname">routes.</code><code class="descname">CatalistEntry</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#CatalistEntry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.CatalistEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for the entries in our Catalists</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="routes.CatalistKVP">
+<em class="property">class </em><code class="descclassname">routes.</code><code class="descname">CatalistKVP</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#CatalistKVP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.CatalistKVP" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for individual key-value pairs in our Catalist entries</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="routes.InvalidAPIUsage">
+<em class="property">exception </em><code class="descclassname">routes.</code><code class="descname">InvalidAPIUsage</code><span class="sig-paren">(</span><em>message</em>, <em>status_code=None</em>, <em>payload=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#InvalidAPIUsage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.InvalidAPIUsage" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for exceptions to raise in invalid API usage.
+Shamelessly pillaged from <a class="reference external" href="http://flask.pocoo.org/docs/0.10/patterns/apierrors/">Flask&#8217;s documentation</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="routes.Role">
+<em class="property">class </em><code class="descclassname">routes.</code><code class="descname">Role</code><span class="sig-paren">(</span><em>*args</em>, <em>**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#Role"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.Role" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for user roles (e.g. user, admin, ...)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="routes.User">
+<em class="property">class </em><code class="descclassname">routes.</code><code class="descname">User</code><span class="sig-paren">(</span><em>*args</em>, <em>**values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for users. Can have any/none of these attributes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.about">
+<code class="descclassname">routes.</code><code class="descname">about</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#about"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.about" title="Permalink to this definition">¶</a></dt>
+<dd><p>About us.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="routes.admin_unames">
+<code class="descclassname">routes.</code><code class="descname">admin_unames</code><em class="property"> = ['rmwu', 'txz']</em><a class="headerlink" href="#routes.admin_unames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Currently admins are determined by residency on this list.
+Hacky, I know. .__.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.autocomplete">
+<code class="descclassname">routes.</code><code class="descname">autocomplete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#autocomplete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.autocomplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>completes a word fragment with a possible list type
+usage: POST to this route with {&#8220;fragment&#8221;: myfragment},
+response is the list of possible completions of <em>myfragment</em>
+drawn from <em>autocomplete_dict</em></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.cmp_permission">
+<code class="descclassname">routes.</code><code class="descname">cmp_permission</code><span class="sig-paren">(</span><em>perm1</em>, <em>perm2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#cmp_permission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.cmp_permission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a positive/0/negative integer when perm1 &gt;/=/&lt; perm2</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.create_list">
+<code class="descclassname">routes.</code><code class="descname">create_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#create_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.create_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new list and return the assigned listid</p>
+<p>Returns: the assigned listid</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.entry_delete">
+<code class="descclassname">routes.</code><code class="descname">entry_delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#entry_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.entry_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete an entry from a Catalist. Requires at least edit permission.</p>
+<p>usage: POST a JSON associative array as follows:
+{</p>
+<blockquote>
+<div>listid: &lt;the id of the Catalist&gt;,
+entryind: &lt;the index of the entry to remove&gt;</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.entry_title_save">
+<code class="descclassname">routes.</code><code class="descname">entry_title_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#entry_title_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.entry_title_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>AJAXily save the title of an entry. Requires at least edit permission</p>
+<p>usage: POST a JS associative array (basically a dict) like so:
+{</p>
+<blockquote>
+<div>listid:  &lt;the list id&gt;,
+entryind: &lt;index of entry w.r.t. list (0-indexing)&gt;,
+newvalue: &lt;new entry title&gt;</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.get_id">
+<code class="descclassname">routes.</code><code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return name of current user</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.getlist">
+<code class="descclassname">routes.</code><code class="descname">getlist</code><span class="sig-paren">(</span><em>listid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#getlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.getlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a list with given listid from our database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.human_readable_time_since">
+<code class="descclassname">routes.</code><code class="descname">human_readable_time_since</code><span class="sig-paren">(</span><em>tiem</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#human_readable_time_since"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.human_readable_time_since" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give a human-readable representation of time elapsed since a given time</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tiem</strong> &#8211; a <code class="xref py py-attr docutils literal"><span class="pre">datetime</span></code> object representing the given time.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.index">
+<code class="descclassname">routes.</code><code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Our homepage!</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.key_save">
+<code class="descclassname">routes.</code><code class="descname">key_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#key_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.key_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a key. Requires at least edit permission.</p>
+<p>POST a JS associative array (basically a dict) like so:
+{</p>
+<blockquote>
+<div>listid:  &lt;the list id&gt;,
+entryind: &lt;index of entry w.r.t. list (0-indexing)&gt;,
+index: &lt;index of key-val pair w.r.t. entry&gt;,
+newvalue: &lt;new value of key&gt;</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.kvp_delete">
+<code class="descclassname">routes.</code><code class="descname">kvp_delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#kvp_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.kvp_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a key-value pair from a Catalist entry.
+Requires at least edit permission.</p>
+<p>usage: POST a JSON associative array as follows:
+{</p>
+<blockquote>
+<div>listid: &lt;the id of the Catalist&gt;,
+entryind: &lt;the index of the entry to remove&gt;,
+index: &lt;the index of the kvp within the entry&gt;</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.list_delete">
+<code class="descclassname">routes.</code><code class="descname">list_delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#list_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.list_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a Catalist. Requires at least own permission</p>
+<p>usage: POST a JSON associative array as follows:
+{</p>
+<blockquote>
+<div>listid: &lt;the id of the list to be deleted&gt;</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.list_save">
+<code class="descclassname">routes.</code><code class="descname">list_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#list_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.list_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save an entire list. If listid is provided, the list is
+written onto the referenced list. Otherwise, a new list is
+created. In both cases the listid to which we saved the list
+is returned.</p>
+<p>usage:
+{</p>
+<blockquote>
+<div><p>title: &lt;thetitle&gt;,
+contents: [</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>[title, [</dt>
+<dd>[attrname, attrval],
+...
+]</dd>
+</dl>
+</div></blockquote>
+<p>]
+(optionally) , listid: &lt;the listid to save to&gt;</p>
+</div></blockquote>
+<p>}</p>
+<p>Returns: the given or assigned listid</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.list_title_save">
+<code class="descclassname">routes.</code><code class="descname">list_title_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#list_title_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.list_title_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>AJAXily save the title of a Catalist ^_^
+Requires at least edit permission.</p>
+<p>usage: POST a JS assoc array like so:
+{</p>
+<blockquote>
+<div>listid: &lt;the list id&gt;,
+newvalue: &lt;our new title&gt;</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.login">
+<code class="descclassname">routes.</code><code class="descname">login</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Page for user login</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.logout">
+<code class="descclassname">routes.</code><code class="descname">logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log out the current user, clearing the Remember Me cookie</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.make_list">
+<code class="descclassname">routes.</code><code class="descname">make_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#make_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.make_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upon making the first edit, an empty list will be
+created for the insertion of more data</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="routes.perm_list">
+<code class="descclassname">routes.</code><code class="descname">perm_list</code><em class="property"> = ['none', 'view', 'edit', 'own', 'admin']</em><a class="headerlink" href="#routes.perm_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of all permission levels, from lowest to highest.
+The levels:</p>
+<ol class="arabic simple">
+<li>none  &#8211; no permission</li>
+<li>view  &#8211; permission to view a list</li>
+<li>edit  &#8211; permission to edit a list</li>
+<li>own   &#8211; permission to change permission for a list</li>
+<li>admin &#8211; can do anything</li>
+</ol>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.permissions_get">
+<code class="descclassname">routes.</code><code class="descname">permissions_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#permissions_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.permissions_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the permission level a user has for a particular list.</p>
+<p>usage: POST the following:
+{</p>
+<blockquote>
+<div>listid: &lt;the listid&gt;</div></blockquote>
+<p>}</p>
+<p>returns:
+{</p>
+<blockquote>
+<div>permission: &lt;the current permission&gt;</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.permissions_set">
+<code class="descclassname">routes.</code><code class="descname">permissions_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#permissions_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.permissions_set" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>{</dt>
+<dd><p class="first">Set permissions for a user. Requires at least own permission</p>
+<p class="last">listid: &lt;listid&gt;,
+target: &lt;username of user to set perms with&gt;,
+permission: {none | view | edit | own | admin}</p>
+</dd>
+</dl>
+<p>}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.preview_list">
+<code class="descclassname">routes.</code><code class="descname">preview_list</code><span class="sig-paren">(</span><em>listid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#preview_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.preview_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the list with given listid from our database,
+display with template</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.query_cur_perm">
+<code class="descclassname">routes.</code><code class="descname">query_cur_perm</code><span class="sig-paren">(</span><em>catalist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#query_cur_perm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.query_cur_perm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the permission the current user has for list <em>catalist</em></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.query_permission">
+<code class="descclassname">routes.</code><code class="descname">query_permission</code><span class="sig-paren">(</span><em>user</em>, <em>catalist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#query_permission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.query_permission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the permission level a user has for a list.
+&#8220;None&#8221; represents an anonymous user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.register">
+<code class="descclassname">routes.</code><code class="descname">register</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Page for user registration</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.signin">
+<code class="descclassname">routes.</code><code class="descname">signin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#signin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.signin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sign the user in, given valid credentials.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.signup">
+<code class="descclassname">routes.</code><code class="descname">signup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#signup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.signup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sign the user up, given valid credentials and a username the doesn&#8217;t
+already exist in our database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.userlists">
+<code class="descclassname">routes.</code><code class="descname">userlists</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#userlists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.userlists" title="Permalink to this definition">¶</a></dt>
+<dd><p>A page displaying all lists belonging to the user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.value_save">
+<code class="descclassname">routes.</code><code class="descname">value_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#value_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.value_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the value in a particular key-value pair. Requires
+at least edit permission.</p>
+<p>The API is virtually identical the that of key_save()</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="routes.vote">
+<code class="descclassname">routes.</code><code class="descname">vote</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routes.html#vote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routes.vote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Two options:
+1. Update the database to incorporate a user&#8217;s vote on an entry.
+2. Find the user&#8217;s current vote and the current score of the entry.
+Requires at least view permission</p>
+<p>usage: POST the following
+{</p>
+<blockquote>
+<div><p>listid: &lt;listid&gt;,
+entryind: &lt;entryind&gt;,
+userid: &lt;userid&gt;,
+vote: {1 (upvote) | 0 (no vote) |</p>
+<blockquote>
+<div>-1 (downvote) | 100 (get the current vote)}</div></blockquote>
+</div></blockquote>
+<p>}</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a response with the following forms:</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>if vote == 100 {</dt>
+<dd>current_vote: &lt;the user&#8217;s current vote&gt;,
+score: &lt;the entry&#8217;s current score&gt;</dd>
+</dl>
+<p>}
+if vote != 100 {</p>
+<blockquote>
+<div>current_vote: &lt;the vote just made&gt;,
+score: &lt;the entry&#8217;s new score&gt;</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to Catalist&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Rachel Wu, Tony Zhang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

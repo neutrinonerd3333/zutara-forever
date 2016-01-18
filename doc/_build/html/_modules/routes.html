@@ -1,0 +1,1011 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>routes &mdash; Catalist 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Catalist 0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for routes</h1><div class="highlight"><pre>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># Module Imports</span>
+<span class="c1"># ----------------------------------------------------------</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="c1"># from glob import glob</span>
+
+<span class="kn">import</span> <span class="nn">uuid</span> <span class="kn">as</span> <span class="nn">uuid_module</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> \
+    <span class="n">request</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">make_response</span>
+
+<span class="kn">from</span> <span class="nn">flask.ext.mongoengine</span> <span class="kn">import</span> <span class="n">MongoEngine</span>
+<span class="kn">from</span> <span class="nn">flask.ext.mongoengine</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">flask.ext.pymongo</span> <span class="kn">import</span> <span class="n">PyMongo</span>
+<span class="kn">from</span> <span class="nn">flask.ext.security</span> <span class="kn">import</span> <span class="n">Security</span><span class="p">,</span> <span class="n">MongoEngineUserDatastore</span><span class="p">,</span> \
+    <span class="n">UserMixin</span><span class="p">,</span> <span class="n">RoleMixin</span><span class="p">,</span> <span class="n">login_required</span>
+<span class="kn">import</span> <span class="nn">flask.ext.security</span> <span class="kn">as</span> <span class="nn">flask_security</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># Flask Configuration</span>
+<span class="c1"># ----------------------------------------------------------</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="c1"># host mongo locally</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MONGODB_SETTINGS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;db&#39;</span><span class="p">:</span> <span class="s1">&#39;zutara-forever&#39;</span>
+<span class="p">}</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c&quot;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SECURITY_PASSWORD_SALT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;eddb960e-269c-4458-8e08-c1027d8b290&quot;</span>
+
+<span class="c1"># we&#39;ll need this later for actual app</span>
+<span class="n">HOSTNAME</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.0:6005&#39;</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">MongoEngine</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">mongo</span> <span class="o">=</span> <span class="n">PyMongo</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># Flask-Security and MongoEngine Setup</span>
+<span class="c1"># ----------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="Role"><a class="viewcode-back" href="../index.html#routes.Role">[docs]</a><span class="k">class</span> <span class="nc">Role</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Document</span><span class="p">,</span> <span class="n">RoleMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class for user roles (e.g. user, admin, ...) &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="User"><a class="viewcode-back" href="../index.html#routes.User">[docs]</a><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Document</span><span class="p">,</span> <span class="n">UserMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class for users. Can have any/none of these attributes. &quot;&quot;&quot;</span>
+    <span class="n">firstname</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+    <span class="n">lastname</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">uid</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>  <span class="c1"># because this is a hash</span>
+    <span class="n">active</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># set False for user confirmation</span>
+    <span class="n">confirmed_at</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
+
+    <span class="c1"># we want to remove long-inactive users</span>
+    <span class="n">last_active</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">roles</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">Role</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+<span class="c1"># maximum lengths</span>
+<span class="n">key_max_len</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">val_max_len</span> <span class="o">=</span> <span class="mi">1024</span>
+<span class="n">entry_title_max_len</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">list_title_max_len</span> <span class="o">=</span> <span class="mi">128</span>
+
+
+<div class="viewcode-block" id="CatalistKVP"><a class="viewcode-back" href="../index.html#routes.CatalistKVP">[docs]</a><span class="k">class</span> <span class="nc">CatalistKVP</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">EmbeddedDocument</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class for individual key-value pairs in our Catalist entries &quot;&quot;&quot;</span>
+    <span class="c1"># id is implicit in mongoengine, but we want to</span>
+    <span class="c1"># share kvpid&#39;s across (CatalistEntry)s</span>
+    <span class="n">kvpid</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="n">key_max_len</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="n">val_max_len</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CatalistEntry"><a class="viewcode-back" href="../index.html#routes.CatalistEntry">[docs]</a><span class="k">class</span> <span class="nc">CatalistEntry</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">EmbeddedDocument</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class for the entries in our Catalists &quot;&quot;&quot;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="n">entry_title_max_len</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">EmbeddedDocumentListField</span><span class="p">(</span><span class="n">CatalistKVP</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">upvoters</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">downvoters</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="Catalist"><a class="viewcode-back" href="../index.html#routes.Catalist">[docs]</a><span class="k">class</span> <span class="nc">Catalist</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class for our lists (Catalists :P) &quot;&quot;&quot;</span>
+    <span class="n">listid</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="n">list_title_max_len</span><span class="p">,</span>
+                           <span class="n">default</span><span class="o">=</span><span class="s2">&quot;untitled list&quot;</span><span class="p">)</span>
+    <span class="n">created</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># when list was created</span>
+    <span class="n">creator</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>  <span class="c1"># should be implemented as RefField(User)</span>
+    <span class="n">last_visited</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">EmbeddedDocumentListField</span><span class="p">(</span><span class="n">CatalistEntry</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span>
+
+    <span class="c1"># PERMISSIONS</span>
+
+    <span class="c1"># the permission the public has with the list</span>
+    <span class="n">public_level</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;edit&quot;</span><span class="p">,</span> <span class="s2">&quot;view&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">],</span>
+                                  <span class="n">default</span><span class="o">=</span><span class="s2">&quot;edit&quot;</span><span class="p">)</span>
+
+    <span class="c1"># people with own/edit/view permission</span>
+    <span class="n">owners</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
+    <span class="n">editors</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
+    <span class="n">viewers</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">ReferenceField</span><span class="p">(</span><span class="n">User</span><span class="p">))</span></div>
+
+
+<span class="c1"># Setup Flask-Security</span>
+<span class="n">user_datastore</span> <span class="o">=</span> <span class="n">MongoEngineUserDatastore</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">Role</span><span class="p">)</span>
+<span class="n">security</span> <span class="o">=</span> <span class="n">Security</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">user_datastore</span><span class="p">)</span>
+
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># Permissions</span>
+<span class="c1"># ----------------------------------------------------------</span>
+
+<span class="c1">#: A list of all permission levels, from lowest to highest.</span>
+<span class="c1">#: The levels:</span>
+<span class="c1">#:</span>
+<span class="c1">#: 1. none  -- no permission</span>
+<span class="c1">#: 2. view  -- permission to view a list</span>
+<span class="c1">#: 3. edit  -- permission to edit a list</span>
+<span class="c1">#: 4. own   -- permission to change permission for a list</span>
+<span class="c1">#: 5. admin -- can do anything</span>
+<span class="n">perm_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;view&quot;</span><span class="p">,</span> <span class="s2">&quot;edit&quot;</span><span class="p">,</span> <span class="s2">&quot;own&quot;</span><span class="p">,</span> <span class="s2">&quot;admin&quot;</span><span class="p">]</span>
+
+<span class="c1">#: Currently admins are determined by residency on this list.</span>
+<span class="c1">#: Hacky, I know. .__.</span>
+<span class="n">admin_unames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rmwu&#39;</span><span class="p">,</span> <span class="s1">&#39;txz&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="cmp_permission"><a class="viewcode-back" href="../index.html#routes.cmp_permission">[docs]</a><span class="k">def</span> <span class="nf">cmp_permission</span><span class="p">(</span><span class="n">perm1</span><span class="p">,</span> <span class="n">perm2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return a positive/0/negative integer when perm1 &gt;/=/&lt; perm2 &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">perm_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">perm1</span><span class="p">)</span> <span class="o">-</span> <span class="n">perm_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">perm2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="query_permission"><a class="viewcode-back" href="../index.html#routes.query_permission">[docs]</a><span class="k">def</span> <span class="nf">query_permission</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">catalist</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gives the permission level a user has for a list.</span>
+<span class="sd">    &quot;None&quot; represents an anonymous user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># handle anonymous users</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_anonymous</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">catalist</span><span class="o">.</span><span class="n">public_level</span>
+
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">uid</span> <span class="ow">in</span> <span class="n">admin_unames</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;admin&quot;</span>
+    <span class="k">elif</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">catalist</span><span class="o">.</span><span class="n">owners</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;own&quot;</span>
+    <span class="k">elif</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">catalist</span><span class="o">.</span><span class="n">public_level</span><span class="p">,</span> <span class="s2">&quot;edit&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">or</span> \
+            <span class="n">user</span> <span class="ow">in</span> <span class="n">catalist</span><span class="o">.</span><span class="n">editors</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;edit&quot;</span>
+    <span class="k">elif</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">catalist</span><span class="o">.</span><span class="n">public_level</span><span class="p">,</span> <span class="s2">&quot;view&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">or</span> \
+            <span class="n">user</span> <span class="ow">in</span> <span class="n">catalist</span><span class="o">.</span><span class="n">viewers</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;view&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;none&quot;</span></div>
+
+
+<div class="viewcode-block" id="query_cur_perm"><a class="viewcode-back" href="../index.html#routes.query_cur_perm">[docs]</a><span class="k">def</span> <span class="nf">query_cur_perm</span><span class="p">(</span><span class="n">catalist</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Finds the permission the current user has for list *catalist* &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">query_permission</span><span class="p">(</span><span class="n">flask_security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span> <span class="n">catalist</span><span class="p">)</span></div>
+
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># User Interaction Section</span>
+<span class="c1"># ----------------------------------------------------------</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/signup&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="signup"><a class="viewcode-back" href="../index.html#routes.signup">[docs]</a><span class="k">def</span> <span class="nf">signup</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sign the user up, given valid credentials and a username the doesn&#39;t</span>
+<span class="sd">    already exist in our database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span>
+    <span class="n">pw</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+    <span class="n">pw_hash</span> <span class="o">=</span> <span class="n">flask_security</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_hmac</span><span class="p">(</span><span class="n">pw</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># if user exists, then can&#39;t sign up with same username</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;register.html&#39;</span><span class="p">,</span>
+                               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Sorry, that username is taken!&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">mongoengine</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># if user exists, then can&#39;t sign up with same email</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">email</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+                <span class="s1">&#39;register.html&#39;</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Sorry, that email is taken! &quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;Did you forget your password?&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">user_datastore</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">pw_hash</span><span class="p">,</span>
+                                       <span class="n">last_active</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">)</span>
+    <span class="c1"># if multiple objects, then something just screwed up</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;error.html&#39;</span><span class="p">)</span>  <span class="c1"># DNE yet</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;./security/login_user.html&#39;</span><span class="p">,</span>
+                           <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You have successfully signed up! &quot;</span> <span class="o">+</span>
+                                   <span class="s2">&quot;Please login now.&quot;</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/signin&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="signin"><a class="viewcode-back" href="../index.html#routes.signin">[docs]</a><span class="k">def</span> <span class="nf">signin</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Sign the user in, given valid credentials. &quot;&quot;&quot;</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span>
+    <span class="n">pw</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+    <span class="n">pw_hash</span> <span class="o">=</span> <span class="n">flask_security</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_hmac</span><span class="p">(</span><span class="n">pw</span><span class="p">)</span>
+    <span class="n">whoops</span> <span class="o">=</span> <span class="s2">&quot;You have entered a wrong username or password. Please try again.&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># if user exists, then sign in</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">flask_security</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">verify_and_update_password</span><span class="p">(</span><span class="n">pw_hash</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">last_active</span> <span class="o">=</span> <span class="n">time</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;user last active {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">last_active</span><span class="p">))</span>
+            <span class="n">flask_security</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">remember</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">whoops</span>
+    <span class="k">except</span><span class="p">:</span>  <span class="c1"># user DNE</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">whoops</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;./security/login_user.html&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/logout&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="logout"><a class="viewcode-back" href="../index.html#routes.logout">[docs]</a><span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Log out the current user, clearing the Remember Me cookie &quot;&quot;&quot;</span>
+    <span class="n">flask_security</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">logout_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;logoutsuccess.html&#39;</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../index.html#routes.login">[docs]</a><span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Page for user login &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;./security/login_user.html&#39;</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/register&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="register"><a class="viewcode-back" href="../index.html#routes.register">[docs]</a><span class="k">def</span> <span class="nf">register</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Page for user registration &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;register.html&#39;</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/list/&lt;listid&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="getlist"><a class="viewcode-back" href="../index.html#routes.getlist">[docs]</a><span class="k">def</span> <span class="nf">getlist</span><span class="p">(</span><span class="n">listid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Display a list with given listid from our database. &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">base_url</span>
+    <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">listid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;view&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Access or share this list at:&lt;br&gt;&lt;a href=&quot;{0}&quot;&gt;{0}&lt;/a&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;loadlist.html&#39;</span><span class="p">,</span> <span class="n">listtitle</span><span class="o">=</span><span class="n">the_list</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                           <span class="n">entries</span><span class="o">=</span><span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="human_readable_time_since"><a class="viewcode-back" href="../index.html#routes.human_readable_time_since">[docs]</a><span class="k">def</span> <span class="nf">human_readable_time_since</span><span class="p">(</span><span class="n">tiem</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Give a human-readable representation of time elapsed since a given time</span>
+
+<span class="sd">    :param tiem: a :attr:`datetime` object representing the given time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span>
+    <span class="n">lv</span> <span class="o">=</span> <span class="n">tiem</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span>
+    <span class="c1"># formatting last visited</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">lv</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="n">today</span><span class="p">[</span><span class="mi">7</span><span class="p">]):</span>  <span class="c1"># same day</span>
+        <span class="n">timeSince</span> <span class="o">=</span> <span class="n">today</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">lv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">timeSince</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>  <span class="c1"># same hour</span>
+            <span class="n">timeSince</span> <span class="o">=</span> <span class="n">today</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">lv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">timeSince</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">since</span> <span class="o">=</span> <span class="s2">&quot;1 minute ago&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">since</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">timeSince</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; minutes ago&quot;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">timeSince</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">since</span> <span class="o">=</span> <span class="s2">&quot;1 hour ago&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">since</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">timeSince</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; hours ago&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># days since January 1</span>
+        <span class="n">timeSince</span> <span class="o">=</span> <span class="n">today</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">-</span> <span class="n">lv</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">timeSince</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">since</span> <span class="o">=</span> <span class="s2">&quot;1 day ago&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">since</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">timeSince</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; days ago&quot;</span>
+    <span class="k">return</span> <span class="n">since</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/mylists&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@flask_security.login_required</span>
+<div class="viewcode-block" id="userlists"><a class="viewcode-back" href="../index.html#routes.userlists">[docs]</a><span class="k">def</span> <span class="nf">userlists</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; A page displaying all lists belonging to the user. &quot;&quot;&quot;</span>
+
+    <span class="n">current_user</span> <span class="o">=</span> <span class="n">flask_security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">current_user</span>
+    <span class="n">lists</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">creator</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span><span class="o">.</span><span class="n">only</span><span class="p">(</span>
+        <span class="s1">&#39;listid&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;last_visited&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">lists</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+            <span class="s1">&#39;home.html&#39;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Oops! You have no lists saved! &quot;</span> <span class="o">+</span>
+                    <span class="s2">&quot;Would you like to create one?&quot;</span><span class="p">)</span>
+
+    <span class="n">lists</span> <span class="o">=</span> <span class="n">lists</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-last_visited&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;/preview/&quot;</span> <span class="o">+</span> <span class="n">catalist</span><span class="o">.</span><span class="n">listid</span> <span class="k">for</span> <span class="n">catalist</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">]</span>
+    <span class="n">urls_actual</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;/list/&quot;</span> <span class="o">+</span> <span class="n">catalist</span><span class="o">.</span><span class="n">listid</span> <span class="k">for</span> <span class="n">catalist</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">]</span>
+    <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="n">catalist</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">catalist</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">]</span>
+    <span class="n">last_visited</span> <span class="o">=</span> <span class="p">[</span><span class="n">human_readable_time_since</span><span class="p">(</span><span class="n">catalist</span><span class="o">.</span><span class="n">last_visited</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">catalist</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">]</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="p">[</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">catalist</span><span class="p">)</span> <span class="k">for</span> <span class="n">catalist</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;mylists.html&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">lists</span><span class="p">),</span> <span class="n">titles</span><span class="o">=</span><span class="n">titles</span><span class="p">,</span>
+                           <span class="n">last_visited</span><span class="o">=</span><span class="n">last_visited</span><span class="p">,</span> <span class="n">urls</span><span class="o">=</span><span class="n">urls</span><span class="p">,</span>
+                           <span class="n">urls_actual</span><span class="o">=</span><span class="n">urls_actual</span><span class="p">,</span>
+                           <span class="n">permissions</span><span class="o">=</span><span class="n">permissions</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/preview/&lt;listid&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="preview_list"><a class="viewcode-back" href="../index.html#routes.preview_list">[docs]</a><span class="k">def</span> <span class="nf">preview_list</span><span class="p">(</span><span class="n">listid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetch the list with given listid from our database,</span>
+<span class="sd">    display with template</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">listid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;view&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;preview.html&#39;</span><span class="p">,</span> <span class="n">listtitle</span><span class="o">=</span><span class="n">the_list</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                           <span class="n">entries</span><span class="o">=</span><span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_id"><a class="viewcode-back" href="../index.html#routes.get_id">[docs]</a><span class="k">def</span> <span class="nf">get_id</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Return name of current user &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">flask_security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">uid</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span></div>
+
+<span class="n">app</span><span class="o">.</span><span class="n">jinja_env</span><span class="o">.</span><span class="n">globals</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_id</span><span class="o">=</span><span class="n">get_id</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/about&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="about"><a class="viewcode-back" href="../index.html#routes.about">[docs]</a><span class="k">def</span> <span class="nf">about</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; About us. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;about.html&#39;</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="index"><a class="viewcode-back" href="../index.html#routes.index">[docs]</a><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Our homepage! &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;home.html&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># Error Handlers</span>
+<span class="c1"># ----------------------------------------------------------</span>
+
+
+<span class="nd">@app.errorhandler</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">forbidden</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;403.html&#39;</span><span class="p">),</span> <span class="mi">403</span>
+
+
+<span class="nd">@app.errorhandler</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">page_not_found</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;404.html&#39;</span><span class="p">),</span> <span class="mi">404</span>
+
+
+<span class="nd">@app.errorhandler</span><span class="p">(</span><span class="mi">410</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">page_not_found</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;410.html&#39;</span><span class="p">),</span> <span class="mi">410</span>
+
+
+<span class="nd">@app.errorhandler</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">internal_server_error</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;500.html&#39;</span><span class="p">),</span> <span class="mi">500</span>
+
+
+<div class="viewcode-block" id="InvalidAPIUsage"><a class="viewcode-back" href="../index.html#routes.InvalidAPIUsage">[docs]</a><span class="k">class</span> <span class="nc">InvalidAPIUsage</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for exceptions to raise in invalid API usage.</span>
+<span class="sd">    Shamelessly pillaged from `Flask&#39;s documentation</span>
+<span class="sd">    &lt;http://flask.pocoo.org/docs/0.10/patterns/apierrors/&gt;`_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">status_code</span> <span class="o">=</span> <span class="mi">400</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">payload</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="k">if</span> <span class="n">status_code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="n">status_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="n">payload</span>
+
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payload</span> <span class="ow">or</span> <span class="p">())</span>
+        <span class="n">rv</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>
+        <span class="k">return</span> <span class="n">rv</span></div>
+
+
+<span class="nd">@app.errorhandler</span><span class="p">(</span><span class="n">InvalidAPIUsage</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">handle_invalid_usage</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">status_code</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># THE API!!!</span>
+<span class="c1"># ----------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="create_list"><a class="viewcode-back" href="../index.html#routes.create_list">[docs]</a><span class="k">def</span> <span class="nf">create_list</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Create a new list and return the assigned listid</span>
+
+<span class="sd">    Returns: the assigned listid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid_module</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+
+    <span class="n">current_user</span> <span class="o">=</span> <span class="n">flask_security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">current_user</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="n">new_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">list_id</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+                            <span class="n">last_visited</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">uid</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">uid</span>
+        <span class="n">new_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">list_id</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+                            <span class="n">last_visited</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">creator</span><span class="o">=</span><span class="n">uid</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">uid</span><span class="p">)</span>
+        <span class="n">new_list</span><span class="o">.</span><span class="n">owners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+    <span class="n">new_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">list_id</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/makelist&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="make_list"><a class="viewcode-back" href="../index.html#routes.make_list">[docs]</a><span class="k">def</span> <span class="nf">make_list</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Upon making the first edit, an empty list will be</span>
+<span class="sd">    created for the insertion of more data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_id</span> <span class="o">=</span> <span class="n">create_list</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">list_id</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/savelist&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="list_save"><a class="viewcode-back" href="../index.html#routes.list_save">[docs]</a><span class="k">def</span> <span class="nf">list_save</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save an entire list. If listid is provided, the list is</span>
+<span class="sd">    written onto the referenced list. Otherwise, a new list is</span>
+<span class="sd">    created. In both cases the listid to which we saved the list</span>
+<span class="sd">    is returned.</span>
+
+<span class="sd">    usage:</span>
+<span class="sd">    {</span>
+<span class="sd">        title: &lt;thetitle&gt;,</span>
+<span class="sd">        contents: [</span>
+<span class="sd">            [title, [</span>
+<span class="sd">                [attrname, attrval],</span>
+<span class="sd">                ...</span>
+<span class="sd">                ]</span>
+<span class="sd">            ],</span>
+<span class="sd">            ...</span>
+<span class="sd">        ]</span>
+<span class="sd">        (optionally) , listid: &lt;the listid to save to&gt;</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Returns: the given or assigned listid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">the_listid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;listid&quot;</span><span class="p">,</span> <span class="n">create_list</span><span class="p">())</span>
+    <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">the_listid</span><span class="p">)</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">last_visited</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+
+    <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">CatalistEntry</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">contents</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">CatalistKVP</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">])</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s2">&quot;contents&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">the_listid</span><span class="p">)</span></div>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/savekey&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="key_save"><a class="viewcode-back" href="../index.html#routes.key_save">[docs]</a><span class="k">def</span> <span class="nf">key_save</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save a key. Requires at least edit permission.</span>
+
+<span class="sd">    POST a JS associative array (basically a dict) like so:</span>
+<span class="sd">    {</span>
+<span class="sd">        listid:  &lt;the list id&gt;,</span>
+<span class="sd">        entryind: &lt;index of entry w.r.t. list (0-indexing)&gt;,</span>
+<span class="sd">        index: &lt;index of key-val pair w.r.t. entry&gt;,</span>
+<span class="sd">        newvalue: &lt;new value of key&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">eind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;entryind&quot;</span><span class="p">])</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;newvalue&quot;</span><span class="p">][:</span><span class="n">key_max_len</span><span class="p">]</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">])</span>
+        <span class="n">lid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">]</span>
+        <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">lid</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid arguments&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;List does not exist&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;edit&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+    <span class="c1"># pad the_list.contents if index eind out of bounds</span>
+    <span class="n">pad_len</span> <span class="o">=</span> <span class="n">eind</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span> <span class="o">+=</span> <span class="p">[</span><span class="n">CatalistEntry</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">pad_len</span><span class="p">)]</span>
+    <span class="n">the_entry</span> <span class="o">=</span> <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="n">eind</span><span class="p">]</span>
+
+    <span class="c1"># do the same for the_entry.contents and ind</span>
+    <span class="n">pad_len</span> <span class="o">=</span> <span class="n">ind</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_entry</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">the_entry</span><span class="o">.</span><span class="n">contents</span> <span class="o">+=</span> <span class="p">[</span><span class="n">CatalistKVP</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">pad_len</span><span class="p">)]</span>
+
+    <span class="c1"># two options for updating key name: either we update it</span>
+    <span class="c1"># for this entry ONLY or update it for ALL entries</span>
+
+    <span class="c1"># option ONLY</span>
+    <span class="n">the_entry</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="c1"># option ALL</span>
+    <span class="c1"># for entry in the_list.contents:</span>
+    <span class="c1">#     entry.contents[ind].key = val</span>
+
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">()</span>  <span class="c1"># return a blank 200</span></div>
+
+
+<span class="c1"># maybe merge this with /api/savekey and have client pass an extra</span>
+<span class="c1"># key-val pair; this would be repeat significantly less code [txz]</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/savevalue&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="value_save"><a class="viewcode-back" href="../index.html#routes.value_save">[docs]</a><span class="k">def</span> <span class="nf">value_save</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save the value in a particular key-value pair. Requires</span>
+<span class="sd">    at least edit permission.</span>
+
+<span class="sd">    The API is virtually identical the that of key_save()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">eind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;entryind&quot;</span><span class="p">])</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;newvalue&quot;</span><span class="p">][:</span><span class="n">val_max_len</span><span class="p">]</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">])</span>
+        <span class="n">lid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">]</span>
+        <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">lid</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid arguments&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;List does not exist&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;edit&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+    <span class="c1"># pad the_list.contents if index eind out of bounds</span>
+    <span class="n">pad_len</span> <span class="o">=</span> <span class="n">eind</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span> <span class="o">+=</span> <span class="p">[</span><span class="n">CatalistEntry</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">pad_len</span><span class="p">)]</span>
+    <span class="n">the_entry</span> <span class="o">=</span> <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="n">eind</span><span class="p">]</span>
+
+    <span class="n">pad_len</span> <span class="o">=</span> <span class="n">ind</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_entry</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">the_entry</span><span class="o">.</span><span class="n">contents</span> <span class="o">+=</span> <span class="p">[</span><span class="n">CatalistKVP</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">pad_len</span><span class="p">)]</span>
+    <span class="n">the_entry</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">()</span>  <span class="c1"># return a 200</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/saveentrytitle&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="entry_title_save"><a class="viewcode-back" href="../index.html#routes.entry_title_save">[docs]</a><span class="k">def</span> <span class="nf">entry_title_save</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    AJAXily save the title of an entry. Requires at least edit permission</span>
+
+<span class="sd">    usage: POST a JS associative array (basically a dict) like so:</span>
+<span class="sd">    {</span>
+<span class="sd">        listid:  &lt;the list id&gt;,</span>
+<span class="sd">        entryind: &lt;index of entry w.r.t. list (0-indexing)&gt;,</span>
+<span class="sd">        newvalue: &lt;new entry title&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">req_json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span>
+        <span class="n">lid</span><span class="p">,</span> <span class="n">eind</span> <span class="o">=</span> <span class="p">[</span><span class="n">req_json</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">,</span> <span class="s2">&quot;entryind&quot;</span><span class="p">]]</span>
+        <span class="n">eind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">eind</span><span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">req_json</span><span class="p">[</span><span class="s2">&quot;newvalue&quot;</span><span class="p">][:</span><span class="n">entry_title_max_len</span><span class="p">]</span>
+        <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">lid</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid arguments&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;List does not exist&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;edit&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+    <span class="n">pad_len</span> <span class="o">=</span> <span class="n">eind</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span> <span class="o">+=</span> <span class="p">[</span><span class="n">CatalistEntry</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">pad_len</span><span class="p">)]</span>
+    <span class="n">the_entry</span> <span class="o">=</span> <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="n">eind</span><span class="p">]</span>
+    <span class="n">the_entry</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s2">&quot;OK&quot;</span>  <span class="c1"># 200 OK ^_^</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/savelisttitle&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="list_title_save"><a class="viewcode-back" href="../index.html#routes.list_title_save">[docs]</a><span class="k">def</span> <span class="nf">list_title_save</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    AJAXily save the title of a Catalist ^_^</span>
+<span class="sd">    Requires at least edit permission.</span>
+
+<span class="sd">    usage: POST a JS assoc array like so:</span>
+<span class="sd">    {</span>
+<span class="sd">        listid: &lt;the list id&gt;,</span>
+<span class="sd">        newvalue: &lt;our new title&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">req_json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">req_json</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid arguments&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;List does not exist&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;edit&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+    <span class="n">the_list</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">req_json</span><span class="p">[</span><span class="s2">&quot;newvalue&quot;</span><span class="p">][:</span><span class="n">list_title_max_len</span><span class="p">]</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">()</span>  <span class="c1"># 200 OK ^_^</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/deletelist&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="list_delete"><a class="viewcode-back" href="../index.html#routes.list_delete">[docs]</a><span class="k">def</span> <span class="nf">list_delete</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete a Catalist. Requires at least own permission</span>
+
+<span class="sd">    usage: POST a JSON associative array as follows:</span>
+<span class="sd">    {</span>
+<span class="sd">        listid: &lt;the id of the list to be deleted&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">listid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">]</span>
+        <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">listid</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid arguments&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;List does not exist&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;own&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;OK&#39;</span>  <span class="c1"># this should return a 200</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/deleteentry&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="entry_delete"><a class="viewcode-back" href="../index.html#routes.entry_delete">[docs]</a><span class="k">def</span> <span class="nf">entry_delete</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete an entry from a Catalist. Requires at least edit permission.</span>
+
+<span class="sd">    usage: POST a JSON associative array as follows:</span>
+<span class="sd">    {</span>
+<span class="sd">        listid: &lt;the id of the Catalist&gt;,</span>
+<span class="sd">        entryind: &lt;the index of the entry to remove&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">listid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">]</span>
+        <span class="n">entryind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;entryind&quot;</span><span class="p">])</span>
+        <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">listid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;edit&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+        <span class="n">removed</span> <span class="o">=</span> <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">entryind</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid arguments&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;List does not exist&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Entry index out of bounds&quot;</span><span class="p">)</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;OK&#39;</span>  <span class="c1"># 200 OK</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/deletekvp&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="kvp_delete"><a class="viewcode-back" href="../index.html#routes.kvp_delete">[docs]</a><span class="k">def</span> <span class="nf">kvp_delete</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete a key-value pair from a Catalist entry.</span>
+<span class="sd">    Requires at least edit permission.</span>
+
+<span class="sd">    usage: POST a JSON associative array as follows:</span>
+<span class="sd">    {</span>
+<span class="sd">        listid: &lt;the id of the Catalist&gt;,</span>
+<span class="sd">        entryind: &lt;the index of the entry to remove&gt;,</span>
+<span class="sd">        index: &lt;the index of the kvp within the entry&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">entryind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;entryind&quot;</span><span class="p">])</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">])</span>
+        <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid arguments&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;List does not exist&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;edit&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">the_entry</span> <span class="o">=</span> <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="n">entryind</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Entry index out of bounds&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">removed</span> <span class="o">=</span> <span class="n">the_entry</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;KVP index out of bounds&quot;</span>
+
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;OK&#39;</span>  <span class="c1"># 200 OK</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/vote&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="vote"><a class="viewcode-back" href="../index.html#routes.vote">[docs]</a><span class="k">def</span> <span class="nf">vote</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Two options:</span>
+<span class="sd">    1. Update the database to incorporate a user&#39;s vote on an entry.</span>
+<span class="sd">    2. Find the user&#39;s current vote and the current score of the entry.</span>
+<span class="sd">    Requires at least view permission</span>
+
+<span class="sd">    usage: POST the following</span>
+<span class="sd">    {</span>
+<span class="sd">        listid: &lt;listid&gt;,</span>
+<span class="sd">        entryind: &lt;entryind&gt;,</span>
+<span class="sd">        userid: &lt;userid&gt;,</span>
+<span class="sd">        vote: {1 (upvote) | 0 (no vote) |</span>
+<span class="sd">               -1 (downvote) | 100 (get the current vote)}</span>
+<span class="sd">    }</span>
+
+<span class="sd">    :return: a response with the following forms:</span>
+<span class="sd">    if vote == 100 {</span>
+<span class="sd">        current_vote: &lt;the user&#39;s current vote&gt;,</span>
+<span class="sd">        score: &lt;the entry&#39;s current score&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    if vote != 100 {</span>
+<span class="sd">        current_vote: &lt;the vote just made&gt;,</span>
+<span class="sd">        score: &lt;the entry&#39;s new score&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">listid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">]</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">listid</span><span class="p">)</span>
+    <span class="n">entryind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;entryind&quot;</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">entryind</span><span class="p">)</span>
+    <span class="c1"># uid = request.form[&quot;userid&quot;]</span>
+    <span class="n">current_user</span> <span class="o">=</span> <span class="n">flask_security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">current_user</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;LOGINNN&quot;</span><span class="p">)</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;text/html&#39;</span><span class="p">}</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Oops! You must be logged in to vote. &quot;</span> <span class="o">+</span> \
+                  <span class="s2">&quot;Would you like to &lt;a href=&#39;/signup&#39;&gt;register&lt;/a&gt; &quot;</span> <span class="o">+</span> \
+                  <span class="s2">&quot;or &lt;a href=&#39;/login&#39;&gt;log in&lt;/a&gt;?&quot;</span>
+        <span class="k">return</span> <span class="n">make_response</span><span class="p">(</span><span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;home.html&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">),</span>
+                             <span class="mi">403</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">uid</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">uid</span>
+    <span class="n">vote_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;vote&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">vote_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid vote value&quot;</span><span class="p">)</span>
+    <span class="n">the_user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">uid</span><span class="p">)</span>
+
+    <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">listid</span><span class="p">)</span>
+
+    <span class="c1"># pad the_list.contents if index eind out of bounds</span>
+    <span class="n">pad_len</span> <span class="o">=</span> <span class="n">entryind</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span> <span class="o">+=</span> <span class="p">[</span><span class="n">CatalistEntry</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">pad_len</span><span class="p">)]</span>
+    <span class="n">the_entry</span> <span class="o">=</span> <span class="n">the_list</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="n">entryind</span><span class="p">]</span>
+
+    <span class="n">curscore</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">the_entry</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">the_list</span><span class="p">),</span> <span class="s2">&quot;view&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+    <span class="c1"># find the current vote, possibly removing user from up/downvoters lists</span>
+    <span class="c1"># code works until  here and then 500s due to update_one being a method</span>
+    <span class="c1"># of the queryset instead of the document</span>
+    <span class="n">cur_vote</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">the_user</span> <span class="ow">in</span> <span class="n">the_entry</span><span class="o">.</span><span class="n">upvoters</span><span class="p">:</span>
+        <span class="n">cur_vote</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">vote_val</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">the_entry</span><span class="o">.</span><span class="n">upvoters</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">the_user</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">the_user</span> <span class="ow">in</span> <span class="n">the_entry</span><span class="o">.</span><span class="n">downvoters</span><span class="p">:</span>
+        <span class="n">cur_vote</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">vote_val</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">the_entry</span><span class="o">.</span><span class="n">downvoters</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">the_user</span><span class="p">)</span>
+
+    <span class="c1"># do we only want to look up some values?</span>
+    <span class="c1"># TODO maybe change this to NaN instead of 100?</span>
+    <span class="k">if</span> <span class="n">vote_val</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;current_vote&quot;</span><span class="p">:</span> <span class="n">cur_vote</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">curscore</span><span class="p">})</span>
+
+    <span class="c1"># stick the user in the correct list</span>
+    <span class="k">if</span> <span class="n">vote_val</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">the_entry</span><span class="o">.</span><span class="n">upvoters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_user</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vote_val</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">the_entry</span><span class="o">.</span><span class="n">downvoters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_user</span><span class="p">)</span>
+
+    <span class="c1"># update the score in the database</span>
+    <span class="n">the_entry</span><span class="o">.</span><span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">vote_val</span> <span class="o">-</span> <span class="n">cur_vote</span><span class="p">)</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">current_vote</span><span class="o">=</span><span class="n">vote_val</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="n">the_entry</span><span class="o">.</span><span class="n">score</span><span class="p">)</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/setpermissions&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="permissions_set"><a class="viewcode-back" href="../index.html#routes.permissions_set">[docs]</a><span class="k">def</span> <span class="nf">permissions_set</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    {</span>
+<span class="sd">        Set permissions for a user. Requires at least own permission</span>
+
+<span class="sd">        listid: &lt;listid&gt;,</span>
+<span class="sd">        target: &lt;username of user to set perms with&gt;,</span>
+<span class="sd">        permission: {none | view | edit | own | admin}</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uname</span> <span class="o">=</span> <span class="n">get_id</span><span class="p">()</span>
+    <span class="n">listid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">]</span>
+    <span class="n">perm</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;permission&quot;</span><span class="p">]</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
+
+    <span class="n">the_list</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">listid</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">perm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">perm_list</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Invalid arguments&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">uperm</span> <span class="o">=</span> <span class="n">query_permission</span><span class="p">(</span><span class="n">Users</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">uname</span><span class="p">),</span> <span class="n">the_list</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;No such user&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cmp_permission</span><span class="p">(</span><span class="n">uperm</span><span class="p">,</span> <span class="s2">&quot;own&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAPIUsage</span><span class="p">(</span><span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+    <span class="n">the_target</span> <span class="o">=</span> <span class="n">Users</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+    <span class="n">target_cur_perm</span> <span class="o">=</span> <span class="n">query_permission</span><span class="p">(</span><span class="n">the_target</span><span class="p">,</span> <span class="n">the_list</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">target_cur_perm</span> <span class="o">==</span> <span class="n">perm</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;OK&quot;</span>  <span class="c1"># 200 OK</span>
+
+    <span class="c1"># if target user is currently on own/edit/view, remove user from that</span>
+    <span class="k">if</span> <span class="n">target_cur_perm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;own&quot;</span><span class="p">,</span> <span class="s2">&quot;view&quot;</span><span class="p">]:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">the_list</span><span class="p">,</span> <span class="n">target_cur_perm</span> <span class="o">+</span> <span class="s2">&quot;ers&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">the_target</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">target_cur_perm</span> <span class="o">==</span> <span class="s2">&quot;edit&quot;</span><span class="p">:</span>
+        <span class="n">the_list</span><span class="o">.</span><span class="n">editors</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">the_target</span><span class="p">)</span>
+
+    <span class="c1"># add target user to appropriate new privilege lists</span>
+    <span class="k">if</span> <span class="n">perm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;own&quot;</span><span class="p">,</span> <span class="s2">&quot;view&quot;</span><span class="p">]:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">the_list</span><span class="p">,</span> <span class="n">perm</span> <span class="o">+</span> <span class="s2">&quot;ers&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_target</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">perm</span> <span class="o">==</span> <span class="s2">&quot;edit&quot;</span><span class="p">:</span>
+        <span class="n">the_list</span><span class="o">.</span><span class="n">editors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_target</span><span class="p">)</span>
+
+    <span class="c1"># if owners is now empty, make the list publicly editable</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_list</span><span class="o">.</span><span class="n">owners</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">the_list</span><span class="o">.</span><span class="n">public_level</span> <span class="o">=</span> <span class="s2">&quot;edit&quot;</span>
+
+    <span class="c1"># save the list</span>
+    <span class="n">the_list</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s2">&quot;OK&quot;</span>  <span class="c1"># 200 OK</span></div>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/getpermissions&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="permissions_get"><a class="viewcode-back" href="../index.html#routes.permissions_get">[docs]</a><span class="k">def</span> <span class="nf">permissions_get</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the permission level a user has for a particular list.</span>
+
+<span class="sd">    usage: POST the following:</span>
+<span class="sd">    {</span>
+<span class="sd">        listid: &lt;the listid&gt;</span>
+<span class="sd">    }</span>
+
+<span class="sd">    returns:</span>
+<span class="sd">    {</span>
+<span class="sd">        permission: &lt;the current permission&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">catalist</span> <span class="o">=</span> <span class="n">Catalist</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">listid</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;listid&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">permission</span><span class="o">=</span><span class="n">query_cur_perm</span><span class="p">(</span><span class="n">catalist</span><span class="p">))</span></div>
+
+
+<span class="n">autocomplete_dict</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;contacts&quot;</span><span class="p">,</span> <span class="s2">&quot;groceries&quot;</span><span class="p">,</span> <span class="s2">&quot;movie&quot;</span><span class="p">,</span> <span class="s2">&quot;shopping&quot;</span><span class="p">]</span>
+<span class="n">autocomplete_dict</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/api/autocomplete&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="autocomplete"><a class="viewcode-back" href="../index.html#routes.autocomplete">[docs]</a><span class="k">def</span> <span class="nf">autocomplete</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    completes a word fragment with a possible list type</span>
+<span class="sd">    usage: POST to this route with {&quot;fragment&quot;: myfragment},</span>
+<span class="sd">    response is the list of possible completions of *myfragment*</span>
+<span class="sd">    drawn from *autocomplete_dict*</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fragment</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;fragment&quot;</span><span class="p">]</span>
+    <span class="n">completions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">autocomplete_dict</span><span class="p">:</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">item</span><span class="p">[:</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="n">fragment</span><span class="p">:</span>
+            <span class="n">completions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">completions</span><span class="o">=</span><span class="n">completions</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span></div>
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># Start Application</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6005</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Rachel Wu, Tony Zhang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

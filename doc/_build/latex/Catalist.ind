@@ -1,0 +1,86 @@
+\begin{theindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item about() (in module routes), \hyperpage{1}
+  \item admin\_unames (in module routes), \hyperpage{1}
+  \item autocomplete() (in module routes), \hyperpage{1}
+
+  \indexspace
+  \bigletter C
+  \item Catalist (class in routes), \hyperpage{1}
+  \item CatalistEntry (class in routes), \hyperpage{1}
+  \item CatalistKVP (class in routes), \hyperpage{1}
+  \item cmp\_permission() (in module routes), \hyperpage{1}
+  \item create\_list() (in module routes), \hyperpage{1}
+
+  \indexspace
+  \bigletter E
+  \item entry\_delete() (in module routes), \hyperpage{1}
+  \item entry\_title\_save() (in module routes), \hyperpage{1}
+
+  \indexspace
+  \bigletter G
+  \item get\_id() (in module routes), \hyperpage{1}
+  \item getlist() (in module routes), \hyperpage{1}
+
+  \indexspace
+  \bigletter H
+  \item human\_readable\_time\_since() (in module routes), \hyperpage{1}
+
+  \indexspace
+  \bigletter I
+  \item index() (in module routes), \hyperpage{1}
+  \item InvalidAPIUsage, \hyperpage{1}
+
+  \indexspace
+  \bigletter K
+  \item key\_save() (in module routes), \hyperpage{2}
+  \item kvp\_delete() (in module routes), \hyperpage{2}
+
+  \indexspace
+  \bigletter L
+  \item list\_delete() (in module routes), \hyperpage{2}
+  \item list\_save() (in module routes), \hyperpage{2}
+  \item list\_title\_save() (in module routes), \hyperpage{2}
+  \item login() (in module routes), \hyperpage{2}
+  \item logout() (in module routes), \hyperpage{2}
+
+  \indexspace
+  \bigletter M
+  \item make\_list() (in module routes), \hyperpage{2}
+
+  \indexspace
+  \bigletter P
+  \item perm\_list (in module routes), \hyperpage{2}
+  \item permissions\_get() (in module routes), \hyperpage{3}
+  \item permissions\_set() (in module routes), \hyperpage{3}
+  \item preview\_list() (in module routes), \hyperpage{3}
+
+  \indexspace
+  \bigletter Q
+  \item query\_cur\_perm() (in module routes), \hyperpage{3}
+  \item query\_permission() (in module routes), \hyperpage{3}
+
+  \indexspace
+  \bigletter R
+  \item register() (in module routes), \hyperpage{3}
+  \item Role (class in routes), \hyperpage{1}
+  \item routes (module), \hyperpage{1}
+
+  \indexspace
+  \bigletter S
+  \item signin() (in module routes), \hyperpage{3}
+  \item signup() (in module routes), \hyperpage{3}
+
+  \indexspace
+  \bigletter U
+  \item User (class in routes), \hyperpage{1}
+  \item userlists() (in module routes), \hyperpage{3}
+
+  \indexspace
+  \bigletter V
+  \item value\_save() (in module routes), \hyperpage{3}
+  \item vote() (in module routes), \hyperpage{3}
+
+\end{theindex}
