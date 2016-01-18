@@ -320,10 +320,10 @@ function addVote(that) {
             $(that).css("background-position", "-10.5em 0");
             $("#link").html("Heart!");
             console.log("Current score is " + data.score);
-            return;
+            return true;
         }
     });
-    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41;");
+    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
 }
 // undo vote, need to update backend with this
 function deleteVote(that) {
@@ -341,10 +341,10 @@ function deleteVote(that) {
             $(that).css("background-position", "-6em 0");
             $("#link").html("Unvote!");
             console.log("Current score is " + data.score);
-            return;
+            return true;
         }
     });
-    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41;");
+    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
 }
 
 function deleteItem() {
