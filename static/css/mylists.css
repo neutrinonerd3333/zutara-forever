@@ -48,18 +48,31 @@ body {height: calc(100% - 2em);}
     font-weight: bold;
     letter-spacing: 2px;
 }
-/* implement later 
-@media (max-width:800px) {
-    .listBlock {
-        float: none;
+@media (max-width:800px){
+    .listBlock, .listBlock2 {
+        display: block;
+        position: relative;
+        left: 10%;
+        height: 30%;
+        width: 80%;
+        
+        background-color: #CEF;
     }
-}*/
+    .listBlock {
+        border-radius: 20px 20px 0 0;
+    }
+    .listBlock2 {
+        border-radius: 0;
+        top: 0;
+    }
+}
 .listHead {
     width: 100%;
+    height: 1.5em;
 }
 .titles, .times {
     padding-top: 0.5em;
-    height: 1.5em;
+    height: 100%;
     width: 50%;
     display: inline-block;
     text-align: center;
@@ -79,6 +92,7 @@ body {height: calc(100% - 2em);}
     padding: 0.5em 1em;
     margin: 0;
     display: block;
+    overflow: hidden;
 }
 .list:hover{
     background-color: #AEF;
@@ -118,8 +132,9 @@ iframe {
     width: 1.5em;
     padding-left: .5em;
     height: 100%;
-    position: absolute;
-    left: 0;
+    position: relative;
+    left: -.5em;
+    overflow: hidden;
 }
 .icon-share {
     top: .5em;
@@ -148,6 +163,7 @@ iframe {
     width: 100%;
     height: 11em;
     
+    overflow: hidden;
     background-color: #9DF;
     display: none;
 }
@@ -177,8 +193,9 @@ iframe {
     width: calc(100% - 5em);
     height: calc(100% - .5em);
     position: relative;
-    left: 2em;
-    display: block;
+    left: -1em;
+    top: -1.8em;
+    display: inline-block;
     
     outline: none;
     padding: 0em .5em 0;
