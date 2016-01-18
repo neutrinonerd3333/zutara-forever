@@ -454,38 +454,39 @@ def make_list():
 @app.route("/api/savelist", methods=['POST'])
 def list_save():
     """
-    For saving an entire list.
+    Save an entire list.
 
     usage:
     {
         title: <thetitle>,
         contents: [
-            *[title, [*[attrname, attrval]]]
+            [title, [
+                [attrname, attrval],
+                ...
+                ]
+            ],
+            ...
         ]
-        (optionally) , listid: <the lstid to save to>
+        (optionally) , listid: <the listid to save to>
     }
 
     Returns: the given or assigned listid
     """
     the_listid = request.form.get("listid", create_list())
     the_list = Catalist.objects.get(listid=the_listid)
+    the_list.title = request.form["title"]
+    the_list.last_visited = datetime.utcnow()
 
-    list_title = request.form["title"]
-    list_contents = request.form["contents"]
+    the_list.contents = [
+        CatalistEntry(title=entry[0], contents=[
+                CatalistKVP(key=k, value=v)
+                for k, v in entry[1]
+            ])
+        for entry in request.form["contents"]
+    ]
 
-    # pad list_contents, modify titles as necessary
-    # for each entry, pad contents, modify as necessary
-
-    for entry in list_contents:
-        temp = CatalistEntry(title=entry[0])
-        keys = [], kvps = []
-        for index, (k, v) in enumerate(entry[1]):
-            keys.append(key)
-            kvps.append(CatalistKVP(key=k, value=v))
-        temp.contents = kvps
-
-    newlist.save()
-    return jsonify(listid=listid)
+    the_list.save()
+    return jsonify(listid=the_listid)
 
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
