@@ -18,8 +18,8 @@ $(document).ready(function() {
 
     // if they don't want to save, then make sure they don't want to
     $("body").on('click', ".no", noSave);
-
-    // button cosmetics
+    
+    // button cosmetics and add new
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
         var heart = $(this).parent().prev();
@@ -29,8 +29,18 @@ $(document).ready(function() {
         } else {
             $(icon).css("background-position", "0 -3em");
         }
-
+        
+        var curListItem = $(this).closest(".listItem");
+        // this starts at 1 cuz div before it
+        var itemInd = $(curListItem).index();
+        var totalItems = $(this).closest(".list").find(".listItem").length;
+        
+        if(totalItems===itemInd)
+        {
+            addItem(curListItem);
+        }
     });
+    
     $(".list").on('focusout', ".itemTitle input", function() {
         var icon = $(this).parent().next();
         var heart = $(this).parent().prev();
@@ -42,10 +52,6 @@ $(document).ready(function() {
         }
     });
     /* DOM Manipulation, add items */
-
-    // upon clicking the last list item (with a plus sign), a new
-    // list item will automatically be added to the bottom of the list
-    $(".list").on("click", ".lastListItem", addItem);
 
     // upon clicking the last item attribute, a new item
     // attribute entry will be automatically added to the bottom
@@ -121,7 +127,6 @@ $(document).ready(function() {
 });
 
 function askToMakeList() {
-    console.log("asked");
     $("#link").html("Would you like to save this list? <div class='yes'>Yes</div> / <div class='no'>No</div>");
 }
 
@@ -188,7 +193,6 @@ function noSave() {
 }
 
 function makeList() {
-    console.log("making new list...");
     $.ajax({
         url: "/api/makelist",
         method: 'GET',
@@ -210,8 +214,19 @@ function makeList() {
     enableLiveSave();
 }
 
-function addItem() {
-    $(".lastListItem").before("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
+// figures out whether selected item is last one
+function isLastItem() {
+    var curListItem = $(this).closest(".listItem");
+    var totalItems = $(this).closest(".list").find(".listItem").length;
+    var itemInd = $(curListItem).index(); // this starts at 1
+    console.log(itemInd);
+    console.log(totalItems);
+    console.log(totalItems===itemInd);
+    return totalItems===itemInd;
+}
+
+function addItem(curListItem) {
+    $(curListItem).after("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div> <div class='lastAttribute'> <input type='text' value=' +' disabled> </div> </div> </div>");
     resize();
 }
 
@@ -303,4 +318,6 @@ function isArrowUp(icon) {
     } else {
         return true;
     }
+}
+function buttonColorChange() {
 }
