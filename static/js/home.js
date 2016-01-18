@@ -10,15 +10,25 @@ if (n === 0) {
 
 $(document).ready(function() {
     //$(".list").one("mouseenter", welcome);
-    $(".list").one("focusout", askToMakeList);
 
-    // if they want to save, save the whole list and enable live save
-    // $(".list").on('click', ".yes", makeList);
-    $("body").on('click', ".yes", makeList);
+    if (listid === null){
+        // if this is a new list ...
 
-    // if they don't want to save, then make sure they don't want to
-    $("body").on('click', ".no", noSave);
-    
+        $(".list").one("focusout", askToMakeList);
+
+        // if they want to save, save the whole list and enable live save
+        // $(".list").on('click', ".yes", makeList);
+        $("body").on('click', ".yes", makeList);
+
+        // if they don't want to save, then make sure they don't want to
+        $("body").on('click', ".no", noSave);
+
+    } else {
+        // if this is route /list/<listid>,
+        // bind all the ajax save listeners now
+        enableLiveSave();
+    }
+
     // button cosmetics and add new
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
@@ -51,6 +61,7 @@ $(document).ready(function() {
             $(icon).css("background-position", "0 0");
         }
     });
+
     /* DOM Manipulation, add items */
 
     // upon clicking the last item attribute, a new item
@@ -111,6 +122,7 @@ $(document).ready(function() {
             resize();
         }
     });
+
     // clicking heart will add a vote to the item (or remove it if existing)
     $(".list").on("click", ".icon-heart", addVote);
 
@@ -281,7 +293,7 @@ function saveKeyOrValue(that, toSave) {
 }
 
 function addVote() {
-    alert("You clicked the heart!");
+    // alert("You clicked the heart!");
 
     var item = $(this).closest(".listItem");
     var eind = $(".list .listItem").index(item);
@@ -298,14 +310,6 @@ function addVote() {
             console.log("Current score is " + data.score);
         }
     });
-}
-
-function deleteItem() {
-    // do ajax-y things
-}
-
-function deleteAttribute() {
-    // do more ajax-y things
 }
 
 function resize() {
