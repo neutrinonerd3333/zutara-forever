@@ -243,7 +243,9 @@ function addItem(curListItem) {
 }
 
 function addAttribute(curAttribute) {
+    $(curAttribute).css("border-radius", "0");
     $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+    $(curAttribute).next().css("border-radius", "0 0 20px 20px");
     resize();
 }
 
