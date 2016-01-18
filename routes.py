@@ -7,7 +7,8 @@ from datetime import datetime, date, timedelta
 # from glob import glob
 
 import uuid as uuid_module
-from flask import Flask, render_template, jsonify, request, redirect, url_for, make_response
+from flask import Flask, render_template, jsonify, \
+    request, redirect, url_for, make_response
 
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.mongoengine import *
@@ -718,8 +719,11 @@ def vote():
     if not current_user.is_authenticated:
         print("LOGINNN")
         headers = {'Content-Type': 'text/html'}
-        message = "Oops! You must be logged in to vote. Would you like to <a href='/signup'>register</a> or <a href='/login'>log in</a>?"
-        return make_response(render_template('home.html', message=message), 403, headers)
+        message = "Oops! You must be logged in to vote. " + \
+                  "Would you like to <a href='/signup'>register</a> " + \
+                  "or <a href='/login'>log in</a>?"
+        return make_response(render_template('home.html', message=message),
+                             403, headers)
     else:
         uid = current_user.uid
     vote_val = int(request.form["vote"])
