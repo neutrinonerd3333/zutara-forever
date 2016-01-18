@@ -2,6 +2,7 @@
     display: none;
     /* thank god for Chrome :P (and that they only check Chrome) */
 }
+
 .list {
     position: relative;
     left: 0;
