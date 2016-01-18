@@ -297,6 +297,10 @@ def human_readable_time_since(tiem):
     return since
 
 
+app.jinja_env.globals.update(
+    human_readable_time_since=human_readable_time_since)
+app.jinja_env.globals.update(query_cur_perm=query_cur_perm)
+
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
@@ -312,18 +316,7 @@ def userlists():
                     "Would you like to create one?")
 
     lists = lists.order_by('-last_visited').all()
-
-    urls = ["/preview/" + catalist.listid for catalist in lists]
-    urls_actual = ["/list/" + catalist.listid for catalist in lists]
-    titles = [catalist.title for catalist in lists]
-    last_visited = [human_readable_time_since(catalist.last_visited)
-                    for catalist in lists]
-    permissions = [query_cur_perm(catalist) for catalist in lists]
-
-    return render_template('mylists.html', n=len(lists), titles=titles,
-                           last_visited=last_visited, urls=urls,
-                           urls_actual=urls_actual,
-                           permissions=permissions)
+    return render_template('mylists.html', lists=lists, host=HOSTNAME)
 
 
 @app.route("/preview/<listid>", methods=['GET'])

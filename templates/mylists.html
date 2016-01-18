@@ -14,7 +14,7 @@ My Lists
     <div class="listBlock">
         <div class="blockTitle">LIVE PREVIEW</div>
         <div class="scrollWrapper">
-            <iframe src={{urls[0]}} width = "100%" height = "200px"></iframe>
+            <iframe src={{ "/preview/" + lists[0].listid }} width = "100%" height = "200px"></iframe>
         </div>
     </div>
     <div class="listBlock2">
@@ -23,17 +23,17 @@ My Lists
             <div class="titles">Titles</div><div class="times">Last Modified</div>
         </div>
             
-        {% for i in range(n) %}
+        {% for catalist in lists %}
         <div class="listWrapper">
         <div class="list">
-            <input type="hidden" value={{ urls_actual[i] }}>
-            <input type="hidden" value={{urls[i]}}>
+            <input type="hidden" value={{ host + "/list/" + catalist.listid }}>
+            <input type="hidden" value={{ "/preview/" + catalist.listid }}>
     
-            <a href={{urls_actual[i]}}><div class="listTitle">{{titles[i]}}</div></a
-            ><div class="listTime">{{last_visited[i]}}</div
+            <a href={{ "/list/" + catalist.listid }}><div class="listTitle">{{ catalist.title }}</div></a
+            ><div class="listTime">{{ human_readable_time_since(catalist.last_visited) }}</div
         ></div>
         <div class="toolbox">
-            <input type="hidden" value={{permissions[i]}}>
+            <input type="hidden" value={{ query_cur_perm(catalist) }}>
         </div>
         </div>
         {% endfor %}
