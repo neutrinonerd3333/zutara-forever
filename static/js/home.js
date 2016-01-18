@@ -9,16 +9,18 @@ if (n === 0) {
 }
 
 $(document).ready(function() {
-    //$(".list").one("mouseenter", welcome);
-    $(".list").one("focusout", askToMakeList);
+    if(listid===null)
+    {
+        //$(".list").one("mouseenter", welcome);
+        $(".list").one("focusout", askToMakeList);
 
-    // if they want to save, save the whole list and enable live save
-    // $(".list").on('click', ".yes", makeList);
-    $("body").on('click', ".yes", makeList);
+        // if they want to save, save the whole list and enable live save
+        // $(".list").on('click', ".yes", makeList);
+        $("body").on('click', ".yes", makeList);
 
-    // if they don't want to save, then make sure they don't want to
-    $("body").on('click', ".no", noSave);
-    
+        // if they don't want to save, then make sure they don't want to
+        $("body").on('click', ".no", noSave);
+    }
     // button cosmetics and add new
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
@@ -331,12 +333,5 @@ function isArrowUp(icon) {
         return false;
     } else {
         return true;
-    }
-}
-
-function isHeartFilled(icon) {
-    var css = $(icon).css("background-position");
-    // filled heart is more to the right than unfilled
-    if (css.charAt(0)) > 40) {
     }
 }
