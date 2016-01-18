@@ -114,11 +114,22 @@ $(document).ready(function() {
         }
     });
     // clicking heart will add a vote to the item (or remove it if existing)
-    $(".list").on("click", ".icon-heart", addVote);
+    $(".list").on("click", ".icon-heart", vote);
 
     // clicking minus will delete the current key-value pair
     $(".list").on("click", ".icon-minus", function() {
         var item = $(this).closest(".listItem");
+        
+        var curAttribute = $(this).closest(".attribute");
+        // starts at 0 cuz nothing else in attributes
+        var attrInd = $(curAttribute).index() + 1;
+        var totalItems = $(this).closest(".listItem").find(".attribute").length;
+        
+        if(totalItems===attrInd) {
+            $("#link").html("Oops! you can't delete the last attribute!");
+            return;
+        }
+        
         var eind = $(".list .listItem").index(item);
         var siblings = $(this).closest(".attributes").children(".attribute");
         var kvpind = siblings.index($(this).closest(".attribute"));
@@ -284,10 +295,18 @@ function saveKeyOrValue(that, toSave) {
     })
 }
 
-function addVote() {
-    alert("You clicked the heart!");
+function vote() {
+    var that = $(this);
+    if(isHeartFilled(that)){
+        deleteVote(that);
+    }
+    else{
+        addVote(that);
+    }
+}
 
-    var item = $(this).closest(".listItem");
+function addVote(that) {
+    var item = $(that).closest(".listItem");
     var eind = $(".list .listItem").index(item);
     $.ajax({
         url: "/api/vote",
@@ -298,10 +317,34 @@ function addVote() {
             vote: 1
         },
         success: function(data, status, jqxhr) {
-            $(this).css("background-position", "-10.5em 0");
+            $(that).css("background-position", "-10.5em 0");
+            $("#link").html("Heart!");
             console.log("Current score is " + data.score);
+            return;
         }
     });
+    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41;");
+}
+// undo vote, need to update backend with this
+function deleteVote(that) {
+    var item = $(that).closest(".listItem");
+    var eind = $(".list .listItem").index(item);
+    $.ajax({
+        url: "/api/vote",
+        method: 'POST',
+        data: {
+            listid: listid,
+            entryind: eind,
+            vote: 0
+        },
+        success: function(data, status, jqxhr) {
+            $(that).css("background-position", "-6em 0");
+            $("#link").html("Unvote!");
+            console.log("Current score is " + data.score);
+            return;
+        }
+    });
+    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41;");
 }
 
 function deleteItem() {
@@ -335,5 +378,15 @@ function isArrowUp(icon) {
         return false;
     } else {
         return true;
+    }
+}
+
+function isHeartFilled(heart) {
+    var css = $(heart).css("background-position");
+
+    if (parseInt(css.substring(0, 3)) < -15) {
+        return true;
+    } else {
+        return false;
     }
 }
