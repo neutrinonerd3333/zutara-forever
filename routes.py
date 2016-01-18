@@ -97,7 +97,7 @@ class Catalist(db.Document):
     title = db.StringField(max_length=list_title_max_len,
                            default="untitled list")
     created = db.DateTimeField(required=True)  # when list was created
-    creator = db.StringField(max_length=40)
+    creator = db.StringField(max_length=40)  # should be implemented as RefField(User)
     last_visited = db.DateTimeField(required=True)
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
