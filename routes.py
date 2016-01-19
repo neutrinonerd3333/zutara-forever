@@ -1,6 +1,6 @@
-# ----------------------------------------------------------
+# **********************************************************
 # Module Imports
-# ----------------------------------------------------------
+# **********************************************************
 
 from __future__ import division, print_function
 from datetime import datetime, date, timedelta
@@ -18,9 +18,9 @@ import flask.ext.security as flask_security
 
 import json
 
-# ----------------------------------------------------------
+# **********************************************************
 # Flask Configuration
-# ----------------------------------------------------------
+# **********************************************************
 
 app = Flask(__name__)
 
@@ -37,9 +37,9 @@ HOSTNAME = '0.0.0.0:6005'
 
 db = MongoEngine(app)
 
-# ----------------------------------------------------------
+# **********************************************************
 # Flask-Security and MongoEngine Setup
-# ----------------------------------------------------------
+# **********************************************************
 
 
 class Role(db.Document, RoleMixin):
@@ -91,12 +91,22 @@ class CatalistEntry(db.EmbeddedDocument):
 
 class Catalist(db.Document):
     """ A class for our lists (Catalists :P) """
+
+    # METADATA
+
     listid = db.StringField(max_length=40, unique=True)
+    created = db.DateTimeField(required=True)  # when list was created
+
+    # should be implemented as RefField(User)
+    creator = db.StringField(max_length=40)
+
+    # this is actually "last modified", but name persists for backwards-compat
+    last_visited = db.DateTimeField(required=True)
+
+    # CONTENTS
+
     title = db.StringField(max_length=list_title_max_len,
                            default="untitled list")
-    created = db.DateTimeField(required=True)  # when list was created
-    creator = db.StringField(max_length=40)  # should be implemented as RefField(User)
-    last_visited = db.DateTimeField(required=True)
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
     # PERMISSIONS
@@ -116,9 +126,9 @@ user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
 
-# ----------------------------------------------------------
+# **********************************************************
 # Permissions
-# ----------------------------------------------------------
+# **********************************************************
 
 #: A list of all permission levels, from lowest to highest.
 #: The levels:
@@ -167,9 +177,9 @@ def query_cur_perm(catalist):
     return query_permission(flask_security.core.current_user, catalist)
 
 
-# ----------------------------------------------------------
+# **********************************************************
 # User Interaction Section
-# ----------------------------------------------------------
+# **********************************************************
 
 
 @app.route("/signup", methods=['POST'])
@@ -299,6 +309,7 @@ app.jinja_env.globals.update(
     human_readable_time_since=human_readable_time_since)
 app.jinja_env.globals.update(query_cur_perm=query_cur_perm)
 
+
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
@@ -307,8 +318,9 @@ def userlists():
     current_user = flask_security.core.current_user
     lists = Catalist.objects(
             Q(creator=current_user.uid) |
+            Q(owners=current_user) |
             Q(editors=current_user) |
-            Q(owners=current_user)
+            Q(viewers=current_user)
         ).only(
             'listid', 'title', 'last_visited').all()
     if lists.first() is None:
@@ -355,9 +367,9 @@ def index():
     """ Our homepage! """
     return render_template('home.html')
 
-# ----------------------------------------------------------
+# **********************************************************
 # Error Handlers
-# ----------------------------------------------------------
+# **********************************************************
 
 
 @app.errorhandler(403)
@@ -407,9 +419,14 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
-# ----------------------------------------------------------
+# **********************************************************
 # THE API!!!
-# ----------------------------------------------------------
+# **********************************************************
+
+
+# # # # # # # # # # # # # #
+# LIST-WIDE FUNCTIONS
+# # # # # # # # # # # # # #
 
 
 def create_list():
@@ -487,6 +504,12 @@ def list_save():
     the_list.last_visited = datetime.utcnow()
     the_list.save()
     return jsonify(listid=the_listid)
+
+
+# # # # # # # # # # # # # #
+# SAVE AND DELETE METHODS
+# # # # # # # # # # # # # #
+
 
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
@@ -735,6 +758,11 @@ def kvp_delete():
     return 'OK'  # 200 OK
 
 
+# # # # # # # # # # # # # #
+# DOING YOUR CIVIC DUTY
+# # # # # # # # # # # # # #
+
+
 @app.route("/api/vote", methods=['POST'])
 def vote():
     """
@@ -827,6 +855,10 @@ def vote():
     the_list.save()
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
+
+# # # # # # # # # # # # # #
+# PERMISSION EDITING
+# # # # # # # # # # # # # #
 
 @app.route("/api/setpermissions", methods=['POST'])
 def permissions_set():
@@ -924,8 +956,8 @@ def autocomplete():
     response = jsonify(completions=completions)
     return response
 
-# ----------------------------------------------------------
+# **********************************************************
 # Start Application
-# ----------------------------------------------------------
+# **********************************************************
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=6005, debug=True)
