@@ -94,8 +94,7 @@ function validate_signup(email, uid, pw, min, max) {
     } else if (!pw_okay)
         alert("Please select a valid password.");
 
-    if (uid_okay && pw_okay && email_okay)
-    {
+    if (uid_okay && pw_okay && email_okay) {
         return true;
     }
     return false;

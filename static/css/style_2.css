@@ -1,29 +1,32 @@
-::-webkit-scrollbar {
-    display: none;
-    /* thank god for Chrome :P (and that they only check Chrome) */
+html {
+    background: #FA8;
 }
-.list {
-    position: relative;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 18px;
-    width: 50%;
-    min-width: 300px;
-    height: 100%;
-    min-height: 200px;
-    display: block;
-    background-color: rgba(255,255,255,0.8);
-    border: 0px;
-    border-style: solid;
-    border-color: #FFF;
-    border-radius: 20px;
-    padding: 10px;
-    color: #666;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: normal;
-    overflow: auto;
+body {
+    background: #FA8; /* fallback for old browsers */
+    background: -webkit-linear-gradient(#023 2em, #FA8 calc(100% - 8em)); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(#023 2em, #FA8 calc(100% - 8em)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: -moz-linear-gradient(#023 2em, #FA8 calc(100% - 8em));
+}
+.login-container,
+h1,
+a,
+h2,
+h2 a {
+    color: #FEE;
+}
+.register .inputLabel,
+.errormsg {
+    color: #FEE;
+}
+.register input:hover,
+.register input:focus{
+    color: #FEE;
+}
+.topPlaceholder {
+    background-color: #023;
+}
+#footer {
+    background-color: #023;
 }
 .list * input {
     color: #666;
@@ -65,7 +68,7 @@
 .listItem {
     width: 90%;
     min-height: 2em;
-    background-color: transparent;
+    background-color: rgba(150, 150, 255, 0);
     border-radius: 20px;
     margin: 0;
     margin-bottom: 1em;

@@ -818,7 +818,6 @@ def vote():
     # uid = request.form["userid"]
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
-        print("LOGINNN")
         headers = {'Content-Type': 'text/html'}
         message = "Oops! You must be logged in to vote. " + \
                   "Would you like to <a href='/signup'>register</a> " + \

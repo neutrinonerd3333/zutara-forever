@@ -10,8 +10,7 @@ if (n === 0) {
 
 $(document).ready(function() {
 
-    if(listid===null)
-    {
+    if (listid === null) {
         //$(".list").one("mouseenter", welcome);
         $(".list").one("focusout", askToMakeList);
 
@@ -39,19 +38,18 @@ $(document).ready(function() {
         } else {
             $(icon).css("background-position", "0 -3em");
         }
-        
+
         var curListItem = $(this).closest(".listItem");
         // this starts at 1 cuz div before it
         var itemInd = $(curListItem).index();
         var totalItems = $(this).closest(".list").find(".listItem").length;
-        
-        if(totalItems===itemInd)
-        {
+
+        if (totalItems === itemInd) {
             addItem(curListItem);
             loadVotes($(this));
         }
     });
-    
+
     $(".list").on('focusout', ".itemTitle input", function() {
         var icon = $(this).parent().next();
         var heart = $(this).parent().prev();
@@ -73,9 +71,8 @@ $(document).ready(function() {
         // starts at 0 cuz nothing else in attributes
         var attrInd = $(curAttribute).index() + 1;
         var totalItems = $(this).closest(".listItem").find(".attribute").length;
-        
-        if(totalItems===attrInd)
-        {
+
+        if (totalItems === attrInd) {
             addAttribute(curAttribute);
         }
     });
@@ -111,7 +108,9 @@ $(document).ready(function() {
                     }
                 }
                 var newLength = $(attrs).find(".attribute").length;
-                if(newLength===0) { appendAttribute(attrs); }
+                if (newLength === 0) {
+                    appendAttribute(attrs);
+                }
             }
         }
         // if currently down arrow, click should show attributes and switch
@@ -130,10 +129,9 @@ $(document).ready(function() {
     // clicking minus will delete the current key-value pair
     $(".list").on("click", ".icon-minus", function() {
         var item = $(this).closest(".listItem");
-        
+
         var totalItems = $(this).closest(".listItem").find(".attribute").length;
-        if(totalItems > 1)
-        {
+        if (totalItems > 1) {
             var eind = $(".list .listItem").index(item);
             var siblings = $(this).closest(".attributes").children(".attribute");
             var kvpind = siblings.index($(this).closest(".attribute"));
@@ -153,9 +151,7 @@ $(document).ready(function() {
             });
 
             $(this).closest(".attribute").remove();
-        }
-        else
-        {
+        } else {
             $("#link").html("Oops! you can't delete the last entry!");
         }
     });
@@ -254,7 +250,7 @@ function isLastItem() {
     var curListItem = $(this).closest(".listItem");
     var totalItems = $(this).closest(".list").find(".listItem").length;
     var itemInd = $(curListItem).index(); // this starts at 1
-    return totalItems===itemInd;
+    return totalItems === itemInd;
 }
 
 function addItem(curListItem) {
@@ -307,10 +303,9 @@ function saveKeyOrValue(that, toSave) {
 
 function vote() {
     var that = $(this);
-    if(isHeartFilled(that)){
+    if (isHeartFilled(that)) {
         deleteVote(that);
-    }
-    else{
+    } else {
         addVote(that);
     }
 }
@@ -338,10 +333,9 @@ function addVote(that) {
         method: 'POST',
         success: function(data, status, jqxhr) {
             // logged in if true, guest if false
-            if(! data.loggedin) {
+            if (!data.loggedin) {
                 $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
-            }
-            else {
+            } else {
                 $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
             }
         }
@@ -387,7 +381,7 @@ function welcome() {
 
 function loadVotes(that) {
     var voteBox = $(that).find(".votes");
-    
+
     var item = $(voteBox).closest(".listItem");
     var eind = $(".list .listItem").index(item);
     console.log(eind);
