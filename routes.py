@@ -545,7 +545,7 @@ def key_save():
     except KeyError, ValueError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List does not exist")
+        raise InvalidAPIUsage("List {} does not exist".format(lid))
 
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
@@ -594,7 +594,7 @@ def value_save():
     except KeyError, ValueError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List does not exist")
+        raise InvalidAPIUsage("List {} does not exist".format(lid))
 
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
@@ -635,7 +635,7 @@ def entry_title_save():
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List does not exist")
+        raise InvalidAPIUsage("List {} does not exist".foramt(lid))
 
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
@@ -663,11 +663,12 @@ def list_title_save():
     """
     req_json = request.form
     try:
-        the_list = Catalist.objects.get(listid=req_json["listid"])
+        listid = req_json["listid"]
+        the_list = Catalist.objects.get(listid=listid)
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List does not exist")
+        raise InvalidAPIUsage("List {} does not exist".format(listid))
 
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
@@ -694,7 +695,7 @@ def list_delete():
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List does not exist")
+        raise InvalidAPIUsage("List {} does not exist".foramt(listid))
     if cmp_permission(query_cur_perm(the_list), "own") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
     the_list.delete()
@@ -722,7 +723,7 @@ def entry_delete():
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List does not exist")
+        raise InvalidAPIUsage("List {} does not exist".format(listid))
     except IndexError:
         raise InvalidAPIUsage("Entry index out of bounds")
     the_list.last_visited = datetime.utcnow()
@@ -746,11 +747,12 @@ def kvp_delete():
     try:
         entryind = int(request.form["entryind"])
         ind = int(request.form["index"])
-        the_list = Catalist.objects.get(listid=request.form["listid"])
+        listid = req_json["listid"]
+        the_list = Catalist.objects.get(listid=listid)
     except KeyError, ValueError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List does not exist")
+        raise InvalidAPIUsage("List {} does not exist".format(listid))
 
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
