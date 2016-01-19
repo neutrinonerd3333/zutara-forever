@@ -1,0 +1,82 @@
+———————————————————————————————————————————————————————————
+Project Catalist
+Team Zutara-Forever
+
+Minimal Viable Product
+Date: January 19, 2016
+———————————————————————————————————————————————————————————
+Completed Features
+———————————————————————————————————————————————————————————
+ · 	User login and registration system, with front-end
+	and backend form validation
+	 · 	Require alphanumeric inputs between a
+		character limit for email, username,
+		and password (excluding @ and . for email)
+	 · 	Require unique email and username per user
+ · 	Live saving list interface
+	 · 	AJAX saves list as user inputs information
+		and data for his/her own list to MongoDB
+	 · 	Very easy save upon request, but option
+		to play around without testing too
+	 · 	Both registered users and guests can
+		create lists, but only registered users
+		can save them to My Lists
+	 · 	Lists support English and Chinese (our bias)
+ · 	List retrieval and live preview through My Lists
+	interface
+	 · 	User can preview all of their lists, but
+		cannot edit within the preview
+	 · 	User can view their permissions for lists
+		and copy the URL of the lists
+ · 	Voting system allows users to “heart” different
+	list items, or “un-heart” if they so choose
+	 · 	List votes persist within database, so
+		users can only vote once for each item
+	 · 	Users must be logged in to vote; guests are
+		told to authenticate
+ · 	Excellent error handing for different errors
+ · 	About Us page, with contact information———————————————————————————————————————————————————————————
+In Progress Features
+———————————————————————————————————————————————————————————
+ · 	Attribute suggestions and autocomplete
+	 · 	Some backend framework established to
+		suggest users potential fields for attributes
+	 · 	Located API for autocomplete and suggesting
+	 · 	Incomplete: gathering data and connecting
+		front-end to backend
+ · 	Permissions editing, for different ranks
+	 · 	Backend already finished for adding users
+		to ranks
+	 · 	Front-end cosmetics already finished for
+		editing users
+	 · 	Incomplete: front-end jQuery and AJAX
+		for connecting backend to form input
+ · 	Current vote display and vote display persistence
+	 · 	Concept drawn out for simple implementation
+ · 	Basic tutorial for new users
+	 · 	Concept planned, with option to refuse
+		tutorial upon arriving at homepage for first
+		time
+	 · 	Some front-end infrastructure exists, though
+		not currently deployed
+ · 	Color schemes for users, for lists
+	 · 	Concept planned in terms of feasibility and
+		framework, but have yet to execute
+———————————————————————————————————————————————————————————
+Technology and APIs leveraged
+———————————————————————————————————————————————————————————
+· 	Database
+	· 	MongoDB
+· 	Backend
+	· 	Flask, Flask-Security, Flask-MongoEngine
+· 	Frontend
+	· 	jQuery
+	· 	Jinja2 (Flask built-in)
+———————————————————————————————————————————————————————————
+Implementation Challenges
+———————————————————————————————————————————————————————————
+· 	时间
+· 	时间
+· 	时间
+· 	我有没有说时间?
+· 	~时间都去哪儿了? ♫♪
