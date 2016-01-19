@@ -105,6 +105,8 @@ body {height: calc(100% - 2em);}
     text-decoration: none;
     text-align: center;
     font-weight: normal;
+    overflow-x: scroll;
+    white-space: nowrap;
 }
 iframe {
     display: block;

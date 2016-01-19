@@ -257,20 +257,29 @@ input:focus:-moz-placeholder {
     width: auto;
 }
 #wrapper {
-    height: calc(100% - 4em);
+    height: calc(100% - 6em);
     margin: 50px 50px;
     width: auto;
-}
-.footer {
-    margin-top: 1em;
-    height: 4em;
-    width: 100%;
-    background-color: #3CF;
-    display: block;
-    position: absolute;
-    bottom: 0em;
+    overflow-x: show;
 }
 /*page margin 50px*/
+#footer {
+    width: 200%;
+    height: 5em;
+    background-color: #4BF;
+    
+    height: 4em;
+    width: 100%;
+    display: block;
+    position: absolute;
+    margin: 3em 0 -5em 0;
+    right: -50px; /* account for wrapper */
+    bottom: 0em;
+}
+form {
+    display: block;
+    margin: 0 0 3em 0;
+}
 
 article {
     min-height: 300px
