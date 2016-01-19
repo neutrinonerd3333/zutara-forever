@@ -95,7 +95,7 @@ class Catalist(db.Document):
     title = db.StringField(max_length=list_title_max_len,
                            default="untitled list")
     created = db.DateTimeField(required=True)  # when list was created
-    creator = db.StringField(max_length=40)
+    creator = db.StringField(max_length=40)  # should be implemented as RefField(User)
     last_visited = db.DateTimeField(required=True)
     contents = db.EmbeddedDocumentListField(CatalistEntry, default=[])
 
@@ -123,11 +123,11 @@ security = Security(app, user_datastore)
 #: A list of all permission levels, from lowest to highest.
 #: The levels:
 #:
-#: 1. none  -- no permission
-#: 2. view  -- permission to view a list
-#: 3. edit  -- permission to edit a list
-#: 4. own   -- permission to change permission for a list
-#: 5. admin -- can do anything
+#: #. none  -- no permission
+#: #. view  -- permission to view a list
+#: #. edit  -- permission to edit a list
+#: #. own   -- permission to change permission for a list
+#: #. admin -- can do anything
 perm_list = ["none", "view", "edit", "own", "admin"]
 
 #: Currently admins are determined by residency on this list.
@@ -295,6 +295,10 @@ def human_readable_time_since(tiem):
     return since
 
 
+app.jinja_env.globals.update(
+    human_readable_time_since=human_readable_time_since)
+app.jinja_env.globals.update(query_cur_perm=query_cur_perm)
+
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
@@ -310,18 +314,7 @@ def userlists():
                     "Would you like to create one?")
 
     lists = lists.order_by('-last_visited').all()
-
-    urls = ["/preview/" + catalist.listid for catalist in lists]
-    urls_actual = ["/list/" + catalist.listid for catalist in lists]
-    titles = [catalist.title for catalist in lists]
-    last_visited = [human_readable_time_since(catalist.last_visited)
-                    for catalist in lists]
-    permissions = [query_cur_perm(catalist) for catalist in lists]
-
-    return render_template('mylists.html', n=len(lists), titles=titles,
-                           last_visited=last_visited, urls=urls,
-                           urls_actual=urls_actual,
-                           permissions=permissions)
+    return render_template('mylists.html', lists=lists, host=HOSTNAME)
 
 
 @app.route("/preview/<listid>", methods=['GET'])
@@ -415,11 +408,10 @@ def handle_invalid_usage(error):
 # ----------------------------------------------------------
 
 
-@app.route("/api/makelist", methods=['GET'])
-def make_list():
-    """
-    Upon making the first edit, an empty list will be
-    created for the insertion of more data
+def create_list():
+    """ Create a new list and return the assigned listid
+
+    Returns: the assigned listid
     """
     list_id = str(uuid_module.uuid4())
     title = ""
@@ -436,9 +428,61 @@ def make_list():
         user = User.objects.get(uid=uid)
         new_list.owners.append(user)
 
+    new_list.last_visited = datetime.utcnow()
     new_list.save()
+    return list_id
+
+
+@app.route("/api/makelist", methods=['GET'])
+def make_list():
+    """
+    Upon making the first edit, an empty list will be
+    created for the insertion of more data
+    """
+    list_id = create_list()
     return jsonify(listid=list_id)
 
+
+@app.route("/api/savelist", methods=['POST'])
+def list_save():
+    """
+    Save an entire list. If listid is provided, the list is
+    written onto the referenced list. Otherwise, a new list is
+    created. In both cases the listid to which we saved the list
+    is returned.
+
+    usage:
+    {
+        title: <thetitle>,
+        contents: [
+            [title, [
+                [attrname, attrval],
+                ...
+                ]
+            ],
+            ...
+        ]
+        (optionally) , listid: <the listid to save to>
+    }
+
+    Returns: the given or assigned listid
+    """
+    the_listid = request.form.get("listid", create_list())
+    the_list = Catalist.objects.get(listid=the_listid)
+    the_list.title = request.form["title"]
+    the_list.last_visited = datetime.utcnow()
+
+    the_list.contents = [
+        CatalistEntry(title=entry[0], contents=[
+                CatalistKVP(key=k, value=v)
+                for k, v in entry[1]
+            ])
+        for entry in request.form.getlist("contents")
+    ]
+
+    the_list.last_visited = datetime.utcnow()
+    the_list.save()
+    return jsonify(listid=the_listid)
 
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
@@ -487,6 +531,7 @@ def key_save():
     # for entry in the_list.contents:
     #     entry.contents[ind].key = val
 
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return jsonify()  # return a blank 200
 
@@ -525,6 +570,7 @@ def value_save():
 
     the_entry.contents[ind].value = val
 
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return jsonify()  # return a 200
 
@@ -559,6 +605,7 @@ def entry_title_save():
     the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
     the_entry = the_list.contents[eind]
     the_entry.title = val
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return "OK"  # 200 OK ^_^
 
@@ -587,6 +634,7 @@ def list_title_save():
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
     the_list.title = req_json["newvalue"][:list_title_max_len]
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return jsonify()  # 200 OK ^_^
 
@@ -638,6 +686,7 @@ def entry_delete():
         raise InvalidAPIUsage("List does not exist")
     except IndexError:
         raise InvalidAPIUsage("Entry index out of bounds")
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return 'OK'  # 200 OK
 
@@ -677,6 +726,7 @@ def kvp_delete():
     except IndexError:
         return "KVP index out of bounds"
 
+    the_list.last_visited = datetime.utcnow()
     the_list.save()
     return 'OK'  # 200 OK
 
@@ -768,6 +818,8 @@ def vote():
 
     # update the score in the database
     the_entry.score += (vote_val - cur_vote)
+    # should voting count as "modifying the list"? prob not?
+    # the_list.last_visited = datetime.utcnow()
     the_list.save()
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
@@ -822,6 +874,8 @@ def permissions_set():
         the_list.public_level = "edit"
 
     # save the list
+    # should permission editing count as "modification"? prob not
+    # the_list.last_visited = datetime.utcnow()
     the_list.save()
     return "OK"  # 200 OK
 
