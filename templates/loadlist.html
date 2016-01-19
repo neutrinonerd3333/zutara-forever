@@ -5,6 +5,7 @@
 {% for entry in entries %}
 <div class="listItem">
     <!--list item-->
+    <div class='votes'><div><b>{{ entry.votes|e }}</b>&#9829;</div></div>
     <div class="icon-heart icon"></div> 
     <div class="itemTitle">
         <input type="text" placeholder="Item" value="{{ entry.title|e }}">
@@ -42,6 +43,7 @@
 {% if entries|length is equalto 0 %}
 <div class="listItem">
     <!--list item-->
+    <div class='votes'></div>
     <div class="icon-heart icon"></div> 
     <div class="itemTitle">
         <input type="text" placeholder="Item">
@@ -62,6 +64,3 @@
 </div>
 {% endif %}
 {% endblock %}
-
-
-
