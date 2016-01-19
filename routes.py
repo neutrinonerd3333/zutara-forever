@@ -120,6 +120,10 @@ class Catalist(db.Document):
     editors = db.ListField(db.ReferenceField(User))
     viewers = db.ListField(db.ReferenceField(User))
 
+    # people who manually add the list to "my lists"
+    # pls don't judge my name choice
+    mylisters = db.ListField(db.ReferenceField(User))
+
 
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
@@ -316,11 +320,14 @@ def userlists():
     """ A page displaying all lists belonging to the user. """
 
     current_user = flask_security.core.current_user
+    cur_user_nat_id = current_user.id  # the natively used id for the user,
+    # since we're querying reference fields
     lists = Catalist.objects(
-            Q(creator=current_user.uid) |
-            Q(owners=current_user) |
-            Q(editors=current_user) |
-            Q(viewers=current_user)
+            db.Q(creator=current_user.uid) |
+            db.Q(owners=current_user.id) |
+            db.Q(editors=current_user.id) |
+            db.Q(viewers=current_user.id) |
+            db.Q(mylisters=current_user.id)
         ).only(
             'listid', 'title', 'last_visited').all()
     if lists.first() is None:
@@ -563,6 +570,7 @@ def key_save():
     #     entry.contents[ind].key = val
 
     the_list.last_visited = datetime.utcnow()
+
     the_list.save()
     return jsonify()  # return a blank 200
 
