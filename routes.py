@@ -490,6 +490,10 @@ def list_save():
     """
     the_listid = request.form.get("listid", create_list())
     the_list = Catalist.objects.get(listid=the_listid)
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
     the_list.title = request.form["title"]
     the_list.last_visited = datetime.utcnow()
 
@@ -934,6 +938,35 @@ def permissions_get():
     catalist = Catalist.objects.get(listid=request.form["listid"])
     return jsonify(permission=query_cur_perm(catalist))
 
+
+@app.route("/api/setpubliclevel", methods=['POST'])
+def public_level_set():
+    """
+    Set the permission level for a list for the public at-large.
+    Requires own permission.
+
+    POST: {
+        listid: <the listid>,
+        permission: {none | view | edit | own | admin}
+    }
+    """
+    the_list = Catalist.objects.get(listid=request.form["listid"])
+
+    # check permissions
+    if cmp_permission(query_cur_perm(the_list), "own") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
+    perm = request.form["permission"]
+    if perm not in perm_list:
+        raise InvalidAPIUsage("Invalid arguments")
+
+    the_list.public_level = perm
+    the_list.save()
+
+
+# # # # # # # # # # # # # #
+# WHY IS THIS STILL HERE?
+# # # # # # # # # # # # # #
 
 autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
