@@ -824,7 +824,6 @@ def vote():
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
 
-
 @app.route("/api/setpermissions", methods=['POST'])
 def permissions_set():
     """
