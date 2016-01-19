@@ -872,6 +872,75 @@ def vote():
 
 
 # # # # # # # # # # # # # #
+# MY LISTS INTERACT
+# # # # # # # # # # # # # #
+
+
+def my_lists_interact(listid, addQ):
+    """
+    Add or remove a list with specified listid
+    from "My Lists".
+
+    :param listid: the listid of the list
+    :param addQ: an integer specifying whether to add or remove:
+                    1 to add, -1 to remove
+    """
+    # validate parameters
+    if addQ not in (-1, 1):
+        raise InvalidAPIUsage("Invalid arguments")
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        raise InvalidAPIUsage("List {} does not exist".format(listid))
+
+    # if nothing to do
+    cur_user = flask_security.core.current_user
+    isIn = (cur_user in the_list.mylisters)
+    if (isIn and addQ == 1) or (not isIn and addQ == -1):
+        return None  # we are done
+
+    # else append/pop as required
+    if addQ == 1:
+        the_list.mylisters.append(cur_user)
+    elif addQ == -1:
+        the_list.mylisters.remove(cur_user)
+
+
+@app.route("/api/mylists/add", methods=['POST'])
+def add_to_my_lists():
+    """
+    Add a specified list to "My Lists". POST
+    {
+        listid: <listid>
+    }
+    """
+    try:
+        listid = request.form["listid"]
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+
+    my_lists_interact(listid, 1)
+    return "OK"  # 200 OK ^_^
+
+
+@app.route("/api/mylists/remove", methods=['POST'])
+def remove_from_my_lists():
+    """
+    Remove a specified list from "My Lists". POST
+    {
+        listid: <listid>
+    }
+    """
+    try:
+        listid = request.form["listid"]
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+
+    my_lists_interact(listid, -1)
+    return "OK"  # 200 OK ^_^
+
+
+# # # # # # # # # # # # # #
 # PERMISSION EDITING
 # # # # # # # # # # # # # #
 
