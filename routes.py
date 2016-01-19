@@ -352,6 +352,12 @@ def preview_list(listid):
     return render_template('preview.html', listtitle=the_list.title,
                            entries=the_list.contents)
 
+@app.route("/api/loggedin", methods=['POST'])
+def isLoggedIn():
+    """ Used for .js to call """
+    if flask_security.core.current_user.is_authenticated:
+        return jsonify(loggedin=True)
+    return jsonify(loggedin=False)
 
 def get_id():
     """ Return name of current user """

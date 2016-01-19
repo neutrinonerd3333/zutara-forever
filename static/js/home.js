@@ -333,12 +333,22 @@ function addVote(that) {
             return true;
         }
     });
-    if(listid===null)
-    {
-        $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
-    }
+    $.ajax({
+        url: "/api/loggedin",
+        method: 'POST',
+        success: function(data, status, jqxhr) {
+            // logged in if true, guest if false
+            if(! data.loggedin) {
+                $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
+            }
+            else {
+                $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
+            }
+        }
+    });
 }
-// undo vote, need to update backend with this
+
+// undo vote
 function deleteVote(that) {
     var item = $(that).closest(".listItem");
     var eind = $(".list .listItem").index(item);
@@ -357,10 +367,7 @@ function deleteVote(that) {
             return true;
         }
     });
-    if(listid===null)
-    {
-        $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
-    }}
+}
 
 function resize() {
     $("body").css({

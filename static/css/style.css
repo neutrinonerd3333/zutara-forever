@@ -258,7 +258,7 @@ input:focus:-moz-placeholder {
 }
 #wrapper {
     height: calc(100% - 6em);
-    margin: 50px 50px;
+    padding: 50px 50px;
     width: auto;
     overflow-x: show;
 }
