@@ -305,8 +305,12 @@ def userlists():
     """ A page displaying all lists belonging to the user. """
 
     current_user = flask_security.core.current_user
-    lists = Catalist.objects(creator=current_user.uid).only(
-        'listid', 'title', 'last_visited').all()
+    lists = Catalist.objects(
+            Q(creator=current_user.uid) |
+            Q(editors=current_user) |
+            Q(owners=current_user)
+        ).only(
+            'listid', 'title', 'last_visited').all()
     if lists.first() is None:
         return render_template(
             'home.html',
