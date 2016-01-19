@@ -23,7 +23,6 @@
         {% for entry in entries %}
         <div class="listItem">
             <!--list item-->
-            <div class="icon-heart icon"></div> 
             <div class="itemTitle">
                 <input type="text" placeholder="Item" value="{{ entry.title|e }}" disabled>
             </div>
@@ -34,7 +33,7 @@
                 <div class="attribute">
                     <!--single item attribute-->
                     <div class="key"
-                        ><input type="text" placeholder="Key" value="{{ kvp.key|e }}" disabled
+                        ><input type="text" placeholder="Note" value="{{ kvp.key|e }}" disabled
                     ></div
                     ><div class="value"
                         ><input type="text" placeholder="Value" value="{{ kvp.value|e }}" disabled
@@ -42,13 +41,42 @@
                     >
                 </div>
                 {% endfor %}
+                {% if entry.contents|length is equalto 0 %}
+                <div class="attribute">
+                    <!--single item attribute-->
+                    <div class="key"
+                        ><input type="text" placeholder="Note" disabled
+                    ></div
+                    ><div class="value"
+                        ><input type="text"placeholder="Value" disabled
+                    ></div>
+                </div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
+        {% if entries|length is equalto 0 %}
+        <div class="listItem">
+            <!--list item-->
+            <div class="itemTitle">
+                <input type="text" placeholder="Item" disabled>
+            </div>
+            <div class="icon-down icon"></div>
+            <div class="attributes">
+                <div class="attribute">
+                    <!--single item attribute-->
+                    <div class="key"
+                        ><input type="text" placeholder="Note" disabled
+                    ></div
+                    ><div class="value"
+                        ><input type="text" placeholder="Value" disabled
+                    ></div>
+                </div>
+            </div>
         </div>
+        {% endif %}
     </div>
 </section>
-
     
 </body>
 </html>

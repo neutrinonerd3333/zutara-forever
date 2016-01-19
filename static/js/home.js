@@ -247,19 +247,19 @@ function isLastItem() {
 }
 
 function addItem(curListItem) {
-    $(curListItem).after("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
+    $(curListItem).after("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
     resize();
 }
 
 function addAttribute(curAttribute) {
     $(curAttribute).css("border-radius", "0");
-    $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+    $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
     $(curAttribute).next().css("border-radius", "0 0 20px 20px");
     resize();
 }
 
 function appendAttribute(parentElement) {
-    $(parentElement).append("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+    $(parentElement).append("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
     resize();
 }
 
