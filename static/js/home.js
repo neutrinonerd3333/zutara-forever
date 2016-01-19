@@ -9,6 +9,7 @@ if (n === 0) {
 }
 
 $(document).ready(function() {
+
     if(listid===null)
     {
         //$(".list").one("mouseenter", welcome);
@@ -20,7 +21,12 @@ $(document).ready(function() {
 
         // if they don't want to save, then make sure they don't want to
         $("body").on('click', ".no", noSave);
+    } else {
+        // if this is route /list/<listid>,
+        // bind all the ajax save listeners now
+        enableLiveSave();
     }
+
     // button cosmetics and add new
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
@@ -53,6 +59,7 @@ $(document).ready(function() {
             $(icon).css("background-position", "0 0");
         }
     });
+
     /* DOM Manipulation, add items */
 
     // upon clicking the last item attribute, a new item
@@ -113,6 +120,7 @@ $(document).ready(function() {
             resize();
         }
     });
+
     // clicking heart will add a vote to the item (or remove it if existing)
     $(".list").on("click", ".icon-heart", vote);
 
@@ -293,6 +301,7 @@ function saveKeyOrValue(that, toSave) {
     })
 }
 
+
 function vote() {
     var that = $(this);
     if(isHeartFilled(that)){
@@ -343,14 +352,6 @@ function deleteVote(that) {
         }
     });
     $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
-}
-
-function deleteItem() {
-    // do ajax-y things
-}
-
-function deleteAttribute() {
-    // do more ajax-y things
 }
 
 function resize() {
