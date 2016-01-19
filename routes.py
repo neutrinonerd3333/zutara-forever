@@ -33,7 +33,7 @@ app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
 app.config['SECURITY_PASSWORD_SALT'] = "eddb960e-269c-4458-8e08-c1027d8b290"
 
 # we'll need this later for actual app
-HOSTNAME = '0.0.0.0:6005'
+HOSTNAME = 'catalist.eastus2.cloudapp.azure.com'
 
 db = MongoEngine(app)
 
@@ -925,4 +925,4 @@ def autocomplete():
 # Start Application
 # ----------------------------------------------------------
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=6005, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=False)
