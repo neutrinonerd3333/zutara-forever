@@ -4,6 +4,8 @@ User Login
 {% endblock %}
 
 {% block content %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/useraccount.js') }}"></script>
+
 <section id="wrapper">
 <article>
 {% if not (current_user.is_authenticated) %}

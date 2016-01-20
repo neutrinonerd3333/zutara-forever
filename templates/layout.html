@@ -3,36 +3,48 @@
 <head>
 <meta charset=utf-8>
 <title>Catalist</title>
-<!--external stylesheets and scripts
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">-->
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style_all.css') }}">
-<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style_2.css') }}">-->
+<!--external stylesheets and scripts-->
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style_all.css') }}">
 <script src="{{ url_for('static', filename='js/jquery-2.2.0.min.js') }}"></script>
-
+    
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-16.png') }}" sizes="16x16">
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-32.png') }}" sizes="32x32">
 
 </head>
 <body>
-<div class="topPlaceholder"></div>
+    <!--placeholder cuz I'm bad at CSS lol-->
+    <div class="topPlaceholder"></div>
+    <div id="clouds">
+        <div class="cloud x1"></div>
+        <div class="cloud x2"></div>
+        <div class="cloud x3"></div>
+        <div class="cloud x4"></div>
+        <div class="cloud x5"></div>
+    </div>
+ 
     <div class="header">
 	   <a href="/"><img src="/static/img/logo.svg"></a>
         <!--title block is an optional bit, like a header to each page-->
-    <p align="center"><h1>{% block title %}{% endblock %}</h1></p>
+        
+        <p><h1>{% block title %}{% endblock %}</h1></p>
+    
     </div>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/useraccount.js') }}"></script>
+        
     <div class="login-container">
         <div>
-        <a href="/about">About</a> | 
-        {% if not (current_user.is_authenticated) %}<a href="/login">Login</a> | <a href="/register">Register</a>{% endif %}
-        {% if current_user.is_authenticated %}<a href="/mylists">My Lists</a> | <a href="/logout">Logout</a><br>Hi {{ get_id() }}!
-        {% endif %}
+            <a href="/about">about</a> &#183; 
+            {% if not (current_user.is_authenticated) %}<a href="/login">login</a> &#183; <a href="/register">register</a>{% endif %}
+            {% if current_user.is_authenticated %}<a href="/mylists">my lists</a> &#183; <a href="/logout">logout</a><br>Hi {{ get_id() }}!{% endif %}
         </div>
+        <p>
+        <h2><div id="link">{{ message|safe }}</div></h2>
+        </p>
     </div>
 
-<p align="center"><h2><div id="link">{{ message|safe }}</div></h2></p>
+
 
 {% block content %}
 {% endblock %}
+
 </body>
 </html>

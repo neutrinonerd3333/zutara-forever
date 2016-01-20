@@ -122,7 +122,6 @@ $(document).ready(function() {
             resize();
         }
     });
-
     // clicking heart will add a vote to the item (or remove it if existing)
     $(".list").on("click", ".icon-heart", vote);
 

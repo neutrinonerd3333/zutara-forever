@@ -1,14 +1,11 @@
-/* NOTE: MAKE SURE YOU TAKE OUT THE
- * PLACEHOLDER CSS OUT OF THE .CSS
- * BEFORE RUNNING SASS, BECAUSE
- * PLACEHOLDERS ARE SUPER STUPID .________. */
-
 /* SASS VARIABLES */
 $font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif
 
 $color-transparent-light: rgba(255, 255, 255, 0.2)
 $color-transparent-medium: rgba(255, 255, 255, 0.5)
 $color-transparent-dark: rgba(255, 255, 255, 0.7)
+
+$color-gray-transparent-dark: rgba(0, 0, 0, 0.5)
 
 $color-bright-lightest: #CEF
 $color-bright-light: #AEF
@@ -39,6 +36,43 @@ $color-white: #FFF
     -moz-transition: $change $time $style
     -webkit-transition: $change $time $style
 
+/* MAN THESE TOOK FOREVER TO GET RIGHT IN SASS LOL */
+=placeholder
+    \::-webkit-input-placeholder
+        @content
+    input:-moz-placeholder
+        @content
+    \::-moz-placeholder
+        @content
+    \:-ms-input-placeholder
+        @content
+
+=placeholder-focus
+    \:focus::-webkit-input-placeholder
+        @content
+    input:focus:-moz-placeholder
+        @content
+    \:focus::-moz-placeholder
+        @content
+    \:focus:-ms-input-placeholder
+        @content
+    
++placeholder
+    color: #999
+
++placeholder-focus
+    color: transparent
+
+=animation($time)
+    -webkit-animation: moveclouds $time linear infinite
+    -moz-animation: moveclouds $time linear infinite
+    -o-animation: moveclouds $time linear infinite
+    
+=transform($amount)
+    -webkit-transform: scale($amount)
+    -moz-transform: scale($amount)
+    transform: scale($amount)
+
 /* START OF CSS */
 
 html
@@ -68,11 +102,13 @@ h1
     text-align: center
     color: $color-bright-lightest
     margin: 0
-    text-decoration: none
+    position: relative
+    left: -10%
 
 h2, h2 a
-    font-size: 1em
-    font-weight: lighter
+    font-size: inherit
+    font-weight: normal
+    position: relative
     color: $color-bright-lightest
 
 h3, h3 a
@@ -86,12 +122,11 @@ h3 a
     font-weight: normal
 
 a
-    font-weight: lighter
+    font-weight: normal
     text-decoration: none
-    color: $color-bright-lightest
+    color: $color-white
     &:hover
-        color: $color-white
-        font-weight: bold
+        color: $color-bright-dark
 
 /* INPUT PLACEHOLDER TEXT */
 /* WILL BE INCLUDED MANUALLY */
@@ -102,18 +137,30 @@ a
 
 /* LAYOUT TOP LINKS */  
 .login-container
-    display: block
-    margin: 1em 1em 0 0
-    position: absolute
-    top: 0
-    right: 0
+    display: inline-block
+    margin: 0 1em 0 0
+    position: relative
+    top: -50%
+    right: -50%
     color: $color-bright-lightest
-    font-weight: lighter
+    font-weight: normal
     letter-spacing: 0.2px
     div
         padding: 4px
         text-align: right
         font-size: 0.8em
+        a
+            background-color: $color-transparent-light
+            border-radius: 1em
+            padding: .3em .8em
+            &:hover
+                background-color: $color-bright-lightest
+            &:active
+                background-color: $color-bright-lightest
+                color: $color-bright-dark
+    .yes,
+    .no
+        font-size: 1em
         
 .error-container
     @extend .absolute-center
@@ -122,11 +169,10 @@ a
     text-align: center
 
 #link
-    margin-bottom: -2em
+    margin-bottom: -4em
     text-align: center
     a:hover
-        font-weight: bold
-        font-size: 0.9em
+        font-weight: normal
     
 .user-form-container
     @extend .absolute-center
@@ -146,12 +192,12 @@ a
 
 .yes,
 .no
+    z-index: 10
     display: inline
     cursor: pointer
 .yes:hover,
 .no:hover
-    font-weight: bold
-    font-size: 0.9em
+    font-weight: normal
 
 input
     outline: none
@@ -211,6 +257,8 @@ input
     width: auto
     img
         display: block
+        position: relative
+        left: -20%
         margin-left: auto
         margin-right: auto
         height: 3em
@@ -258,7 +306,7 @@ input
     
 .list
     color: $color-gray-dark
-    background-color: $color-transparent-dark
+    background-color: $color-transparent-medium
     @extend .relative-center
     font-size: 18px
     width: 50%
@@ -609,3 +657,80 @@ input
             color: $color-gray-dark
             font-size: 16px
             text-align: left
+            
+/* CLOUDS!! */
+#clouds
+    padding: 100px 0
+    background: transparent
+    position: absolute
+    top: 0em
+    z-index: 0
+    height: 5em
+    .cloud
+        width: 7em
+        height: 3em
+        background: #fff
+        border-radius: 8em
+        position: relative
+        &:before,
+        &:after
+            content: ''
+            position: absolute 
+            background: $color-white
+            width: 4em
+            height: 3em
+            position: absolute
+            top: -1em
+            left: 0.8em
+            border-radius: 3em
+
+            -webkit-transform: rotate(30deg)
+            transform: rotate(30deg)
+            -moz-transform: rotate(30deg)
+        &:after
+            width: 3em
+            height: 4em
+            top: -1em
+            left: auto
+            right: 1em
+    .x1
+        +animation(60s)
+        opacity: 0.1
+    .x2
+        left: 10%
+        +transform(0.6)
+        opacity: 0.3
+        +animation(75s)
+    .x3
+        left: -20%
+        top: -40%
+        +transform(0.8)
+        opacity: 0.4
+        +animation(80s)
+    .x4
+        left: 50%
+        top: -30%
+        +transform(0.75)
+        opacity: 0.2
+        +animation(45s)
+    .x5
+        left: -10%
+        top: -100%
+        +transform(0.8)
+        opacity: 0.2
+        +animation(55s)
+    @-webkit-keyframes moveclouds
+        0%
+            margin-left: 1000px
+        100%
+            margin-left: -1000px
+    @-o-keyframes moveclouds
+        0%
+            margin-left: 1000px
+        100%
+            margin-left: -1000px
+    @-moz-keyframes moveclouds
+        0%
+            margin-left: 1000px
+        100%
+            margin-left: -1000px

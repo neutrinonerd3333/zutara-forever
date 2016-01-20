@@ -5,3 +5,4 @@ doc/*
 !doc/*.pdf
 !doc/*.txt
 static/css/.sass-cache
+*.map
