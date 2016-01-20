@@ -47,7 +47,7 @@ function validate_pw(pw, min, max) {
         return false;
     }
 
-    if (pass.length >= max || pass.length <= min) {
+    if (pass.length > max || pass.length < min) {
         return false;
     }
 
@@ -83,16 +83,25 @@ function validate_signup(email, uid, pw, min, max) {
     var email_okay = validateEmail(email);
 
     if (!email_okay) {
-        alert("Please select a valid email.");
-        return false;
+        $(".errormsg").show();// placeholder
+        $(".errormsg").html("Please select a valid email.");
     }
     if (!uid_okay) {
         if (!pw_okay)
-            alert("Please select a valid username and password.");
+        {
+            $(".errormsg").show();// placeholder
+            $(".errormsg").html("Please select a valid username and password.");
+        }
         else
-            alert("Please select a valid username.");
+        {
+            $(".errormsg").show();// placeholder
+            $(".errormsg").html("Please select a valid username.");
+        }
     } else if (!pw_okay)
-        alert("Please select a valid password.");
+    {
+        $(".errormsg").show();// placeholder
+        $(".errormsg").html("Please select a valid password.");
+    }
 
     if (uid_okay && pw_okay && email_okay) {
         return true;
