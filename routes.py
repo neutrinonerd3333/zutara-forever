@@ -220,7 +220,7 @@ def signup():
         return render_template('error.html')  # DNE yet
 
     return render_template('./security/login_user.html',
-                           message="You have successfully signed up! " +
+                           success="You have successfully signed up! " +
                                    "Please login now.")
 
 
@@ -245,7 +245,7 @@ def signin():
     except:  # user DNE
         message = whoops
 
-    return render_template('./security/login_user.html', message=message)
+    return render_template('./security/login_user.html', success=message)
 
 
 @app.route("/logout", methods=['POST'])

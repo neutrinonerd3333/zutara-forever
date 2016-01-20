@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}
-User Login
+login
 {% endblock %}
 
 {% block content %}
@@ -9,6 +9,7 @@ User Login
 <section id="wrapper">
 <article>
 {% if not (current_user.is_authenticated) %}
+    <div class="errormsg-show">{{ success }}</div>
         <div class="user-form-container">
             <form action="/signin" method="POST" onsubmit="return signin(this)">
                 <div class="register">

@@ -106,6 +106,7 @@ h1
     left: -10%
 
 h2, h2 a
+    margin: -2em 0 2em 0
     font-size: inherit
     font-weight: normal
     position: relative
@@ -138,7 +139,7 @@ a
 /* LAYOUT TOP LINKS */  
 .login-container
     display: inline-block
-    margin: 0 1em 0 0
+    margin: 0 1em 2em 0
     position: relative
     top: -50%
     right: -50%
@@ -164,7 +165,7 @@ a
         
 .error-container
     @extend .absolute-center
-    margin-top: 2em
+    margin-top: -1em
     width: auto
     text-align: center
 
@@ -209,6 +210,9 @@ input
     width: 15em
     color: #cff
     display: none
+.errormsg-show
+    @extend .errormsg
+    display: block
 .register
     .inputLabel
         text-align: center
@@ -274,6 +278,7 @@ input
     @extend .absolute-center
     font-size: 18px
     padding: 1em
+    margin-top: -3em
     width: 40%
     min-width: 500px
     height: 60%
@@ -285,10 +290,10 @@ input
         font-weight: normal
         letter-spacing: 0.5px
     a
-        color: inherit
+        color: $color-white
         font-weight: normal
         &:hover
-            color: $color-white
+            color: $color-bright-light
 
 /* FOOTER DOES NOT CURRENTLY WORK */
 #footer

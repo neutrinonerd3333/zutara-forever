@@ -1,8 +1,8 @@
 /* SASS VARIABLES */
 /* SASS EXTENSIONS AND MIXINS */
-.absolute-center, .relative-center, .errormsg, .register input, .list, .error-container, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+.absolute-center, .relative-center, .errormsg, .errormsg-show, .register input, .list, .error-container, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
 
-.relative-center, .errormsg, .register input, .list { position: relative; }
+.relative-center, .errormsg, .errormsg-show, .register input, .list { position: relative; }
 
 /* MAN THESE TOOK FOREVER TO GET RIGHT IN SASS LOL */
 ::-webkit-input-placeholder { color: #999; }
@@ -28,7 +28,7 @@ body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 2
 
 h1 { font-size: 1.2em; font-weight: lighter; letter-spacing: 0.2px; text-align: center; color: #CEF; margin: 0; position: relative; left: -10%; }
 
-h2, h2 a { font-size: inherit; font-weight: normal; position: relative; color: #CEF; }
+h2, h2 a { margin: -2em 0 2em 0; font-size: inherit; font-weight: normal; position: relative; color: #CEF; }
 
 h3, h3 a { font-size: 1em; font-weight: lighter; text-align: center; color: #CEF; letter-spacing: 0.35px; display: inline-block; }
 
@@ -43,14 +43,14 @@ a:hover { color: #4BF; }
 ::-webkit-scrollbar { display: none; }
 
 /* LAYOUT TOP LINKS */
-.login-container { display: inline-block; margin: 0 1em 0 0; position: relative; top: -50%; right: -50%; color: #CEF; font-weight: normal; letter-spacing: 0.2px; }
+.login-container { display: inline-block; margin: 0 1em 2em 0; position: relative; top: -50%; right: -50%; color: #CEF; font-weight: normal; letter-spacing: 0.2px; }
 .login-container div { padding: 4px; text-align: right; font-size: 0.8em; }
 .login-container div a { background-color: rgba(255, 255, 255, 0.2); border-radius: 1em; padding: 0.3em 0.8em; }
 .login-container div a:hover { background-color: #CEF; }
 .login-container div a:active { background-color: #CEF; color: #4BF; }
 .login-container .yes, .login-container .no { font-size: 1em; }
 
-.error-container { margin-top: 2em; width: auto; text-align: center; }
+.error-container { margin-top: -1em; width: auto; text-align: center; }
 
 #link { margin-bottom: -4em; text-align: center; }
 #link a:hover { font-weight: normal; }
@@ -65,7 +65,9 @@ a:hover { color: #4BF; }
 
 input { outline: none; }
 
-.errormsg { text-align: center; font-size: 0.8em; width: 15em; color: #cff; display: none; }
+.errormsg, .errormsg-show { text-align: center; font-size: 0.8em; width: 15em; color: #cff; display: none; }
+
+.errormsg-show { display: block; }
 
 .register .inputLabel { text-align: center; display: none; font-size: 0.8em; width: 15em; color: #cff; margin: -5px 0 5px 0; margin-left: auto; margin-right: auto; }
 .register input { outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; color: #666; padding: 3px 10px 3px 10px; margin-bottom: 10px; font-size: 16px; border-radius: 0; border: 0; }
@@ -80,10 +82,10 @@ input { outline: none; }
 #wrapper { height: calc(100% - 6em); padding: 50px; width: auto; }
 
 /* TEXT CONTAINER FOR ABOUT PAGE */
-.textcontainer { font-size: 18px; padding: 1em; width: 40%; min-width: 500px; height: 60%; min-height: 400px; display: block; color: #CEF; overflow: auto; }
+.textcontainer { font-size: 18px; padding: 1em; margin-top: -3em; width: 40%; min-width: 500px; height: 60%; min-height: 400px; display: block; color: #CEF; overflow: auto; }
 .textcontainer p { font-weight: normal; letter-spacing: 0.5px; }
-.textcontainer a { color: inherit; font-weight: normal; }
-.textcontainer a:hover { color: #FFF; }
+.textcontainer a { color: #FFF; font-weight: normal; }
+.textcontainer a:hover { color: #AEF; }
 
 /* FOOTER DOES NOT CURRENTLY WORK */
 #footer { width: 200%; height: 5em; background-color: #4BF; height: 4em; width: 100%; display: block; position: absolute; margin: 3em 0 -5em 0; right: -50px; /* account for wrapper */ bottom: 0em; }

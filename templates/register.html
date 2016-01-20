@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}
-Account Registration Page
+registration
 {% endblock %}
 
 {% block content %}
@@ -8,6 +8,7 @@ Account Registration Page
 
 <section id="wrapper">
     <article>
+        <div class="errormsg-show">{{ success }}</div>
         <div class="errormsg"></div>
         <div class="user-form-container">
             <form action="/signup" method="POST" onsubmit="return signup(this)">
