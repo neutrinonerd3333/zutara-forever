@@ -1,0 +1,32 @@
+====================
+ THINGS TO TEST FOR
+====================
+
+HTML ESCAPING -- unsafe (read: user-provided) variables should escaped.
+    To find things that might need escaping, try "grep -r . {{" in templates directory
+    See http://jinja.pocoo.org/docs/dev/templates/#html-escaping
+ 
+NON-ASCII INPUTS -- exactly what it sounds like. Things to test, from easy to hard:
+    letters
+    alphanumeric
+    extended Latin (e.g. é, ü, í, ñ, ã, ç, ø, ß, œ, æ)
+    Cyrillic
+    Chinese, Japanese, Korean [to check utf-8]
+    Arabic, Hebrew (go crazy with right-to-left!)
+    spaces
+    nonprinting characters? (\000, \001, ..., \031)
+    ... drag some images into the input? arbitrary files?
+    ... especially login stuff (restrict usernames to [a-z][A-Z][0-9].-_
+     
+VARIED INPUT LENGTHS
+    zero length
+    super length
+    
+HTTP ERRORS -- should handle the following:
+    404 NOT FOUND   you should know this :P
+    403 FORBIDDEN   user not permitted to access
+    410 GONE        page has been deleted
+    500 SERVER ERR  backend bugs and stuff
+
+
+

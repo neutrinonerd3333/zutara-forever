@@ -1,0 +1,16 @@
+LIST:
+<ul>
+	<li>ENTRY<li>
+	<li>ENTRY<li>
+	<li>ENTRY<li>
+</ul>
+
+ENTRY:
+<ul>
+	TITLE
+	<li>ATTRIBUTE</li>
+	<li>ATTRIBUTE</li>
+
+ATTRIBUTE:
+<div class=“key”>KEY</div>
+<div class=“value”>VALUE</div>

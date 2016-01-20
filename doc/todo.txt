@@ -1,0 +1,28 @@
+=======================
+TO DO LIST FOR CATALIST
+=======================
+
+agenda Jan 17:
+* make UI responsive? as in it should still look nice with a smaller window, different device, diff browser, etc.
+* permissions UI
+* invite system for lists?
+* database cleaning: lists that aren't used for a while should be removed; similar for users (how to handle references to deleted users?)
+* make users activate account?
+* password recovery
+* debug!
+* implement email notification of errors
+    - see http://flask.pocoo.org/docs/0.10/errorhandling/#error-mails
+* resolve concurrency issues (should we make list editing a mutex operation? how to prevent deadlock?)
+
+
+* * * * *
+GENERAL
+* * * * *
+
+Front End:
+	Views/templates
+	Design (Catalist shall be pretty)
+
+Back End:
+	Basic Flask/Mongo functionality
+	Figure out AJAX (live editing functionality)
