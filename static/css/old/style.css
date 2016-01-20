@@ -70,7 +70,7 @@ h3 a {
 h3 a {
     font-weight: normal;
 }
-.errorContainer {
+.error-container {
     position: absolute;
     left: 0;
     right: 0;
@@ -136,7 +136,7 @@ a:hover {
 .textcontainer a:hover {
     color: #fff;
 }
-.register-container {
+.user-form-container {
     color: #666;
     width: 100%;
     display: block;

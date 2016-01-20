@@ -1,0 +1,145 @@
+/* NOTE: MAKE SURE YOU TAKE OUT THE PLACEHOLDER CSS OUT OF THE .CSS BEFORE RUNNING SASS, BECAUSE PLACEHOLDERS ARE SUPER STUPID .________. */
+/* SASS VARIABLES */
+/* SASS EXTENSIONS AND MIXINS */
+.absolute-center, .relative-center, .register input, .list, .error-container, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+
+.relative-center, .register input, .list { position: relative; }
+
+/* START OF CSS */
+html { height: 100%; min-height: 333px; background: #AEF; }
+
+body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; height: 100%; min-width: 500px; margin: 0; background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: fixed; background-size: 100% 100%; background-repeat: no-repeat; }
+
+h1 { font-size: 1.2em; font-weight: lighter; letter-spacing: 0.2px; text-align: center; color: #CEF; margin: 0; text-decoration: none; }
+
+h2, h2 a { font-size: 1em; font-weight: lighter; color: #CEF; }
+
+h3, h3 a { font-size: 1em; font-weight: lighter; text-align: center; color: #CEF; letter-spacing: 0.35px; display: inline-block; }
+
+h3 a { font-weight: normal; }
+
+a { font-weight: lighter; text-decoration: none; color: #CEF; }
+a:hover { color: #FFF; font-weight: bold; }
+
+/* INPUT PLACEHOLDER TEXT */
+/* WILL BE INCLUDED MANUALLY */
+/* DO NOT DISPLAY SCROLL BAR */
+::-webkit-scrollbar { display: none; }
+
+/* LAYOUT TOP LINKS */
+.login-container { display: block; margin: 1em 1em 0 0; position: absolute; top: 0; right: 0; color: #CEF; font-weight: lighter; letter-spacing: 0.2px; }
+.login-container div { padding: 4px; text-align: right; font-size: 0.8em; }
+
+.error-container { margin-top: 2em; width: auto; text-align: center; }
+
+#link { margin-bottom: -2em; text-align: center; }
+#link a:hover { font-weight: bold; font-size: 0.9em; }
+
+.user-form-container { color: #666; width: 100%; display: block; padding: 4px; align-items: center; }
+
+.topPlaceholder { position: absolute; top: 0; height: 2em; background-color: #4BF; width: 100%; min-width: 500px; }
+
+.yes, .no { display: inline; cursor: pointer; }
+
+.yes:hover, .no:hover { font-weight: bold; font-size: 0.9em; }
+
+input { outline: none; }
+
+.errormsg { text-align: center; font-size: 0.6em; width: 15em; color: #cff; margin-left: auto; margin-right: auto; display: block; margin-top: -4em; }
+
+.register .inputLabel { text-align: center; display: none; font-size: 0.6em; width: 15em; color: #cff; margin: -5px 0 5px 0; margin-left: auto; margin-right: auto; }
+.register .errormsg { display: block; margin-top: -4em; }
+.register input { outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; color: #666; padding: 3px 10px 3px 10px; margin-bottom: 10px; font-size: 16px; border-radius: 0; border: 0; }
+.register input[type="text"], .register input[type="email"], .register input[type="password"] { display: block; text-align: left; height: 1.8em; width: 10em; background-color: rgba(255, 255, 255, 0.7); margin-bottom: 10px; }
+.register input[type="text"]:hover, .register input[type="text"]:focus, .register input[type="email"]:hover, .register input[type="email"]:focus, .register input[type="password"]:hover, .register input[type="password"]:focus { background-color: rgba(255, 255, 255, 0.2); }
+.register input[type="submit"], .register input[type="button"] { text-align: center; height: 30px; width: 100px; background-color: rgba(255, 255, 255, 0.2); color: #999; }
+.register input[type="submit"]:hover, .register input[type="button"]:hover { background-color: rgba(255, 255, 255, 0.7); }
+
+.header { margin: 2em 3em 1em 3em; width: auto; }
+.header img { display: block; margin-left: auto; margin-right: auto; height: 3em; width: auto; }
+
+#wrapper { height: calc(100% - 6em); padding: 50px; width: auto; }
+
+/* TEXT CONTAINER FOR ABOUT PAGE */
+.textcontainer { font-size: 18px; padding: 1em; width: 40%; min-width: 500px; height: 60%; min-height: 400px; display: block; color: #CEF; overflow: auto; }
+.textcontainer p { font-weight: normal; letter-spacing: 0.5px; }
+.textcontainer a { color: inherit; font-weight: normal; }
+.textcontainer a:hover { color: #FFF; }
+
+/* FOOTER DOES NOT CURRENTLY WORK */
+#footer { width: 200%; height: 5em; background-color: #4BF; height: 4em; width: 100%; display: block; position: absolute; margin: 3em 0 -5em 0; right: -50px; /* account for wrapper */ bottom: 0em; }
+
+.list { color: #666; background-color: rgba(255, 255, 255, 0.7); font-size: 18px; width: 50%; min-width: 300px; height: 100%; min-height: 200px; display: block; border-radius: 20px; padding: 10px; font-weight: normal; overflow: auto; }
+.list * input { color: #666; background-color: rgba(255, 255, 255, 0.7); font-size: 16px; border: 0; outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
+.list * input:hover { background-color: rgba(255, 255, 255, 0.2); }
+.list * input:focus { background-color: rgba(255, 255, 255, 0.5); }
+.list .listTitle { width: 100; height: 3em; background-color: transparent; margin: 0 0 0.5em 0; }
+.list .listTitle input { height: 100%; width: calc(100% - 2em); background-color: transparent; padding: 0 1em; outline: none; border: 0; border-radius: 20px; text-align: center; font-size: 1.2em; }
+.list .listTitle input:focus { background-color: rgba(255, 255, 255, 0.5); }
+.list .listItem { width: 90%; min-height: 2em; background-color: transparent; border-radius: 20px; margin: 0; margin-bottom: 1em; padding: 0; position: relative; display: inline-block; }
+.list .votes { width: 10%; min-height: 2em; background-color: transparent; border-radius: 20px; margin: 0; margin-bottom: 1em; right: -10%; padding: 0; position: absolute; }
+.list .votes div { color: #999; font-size: 1em; position: absolute; top: 0.3em; left: 10%; letter-spacing: 0.8px; font-weight: lighter; }
+
+/* SPECIFICS OF EACH LIST ITEM */
+.listItem .itemTitle { position: relative; display: block; width: 100%; height: 2em; background-color: transparent; border-radius: 20px 20px 0 0; padding: 0; margin: 0; }
+.listItem .itemTitle input { background-color: #AEF; padding: 0 5em 0 1em; margin: 0; border-radius: 20px; height: 100%; width: calc(100% - 6em); }
+.listItem .attributes { border-radius: 0 0 20px 20px; display: none; }
+.listItem .attributes .attribute { overflow: hidden; width: 100%; height: 2em; display: block; padding: 0; margin: 0; border-radius: 0 0 20px 20px; }
+.listItem .attributes .attribute .key, .listItem .attributes .attribute .value { display: inline-block; height: 100%; margin: 0; width: 20%; }
+.listItem .attributes .attribute .value { width: 80%; }
+.listItem .attributes .attribute .key input, .listItem .attributes .attribute .value input { float: left; width: calc(100% - 2em); height: 100%; padding: 0 1em; }
+.listItem .attributes .attribute .value input { padding: 0 2.5em 0 1em; width: calc(100% - 3.5em); }
+
+/* DEFAULT SPRITE IS DOWN ARROW */
+.icon, .icon-down, .icon-minus, .icon-heart, .mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2 { background-image: url("/static/img/icons.svg"); background-size: 18em 4.5em; background-clip: border-box; background-repeat: no-repeat; background-position: 0 0; display: block; width: 1.5em; height: 1.5em; position: absolute; padding: 0; margin: 0; z-index: 100; }
+
+.icon-down { right: 0.3em; top: 0.3em; }
+
+.icon-minus { position: relative; right: calc(-100% + 26px + .3em); top: -2em; background-position: -4.5em -1.5em; }
+
+.icon-heart { right: 2.1em; top: 0.3em; background-position: -6em 0; }
+
+/* MY LISTS INTERFACE */
+.mylists { /* ICONS FOR PERMISSIONS */ }
+.mylists #wrapper { height: 80%; }
+.mylists body { height: calc(100% - 2em); }
+.mylists .listBlock { left: 10%; border-radius: 20px 0 0 0; background-color: #CEF; }
+.mylists .listBlock2 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
+.mylists .listBlock, .mylists .listBlock2 { display: inline-block; position: absolute; height: 50%; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: 0.5em; color: #333; text-align: center; overflow: hidden; }
+.mylists .scrollWrapper { overflow: scroll; height: 100%; }
+.mylists .blockTitle { position: absolute; width: 100%; top: 0; height: 2em; padding-top: 1em; background-color: #4BF; color: #CEF; text-align: center; font-weight: bold; letter-spacing: 2px; }
+.mylists .listHead { width: 100%; height: 1.5em; }
+.mylists .listHead .titles, .mylists .listHead .times { padding-top: 0.5em; height: 100%; width: 50%; display: inline-block; text-align: center; color: #666; background-color: #AEF; margin: 0; }
+.mylists .listWrapper { margin: 0; }
+.mylists .listWrapper .mylist { height: 1em; width: calc(100% - 2em); background-color: #CEF; border-radius: 0; padding: 0.8em 1em 0.2em; margin: 0; display: block; }
+.mylists .listWrapper .mylist:hover { background-color: #AEF; }
+.mylists .listWrapper .mylist .listTitle, .mylists .listWrapper .mylist .listTitle a, .mylists .listWrapper .mylist .listTime, .mylists .listWrapper .mylist .listTime a { width: 50%; display: inline-block; color: #666; text-decoration: none; text-align: center; font-weight: normal; overflow-x: scroll; white-space: nowrap; }
+@media (max-width: 800px) { .mylists .listBlock, .mylists .listBlock2 { display: block; position: relative; left: 10%; height: 30%; width: 80%; background-color: #AEF; }
+  .mylists .listBlock { border-radius: 20px 20px 0 0; }
+  .mylists .listBlock2 { border-radius: 0; top: 0; } }
+.mylists iframe { display: block; border: none; height: 100%; }
+.mylists .icon-container { display: inline-block; width: 1.5em; padding-left: 0.5em; height: 100%; position: relative; left: -0.5em; overflow: hidden; }
+.mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2 { background-position: -12em 0; position: relative; }
+.mylists .icon-share { top: 0.5em; }
+.mylists .icon-edit { background-position: -13.5em 0; top: 1em; }
+.mylists .icon-view { background-position: -16.5em 0; top: 1.5em; }
+.mylists .icon-trash { background-position: -15em 0; top: 2.5em; }
+.mylists .icon-link { background-position: -9em 0; top: 2em; }
+.mylists .icon-link-2 { background-position: -9em 0; top: 1em; }
+.mylists .toolbox { width: 100%; height: 11em; overflow: hidden; background-color: #AEF; display: none; }
+.mylists .toolbox input { width: calc(100% - 5em); height: 2em; display: inline-block; position: relative; top: -2.5em; right: -1em; color: #666; font-size: 16px; border: 0; outline: none; padding: 0 0.5em; background-color: #AEF; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
+.mylists .toolbox * input:hover, .mylists .toolbox * input:focus { background-color: #FFF; }
+.mylists .toolbox .permissions { width: calc(100% - 5em); height: calc(100% - .5em); position: relative; left: -1em; top: -1.8em; display: inline-block; outline: none; padding: 0em 0.5em 0; }
+.mylists .toolbox .permissions .editors { height: 2em; width: calc(100% - 2em); margin-bottom: 0.5em; display: block; position: relative; top: 0.5em; left: 0; color: #666; font-size: 16px; text-align: left; }
+.mylists .toolbox * .line { height: 1em; width: calc(100% - 2em); padding-left: 0.5em; padding-top: 1em; margin-bottom: 0.5em; display: block; color: #666; font-size: 16px; text-align: left; }
+
+/*# sourceMappingURL=style_all.css.map */
+
+::-webkit-input-placeholder {color: #999;}
+::-moz-placeholder {color: #999;}
+:-ms-input-placeholder {color: #999;}
+input:-moz-placeholder {color: #999;}
+:focus::-webkit-input-placeholder {color: transparent;}
+:focus::-moz-placeholder {color: transparent;}
+:focus:-ms-input-placeholder {color: transparent;}
+input:focus:-moz-placeholder {color: transparent;}

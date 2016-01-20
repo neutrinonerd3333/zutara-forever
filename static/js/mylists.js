@@ -2,7 +2,7 @@ var listid = 0;
 $(document).ready(function() {
 
     // expands preview on click (should I make it click?) over url
-    $(".listBlock2").on("mouseenter", ".list", previewLink);
+    $(".listBlock2").on("mouseenter", ".mylist", previewLink);
 
     // view toolbox on hover
     $(".listWrapper").on("mouseenter", showToolbox);
@@ -31,7 +31,8 @@ function showToolbox() {
     var tools = $(this).find(".toolbox");
     tools.show();
 
-    var url = $(this).find(".list input").val();
+    $(this).find(".mylist").css("background-color", "#AEF");
+    var url = $(this).find(".mylist input").val();
     // cut out "/list/"
     listid = url.slice(6);
 
@@ -41,19 +42,20 @@ function showToolbox() {
     // wipe out hidden input so don't have to keep repeating script
     if (perm != undefined) {
         if (perm === "own") {
-            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-view icon"></div> <div class="icon-edit icon"></div> <div class="icon-link icon"></div> <div class="icon-trash icon"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="view" type="text"> <input class="editors" id="edit" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <input class="editors" id="delete" type="text" placeholder="Type &quot;delete&quot; to delete list."> </div>');
+            $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-view"></div> <div class="icon-edit"></div> <div class="icon-link"></div> <div class="icon-trash"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="view" type="text"> <input class="editors" id="edit" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <input class="editors" id="delete" type="text" placeholder="Type &quot;delete&quot; to delete list."> </div>');
             $(tools).css("height", "11em");
         } else if (perm === "edit") {
-            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-link-2 icon"></div> </div> <div class="permissions"> <div class="line">You may edit and view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
+            $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div> </div> <div class="permissions"> <div class="line">You may edit and view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
             $(tools).css("height", "5em");
         } else if (perm === "view") {
-            $(tools).html('<div class="icon-container"> <div class="icon-share icon"></div> <div class="icon-link-2 icon"></div> </div> <div class="permissions"> <div class="line">You may view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
+            $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div> </div> <div class="permissions"> <div class="line">You may view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
             $(tools).css("height", "5em");
         }
     }
 }
 
 function hideToolbox() {
+    $(this).find(".mylist").css("background-color", "#CEF");
     var tools = $(this).find(".toolbox");
     tools.hide();
 }

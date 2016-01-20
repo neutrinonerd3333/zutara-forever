@@ -1,0 +1,293 @@
+/* GENERIC LAYOUT */
+html {
+    background: #AEF;
+}
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em));
+    background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em));
+    background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em));
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+.login-container,
+h1,
+a,
+h2,
+h2 a {
+    color: #CEF;
+}
+h3,
+h3 a {
+    color: hsl(200, 100%, 95%);
+}
+a:hover {
+    color: #fff;
+}
+.textcontainer {
+    color: hsl(200, 100%, 95%);
+}
+.textcontainer a:hover {
+    color: #fff;
+}
+.user-form-container,
+.register input {
+    color: #666;
+}
+.register .inputLabel,
+.errormsg {
+    color: #cff;
+}
+.register input[type="text"],
+.register input[type="email"],
+.register input[type="password"] {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+.register input[type="email"]:focus,
+.register input[type="text"]:focus,
+.register input[type="password"]:focus,
+.register input[type="email"]:hover,
+.register input[type="text"]:hover,
+.register input[type="password"]:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+.register input[type="submit"],
+.register input[type="button"] {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #666;
+}
+.register input[type="submit"]:hover,
+.register input[type="button"]:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+::-webkit-input-placeholder {
+    color: #999;
+}
+::-moz-placeholder {
+    color: #999;
+}
+:-ms-input-placeholder {
+    color: #999;
+}
+input:-moz-placeholder {
+    color: #999;
+}
+:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+:focus::-moz-placeholder {
+    color: transparent;
+}
+:focus:-ms-input-placeholder {
+    color: transparent;
+}
+input:focus:-moz-placeholder {
+    color: transparent;
+}
+.topPlaceholder {
+    background-color: #4BF;
+}
+#footer {
+    background-color: #4BF;
+}
+
+/* LISTS (HOMEPAGE) */
+.list {
+    background-color: rgba(255,255,255,0.8);
+    color: #666;
+}
+.list * input {
+    color: #666;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+.list * input:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+.list * input:focus {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.list .listTitle {
+    background-color: transparent;
+}
+.listTitle input {
+    background-color: transparent;
+}
+.listTitle input:focus {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+.listItem {
+    background-color: transparent;
+}
+.votes {
+    background-color: transparent;
+}
+.votes div {
+    color: #888;
+}
+.itemTitle {
+    background-color: transparent;
+}
+.itemTitle input {
+    background-color: #9DF;
+}
+
+/* MY LISTS */
+
+.listBlock,
+.listBlock2 {
+    background-color: #CEF;
+    color: #333;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.listBlock .blockTitle,
+.listBlock2 .blockTitle {
+    background-color: #3AF;
+    color: #CEF;
+}
+.titles,
+.times {
+    color: #555;
+}
+.listWrapper .list {
+    height: 1em;
+    /* padding covers height too */
+    
+    width: calc(100% - 2em);
+    background-color: #CFF;
+    border-radius: 0;
+    padding: 0.8em 1em 0.2em;
+    margin: 0;
+    display: block;
+    overflow: hidden;
+}
+.listWrapper .list:hover {
+    background-color: #AEF;
+}
+.listTitle,
+.listTitle a,
+.listTime,
+.listTime a {
+    width: 50%;
+    display: inline-block;
+    color: #666;
+    text-decoration: none;
+    text-align: center;
+    font-weight: normal;
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+iframe {
+    display: block;
+    border: none;
+    height: 100%;
+}
+.icon {
+    background-image: url("/static/img/icons.svg");
+    background-size: 18em 4.5em;
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    background-position: -12em 0;
+    display: block;
+    width: 1.5em;
+    height: 1.5em;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    z-index: 100;
+}
+.icon-container {
+    display: inline-block;
+    width: 1.5em;
+    padding-left: .5em;
+    height: 100%;
+    position: relative;
+    left: -.5em;
+    overflow: hidden;
+}
+.icon-share {
+    top: .5em;
+}
+.icon-edit {
+    background-position: -13.5em 0;
+    top: 1em;
+}
+.icon-view {
+    background-position: -16.5em 0;
+    top: 1.5em;
+}
+.icon-trash {
+    background-position: -15em 0;
+    top: 2.5em;
+}
+.icon-link {
+    background-position: -9em 0;
+    top: 2em;
+}
+.icon-link-2 {
+    background-position: -9em 0;
+    top: 1em;
+}
+.toolbox {
+    width: 100%;
+    height: 11em;
+    overflow: hidden;
+    background-color: #9DF;
+    display: none;
+}
+.toolbox input {
+    width: calc(100% - 5em);
+    height: 2em;
+    display: inline-block;
+    position: relative;
+    top: -2.5em;
+    right: -1em;
+    color: #666;
+    font-size: 16px;
+    border: 0;
+    outline: none;
+    padding: 0 .5em;
+    background-color: #9DF;
+    transition: background .25s ease-in-out;
+    -moz-transition: background .25s ease-in-out;
+    -webkit-transition: background .25s ease-in-out;
+}
+.toolbox * input:hover,
+.toolbox * input:focus {
+    background-color: #fff;
+}
+.toolbox .permissions {
+    width: calc(100% - 5em);
+    height: calc(100% - .5em);
+    position: relative;
+    left: -1em;
+    top: -1.8em;
+    display: inline-block;
+    outline: none;
+    padding: 0em .5em 0;
+}
+.line {
+    height: 1em;
+    width: calc(100% - 2em);
+    padding-left: .5em;
+    padding-top: 1em;
+    margin-bottom: .5em;
+    display: block;
+    color: #666;
+    font-size: 16px;
+    text-align: left;
+}
+.permissions .editors {
+    height: 2em;
+    width: calc(100% - 2em);
+    margin-bottom: .5em;
+    display: block;
+    position: relative;
+    top: .5em;
+    left: 0;
+    color: #666;
+    font-size: 16px;
+    text-align: left;
+}

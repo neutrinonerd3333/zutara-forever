@@ -57,6 +57,7 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=255)  # because this is a hash
     active = db.BooleanField(default=True)  # set False for user confirmation
     confirmed_at = db.DateTimeField()
+    preferred_theme = db.IntField(maximum=10, required=True, default=0)
 
     # we want to remove long-inactive users
     last_active = db.DateTimeField(required=True)
@@ -1046,6 +1047,27 @@ def public_level_set():
 
     the_list.public_level = perm
     the_list.save()
+
+# # # # # # # # # # # # # #
+# CUSTOMIZATION
+# # # # # # # # # # # # # #
+@flask_security.login_required
+@app.route("/api/customize", methods=['POST'])
+def get_pref():
+    """
+    Get the preferred theme for the user
+    POST: {
+        uid: <uid>,
+    }
+    returns:
+    {
+        theme: <preferred theme [0, 1, ..]>
+    }
+    """
+    # login required, so user must exist
+    uid = flask_security.core.current_user.uid
+    user = User.objects.get(uid = uid)
+    return jsonify(theme = user.preferred_theme)
 
 
 # # # # # # # # # # # # # #

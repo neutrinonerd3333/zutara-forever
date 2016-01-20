@@ -3,3 +3,4 @@
 *.xcf
 doc/*
 !doc/*.pdf
+static/css/.sass-cache

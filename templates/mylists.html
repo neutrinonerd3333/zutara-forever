@@ -5,10 +5,10 @@ My Lists
 
 {% block content %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/mylists.js') }}"></script>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/mylists.css') }}">
 
 <p align="center"><h2><div id="link">{{ message }}</div></h2></p>
 
+<div class="mylists">
 <section id="wrapper">
     <!--src of iframe will be edited in jquery later upon choosing a list to preview-->
     <div class="listBlock">
@@ -25,7 +25,7 @@ My Lists
         <div class="scrollWrapper">  
         {% for catalist in lists %}
         <div class="listWrapper">
-        <div class="list">
+        <div class="mylist">
             <input type="hidden" value={{ host + "/list/" + catalist.listid }}>
             <input type="hidden" value={{ "/preview/" + catalist.listid }}>
     
@@ -41,4 +41,5 @@ My Lists
         </div>
     </div>
 </section>
+</div>
 {% endblock %}
