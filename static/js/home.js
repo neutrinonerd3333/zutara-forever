@@ -36,6 +36,7 @@ $(document).ready(function() {
         // bind all the ajax save listeners now
         enableLiveSave();
         loadVotes($(".list"));
+        // console.log(getPermissions(listid));
     }
     // load current votes
     
@@ -378,6 +379,20 @@ function deleteVote(that) {
             });
         }
     });
+}
+
+function getPermissions(listid) {
+    $.ajax({
+                data: {
+                    listid: listid,
+                },
+                url: "/api/getpermissions",
+                method: 'POST',
+                success: function(data, status, jqxhr) {
+                    // logged in if true, guest if false
+                    console.log(data.permission);
+                }
+            });
 }
 
 function resize() {

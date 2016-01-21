@@ -963,7 +963,8 @@ def permissions_set():
     uname = get_id()
     listid = request.form["listid"]
     perm = request.form["permission"]
-    target = request.form["target"]
+    # target = request.form["target"]
+    target = flask_security.core.current_user.uid
 
     the_list = Catalist.objects.get(listid=listid)
 

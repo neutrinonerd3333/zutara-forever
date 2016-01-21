@@ -27,30 +27,41 @@ function previewLink() {
     }
 }
 
-function showToolbox() {
+function showToolbox(perm) {
     var tools = $(this).find(".toolbox");
+    var permInput = $(tools).find("input");
     tools.show();
 
     $(this).find(".mylist").css("background-color", "#AEF");
     var url = $(this).find(".mylist input").val();
+    var n = url.indexOf('/list/');
     // cut out "/list/"
-    listid = url.slice(6);
+    listid = url.slice(n + 6);
+    if($(permInput).val()===''){
+        console.log(listid);
+        $.ajax({
+            data: {
+                listid: listid,
+            },
+            url: "/api/getpermissions",
+            method: 'POST',
+            success: function(data, status, jqxhr) {
+                // logged in if true, guest if false
+                var perm = data.permission;
+                $(permInput).val(perm);
 
-    var perm = $(tools).find("input[type='hidden']").val();
-    console.log(perm);
-
-    // wipe out hidden input so don't have to keep repeating script
-    if (perm != undefined) {
-        if (perm === "own") {
-            $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-view"></div> <div class="icon-edit"></div> <div class="icon-link"></div> <div class="icon-trash"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="view" type="text"> <input class="editors" id="edit" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <input class="editors" id="delete" type="text" placeholder="Type &quot;delete&quot; to delete list."> </div>');
-            $(tools).css("height", "11em");
-        } else if (perm === "edit") {
-            $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div> </div> <div class="permissions"> <div class="line">You may edit and view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
-            $(tools).css("height", "5em");
-        } else if (perm === "view") {
-            $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div> </div> <div class="permissions"> <div class="line">You may view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
-            $(tools).css("height", "5em");
-        }
+                if (perm === "own") {
+                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div>  <div class="icon-edit"></div> <div class="icon-view"></div> <div class="icon-link"></div> <div class="icon-trash"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="edit" placeholder="Editors" type="text"> <input class="editors" id="view" placeholder="Viewers" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <input class="editors" id="delete" type="text" placeholder="Type &quot;delete&quot; to delete list."> </div>');
+                    $(tools).css("height", "11em");
+                } else if (perm === "edit") {
+                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div> </div> <div class="permissions"> <div class="line">You may edit and view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
+                    $(tools).css("height", "5em");
+                } else if (perm === "view") {
+                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div> </div> <div class="permissions"> <div class="line">You may view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
+                    $(tools).css("height", "5em");
+                }
+            }
+        });
     }
 }
 
@@ -72,13 +83,14 @@ function useButtons() {
 function saveSettings() {
     if ($(this).attr("id") === "delete") {
         if ($(this).val() === "delete") {
+            console.log("deleted")
             deleteList(listid);
         }
     } else if ($(this).attr("id") === "view") {} else if ($(this).attr("id") === "edit") {}
 }
 
 function deleteList(listid) {
-    // verify once more that the user is indeed the owner of the list
+    // verify permission rank
     var isOwner = false;
     $.ajax({
         url: "/api/getpermissions",
@@ -87,22 +99,40 @@ function deleteList(listid) {
             listid: listid,
         },
         success: function(data, status, jqxhr) {
-            isOwner = true;
-        }
-    })
-    if (isOwner) {
-        if (confirm("Are you sure you want to permanently delete your list?")) {
-            $.ajax({
-                url: "/api/deletelist",
-                method: 'POST',
-                data: {
-                    listid: listid,
-                },
-                success: function(data, status, jqxhr) {
-                    alert("You have deleted list " + listid);
-                    location.reload(true); // reload from server not cache
+            var perm = data.permission;
+            if(perm==='own') {
+                if (confirm("Are you sure you want to permanently delete your list?")) {
+                    $.ajax({
+                        url: "/api/deletelist",
+                        method: 'POST',
+                        data: {
+                            listid: listid,
+                        },
+                        success: function(data, status, jqxhr) {
+                            alert("You have deleted list " + listid);
+                            location.reload(true); // reload from server not cache
+                        }
+                    });
                 }
-            });
+            }
+            // else no permission to delete
+            // and can only delete self
+            else {
+                if (confirm("Are you sure you want to permanently remove yourself from this list?")) {
+                    $.ajax({
+                        url: "/api/setpermissions",
+                        method: 'POST',
+                        data: {
+                            listid: listid,
+                            permission: perm
+                        },
+                        success: function(data, status, jqxhr) {
+                            alert("You have deleted list " + listid);
+                            location.reload(true); // reload from server not cache
+                        }
+                    });
+                }
+            }
         }
-    }
+    });
 }
