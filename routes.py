@@ -982,7 +982,10 @@ def permissions_set():
     perm = request.form["permission"]
     target = request.form["target"]
 
-    the_list = Catalist.objects.get(listid=listid)
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     if perm not in perm_list:
         raise InvalidAPIUsage("Invalid arguments")
@@ -994,8 +997,12 @@ def permissions_set():
     if cmp_permission(uperm, "own") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
-    the_target = Users.objects.get(uid=target)
-    target_cur_perm = query_permission(the_target, the_list)
+    try:
+        the_target = Users.objects.get(uid=target)
+        target_cur_perm = query_permission(the_target, the_list)
+    except DoesNotExist:
+        raise InvalidAPIUsage("User does not exist")
+
     if target_cur_perm == perm:
         return "OK"  # 200 OK
 
@@ -1043,7 +1050,10 @@ def permissions_get():
         permission: <the current permission>
     }
     """
-    catalist = Catalist.objects.get(listid=request.form["listid"])
+    try:
+        catalist = Catalist.objects.get(listid=request.form["listid"])
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
     return jsonify(permission=query_cur_perm(catalist))
 
 
@@ -1058,7 +1068,10 @@ def public_level_set():
         permission: {none | view | edit | own | admin}
     }
     """
-    the_list = Catalist.objects.get(listid=request.form["listid"])
+    try:
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     # check permissions
     if cmp_permission(query_cur_perm(the_list), "own") < 0:
