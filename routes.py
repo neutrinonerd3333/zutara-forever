@@ -81,7 +81,7 @@ class User(db.Document, UserMixin):
     last_active = db.DateTimeField(required=True)
 
     # users the current user has somehow interacted with
-    acquaintances = db.ListField(db.ReferenceField(User), default=[])
+    acquaintances = db.ListField(db.ReferenceField('self'), default=[])
 
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
