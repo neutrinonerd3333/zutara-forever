@@ -1089,6 +1089,12 @@ def autocomplete():
     response = jsonify(completions=completions)
     return response
 
+
+@app.route("/api/autocomplete/user", methods=['POST'])
+def autocomplete_user():
+    pass  # add stuff later
+    return "OK"  # 200 OK ^_^
+
 # **********************************************************
 # Start Application
 # **********************************************************
