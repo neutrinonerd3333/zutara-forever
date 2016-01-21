@@ -385,7 +385,6 @@ function loadVotes(that) {
 
     var item = $(voteBox).closest(".listItem");
     var eind = $(".list .listItem").index(item);
-    console.log(eind);
     $.ajax({
         url: "/api/vote",
         method: 'POST',
@@ -443,13 +442,13 @@ function tutorial() {
 
 function tutorial_1() {
     $(".bubble").fadeIn();
-    $(".list").one("input", ".listTitle input", tutorial_2);
+    $(".list").one("input", ".listTitle", tutorial_2);
 }
 
 function tutorial_2() {
     $(".bubble").fadeOut();
     $(".bubble-2").fadeIn();
-    $(".list").one("input", ".itemTitle input", tutorial_3);
+    $(".list").one("input", ".itemTitle", tutorial_3);
 }
 
 function tutorial_3() {
@@ -466,6 +465,6 @@ function tutorial_4() {
 
 function tutorial_5() {
     $(".bubble-4").fadeOut();
-    $("#welcome").html("And that's it! Remember to check out 'My Lists' and click the hearts to vote on items you like!");
+    $("#welcome").html("And that's it! Remember to register to manage your lists, and click hearts to vote!");
     $("#welcome").fadeIn();
 }

@@ -22,7 +22,7 @@ input:focus:-moz-placeholder { color: transparent; }
 :focus:-ms-input-placeholder { color: transparent; }
 
 /* START OF CSS */
-html { height: 100%; min-height: 333px; background: #AEF; }
+html { height: 100%; min-height: 333px; background: #AEF; overflow-x: hidden; }
 
 body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; height: 100%; min-width: 500px; margin: 0; background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: fixed; background-size: 100% 100%; background-repeat: no-repeat; }
 
@@ -56,18 +56,18 @@ a:hover { color: #4BF; }
 #link a:hover { font-weight: normal; color: #AEF; }
 
 /* TUTORIAL */
-#welcome { display: none; margin-top: -3em; margin-bottom: 3em; padding: 1em; border-radius: 20px; text-align: center; font-weight: normal; width: 40%; min-width: 300px; color: #FFF; background-color: rgba(0, 0, 0, 0.1); }
+#welcome { display: none; margin-top: -2em; margin-bottom: 3em; padding: 1em; border-radius: 20px; text-align: center; font-weight: normal; width: 40%; min-width: 300px; color: #FFF; background-color: rgba(0, 0, 0, 0.1); }
 #welcome #newb, #welcome #pro { font-size: 0.8em; background-color: #5CE; color: #FFF; width: 40%; display: inline-block; margin-top: 0.5em; padding: 0.5em; border-radius: 20px; cursor: pointer; }
 
 #tutorial-1 { display: block; position: absolute; }
 
-.bubble-2, .bubble, .bubble-4, .bubble-3 { top: 25em; width: 40%; min-width: 300px; height: 2em; display: none; z-index: 200; padding: 0.5em 0.5em 0.5em 1em; background: #CEF; color: #666; border-radius: 20px; font-size: 0.8em; }
+.bubble-2, .bubble, .bubble-4, .bubble-3 { top: 22em; width: 40%; min-width: 300px; height: 2em; display: none; z-index: 200; padding: 0.5em 0.5em 0.5em 1em; background: #CEF; color: #666; border-radius: 20px; font-size: 0.8em; }
 
-.bubble, .bubble-4 { top: 21em; }
+.bubble, .bubble-4 { top: 19em; }
 
 .bubble-2, .bubble, .bubble-4 { height: 3em; }
 
-.bubble-4 { top: 27em; height: 3em; }
+.bubble-4 { top: 24em; height: 3em; }
 
 .bubble:after, .bubble-4:after, .bubble-3:after, .bubble-2:after, .bubble:after, .bubble-4:after, .bubble-3:after { content: ""; position: absolute; border-style: solid; border-width: 0 15px 15px; border-color: #CEF transparent; display: block; width: 0; z-index: 200; margin-left: -15px; top: -15px; left: 50%; }
 
