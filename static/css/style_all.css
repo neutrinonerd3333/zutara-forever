@@ -1,6 +1,6 @@
 /* SASS VARIABLES */
 /* SASS EXTENSIONS AND MIXINS */
-.absolute-center, .relative-center, #welcome, .errormsg, .errormsg-show, .register input, .list, .error-container, .bubble, .bubble-3, .bubble-2, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+.absolute-center, .relative-center, #welcome, .errormsg, .errormsg-show, .register input, .list, .error-container, .bubble-2, .bubble, .bubble-4, .bubble-3, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
 
 .relative-center, #welcome, .errormsg, .errormsg-show, .register input, .list { position: relative; }
 
@@ -61,15 +61,17 @@ a:hover { color: #4BF; }
 
 #tutorial-1 { display: block; position: absolute; }
 
-.bubble, .bubble-3, .bubble-2 { top: 25em; width: 40%; min-width: 300px; height: 2em; display: none; z-index: 200; padding: 0.5em 0.5em 0.5em 1em; background: #CEF; color: #666; border-radius: 20px; font-size: 0.8em; }
+.bubble-2, .bubble, .bubble-4, .bubble-3 { top: 25em; width: 40%; min-width: 300px; height: 2em; display: none; z-index: 200; padding: 0.5em 0.5em 0.5em 1em; background: #CEF; color: #666; border-radius: 20px; font-size: 0.8em; }
 
-.bubble-3 { top: 27em; height: 3em; }
+.bubble, .bubble-4 { top: 21em; }
 
-.bubble:after, .bubble-3:after, .bubble-2:after { content: ""; position: absolute; border-style: solid; border-width: 0 15px 15px; border-color: #CEF transparent; display: block; width: 0; z-index: 200; margin-left: -15px; top: -15px; left: 50%; }
+.bubble-4 { top: 27em; height: 3em; }
 
-.bubble-2:after { left: 85%; }
+.bubble:after, .bubble-4:after, .bubble-3:after, .bubble-2:after, .bubble:after, .bubble-4:after, .bubble-3:after { content: ""; position: absolute; border-style: solid; border-width: 0 15px 15px; border-color: #CEF transparent; display: block; width: 0; z-index: 200; margin-left: -15px; top: -15px; left: 50%; }
 
-.bubble-3:after { left: 10%; }
+.bubble-3:after { left: 85%; }
+
+.bubble-4:after { left: 10%; }
 
 /* REGISTRATION */
 .user-form-container { color: #666; width: 100%; display: block; padding: 4px; align-items: center; }

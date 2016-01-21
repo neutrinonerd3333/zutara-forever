@@ -210,8 +210,8 @@ a
     display: block
     position: absolute
 
-.bubble,
-.bubble-2
+.bubble-2,
+.bubble-3
     @extend .absolute-center
     top: 25em
     width: 40%
@@ -227,12 +227,17 @@ a
     
     font-size: 0.8em
 
-.bubble-3
+.bubble
+    @extend .bubble-2
+    top: 21em
+
+.bubble-4
     @extend .bubble
     top: 27em
     height: 3em
 
-.bubble:after 
+.bubble:after,
+.bubble-2:after
     content: ''
     position: absolute
     border-style: solid
@@ -245,11 +250,11 @@ a
     top: -15px
     left: 50%
     
-.bubble-2:after
+.bubble-3:after
     @extend .bubble:after
     left: 85%
 
-.bubble-3:after
+.bubble-4:after
     @extend .bubble:after
     left: 10%
 

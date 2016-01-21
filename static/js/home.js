@@ -449,17 +449,21 @@ function tutorial_1() {
 function tutorial_2() {
     $(".bubble").fadeOut();
     $(".bubble-2").fadeIn();
-    $(".list").one("click", ".icon", tutorial_3);
+    $(".list").one("focusin", tutorial_3);
 }
 
 function tutorial_3() {
     $(".bubble-2").fadeOut();
     $(".bubble-3").fadeIn();
-    $(".list").one("focusin", ".attribute", tutorial_4);
+    $(".list").one("click", ".icon-down", tutorial_4);
 }
 
 function tutorial_4() {
     $(".bubble-3").fadeOut();
-    //$(".bubble-3").fadeIn();
-    //$(".list").on("mouseover", ".icon", tutorial_4);
+    $(".bubble-4").fadeIn();
+    $(".list").one("focusin", ".attribute", tutorial_5);
+}
+
+function tutorial_5() {
+    $(".bubble-4").fadeOut();
 }
