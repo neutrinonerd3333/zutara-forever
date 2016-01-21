@@ -9,28 +9,13 @@ if (n === 0) {
 }
 
 $(document).ready(function() {
-    $(".list").one("input", function() {
-        $.ajax({
-            url: "/api/makelist",
-            method: 'GET',
-            data: {
-                title: $(".listTitle input").val()
-            },
-            success: function(data, status, jqxhr){
-                // get list id, which we want to be a global var
-
-                listid = data.listid;
-                rel_url = "/list/" + listid
-                url = "http://" + location.host + rel_url
-                $("#link").html('Access or share your list at: <br><a href="'+url+'">'+url+"</a>");
-                // use pushState with same args to change url while preserving
-                // original in browser history; replaceState does same w/o preserving
-                window.history.pushState("", "Catalist", rel_url)
-                enableLiveSave()
-            }
+    $(".list").one("input", makeList)
+    
+    $("body").on('click', "input[type='url']", function() {
+            $(this).select();
+            document.execCommand("copy");
+            alert("Link copied to clipboard!");
         });
-
-    })
     
     if (listid === null) {
         $.ajax({
@@ -42,7 +27,7 @@ $(document).ready(function() {
                     
                 }
                 else {
-                    $(".list, a").one("mouseenter", askForTutorial);
+                    $(".list").one("mouseenter", askForTutorial);
                 }
             }
         });
@@ -173,8 +158,6 @@ function askToMakeList() {
 // all event bindings will be attached upon saving the list
 // so since list MUST exist, no need to call ifNoListMakeOne
 function enableLiveSave() {
-    $(".list").off('click', ".yes")
-    $(".list").off('click', ".no")
 
     // binding to save key and value
     $(".list").on('focusout', ".key input", function() {
@@ -249,7 +232,8 @@ function makeList() {
             listid = data.listid;
             rel_url = "/list/" + listid
             url = "http://" + location.host + rel_url
-            $("#link").html('Access or share your list at: <br><a href="' + url + '">' + url + "</a>");
+            $("#link").html("Access or share your list at: <br><input type='url' id='listurl' value=" + url + ">");
+            $("#link input").show();
             // use pushState with same args to change url while preserving
             // original in browser history; replaceState does same w/o preserving
             window.history.pushState("", "Catalist", rel_url)
@@ -354,6 +338,7 @@ function addVote(that) {
                     }
                 }
             });
+            $("body").one('click', ".yes", makeList);
         }
     });
     

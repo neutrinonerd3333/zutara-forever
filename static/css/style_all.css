@@ -1,8 +1,8 @@
 /* SASS VARIABLES */
 /* SASS EXTENSIONS AND MIXINS */
-.absolute-center, .relative-center, #welcome, .errormsg, .errormsg-show, .register input, .list, .error-container, .bubble-2, .bubble, .bubble-4, .bubble-3, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+.absolute-center, .relative-center, #link input, #welcome, .errormsg, .errormsg-show, .register input, .list, .error-container, .bubble-2, .bubble, .bubble-4, .bubble-3, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
 
-.relative-center, #welcome, .errormsg, .errormsg-show, .register input, .list { position: relative; }
+.relative-center, #link input, #welcome, .errormsg, .errormsg-show, .register input, .list { position: relative; }
 
 /* MAN THESE TOOK FOREVER TO GET RIGHT IN SASS LOL */
 ::-webkit-input-placeholder { color: #999; }
@@ -54,6 +54,9 @@ a:hover { color: #4BF; }
 
 #link { margin-bottom: -2em; margin-top: -1em; text-align: center; }
 #link a:hover { font-weight: normal; color: #AEF; }
+#link input { display: none; outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; color: #666; background-color: rgba(255, 255, 255, 0.2); height: 1.5em; padding: 5px 8px; margin-bottom: 10px; font-size: 1em; border-radius: 0; border: 0; width: 45%; }
+#link input:hover { background-color: rgba(255, 255, 255, 0.5); }
+#link input:focus { background-color: rgba(255, 255, 255, 0.7); }
 
 /* TUTORIAL */
 #welcome { display: none; margin-top: -2em; margin-bottom: 3em; padding: 1em; border-radius: 20px; text-align: center; font-weight: normal; width: 40%; min-width: 300px; color: #FFF; background-color: rgba(0, 0, 0, 0.1); }
@@ -80,9 +83,9 @@ a:hover { color: #4BF; }
 
 .topPlaceholder { position: absolute; top: 0; height: 2em; background-color: #4BF; width: 100%; min-width: 500px; }
 
-.yes, .no { z-index: 10; display: inline; cursor: pointer; background-color: rgba(255, 255, 255, 0.5); color: #666; padding: 0.5em; border-radius: 20px; }
+.yes, .no { z-index: 10; display: inline; cursor: pointer; background-color: rgba(255, 255, 255, 0.2); color: #FFF; padding: 0.2em 0.5em; border-radius: 20px; }
 
-.yes:hover, .no:hover { font-weight: normal; }
+.yes:hover, .no:hover { font-weight: normal; background-color: #CEF; color: #4BF; }
 
 input { outline: none; }
 
@@ -103,10 +106,10 @@ input { outline: none; }
 #wrapper { height: calc(80% - 6em); padding: 50px; width: auto; }
 
 /* TEXT CONTAINER FOR ABOUT PAGE */
-.textcontainer { font-size: 18px; padding: 1em; margin-top: -4em; width: 50%; min-width: 400px; height: 40%; min-height: 300px; display: block; color: #CEF; background-color: rgba(100, 100, 100, 0.2); overflow: auto; border-radius: 20px; }
+.textcontainer { font-size: 18px; padding: 1em; margin-top: -4em; width: 50%; min-width: 400px; height: 40%; min-height: 300px; display: block; color: #666; background-color: rgba(255, 255, 255, 0.2); overflow: auto; border-radius: 20px; }
 .textcontainer p { font-weight: normal; letter-spacing: 0.5px; }
-.textcontainer a { color: #FFF; font-weight: normal; }
-.textcontainer a:hover { color: #AEF; }
+.textcontainer a { color: #999; font-weight: normal; }
+.textcontainer a:hover { color: #FFF; }
 
 /* FOOTER DOES NOT CURRENTLY WORK */
 #footer { width: 200%; height: 5em; background-color: #4BF; height: 4em; width: 100%; display: block; position: absolute; margin: 3em 0 -5em 0; right: -50px; /* account for wrapper */ bottom: 0em; }

@@ -180,6 +180,25 @@ a
     a:hover
         font-weight: normal
         color: $color-bright-light
+    input
+        display: none
+        outline: none
+        @extend .relative-center
+        +transition(background, .25s, ease-in-out)
+        color: $color-gray-dark
+        background-color: $color-transparent-light
+        height: 1.5em
+        padding: 5px 8px
+        margin-bottom: 10px
+        font-size: 1em
+        border-radius: 0
+        border: 0
+        width: 45%
+        &:hover
+            background-color: $color-transparent-medium
+        &:focus
+            background-color: $color-transparent-dark
+        
 
 /* TUTORIAL */
 #welcome
@@ -286,14 +305,16 @@ a
     display: inline
     cursor: pointer
     
-    background-color: $color-transparent-medium
-    color: $color-gray-dark
-    padding: 0.5em
+    background-color: $color-transparent-light
+    color: $color-white
+    padding: 0.2em 0.5em
     border-radius: 20px
     
 .yes:hover,
 .no:hover
     font-weight: normal
+    background-color: $color-bright-lightest
+    color: $color-bright-dark
 
 input
     outline: none
@@ -379,18 +400,18 @@ input
     height: 40%
     min-height: 300px
     display: block
-    color: $color-bright-lightest
-    background-color: $color-gray-transparent-lightest
+    color: $color-gray-dark
+    background-color: $color-transparent-light
     overflow: auto
     border-radius: 20px
     p
         font-weight: normal
         letter-spacing: 0.5px
     a
-        color: $color-white
+        color: $color-gray-medium
         font-weight: normal
         &:hover
-            color: $color-bright-light
+            color: $color-white
 
 /* FOOTER DOES NOT CURRENTLY WORK */
 #footer
