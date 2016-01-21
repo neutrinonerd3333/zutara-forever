@@ -906,7 +906,8 @@ def my_lists_interact(listid, addQ):
     :param addQ: an integer specifying whether to add or remove:
                     1 to add, -1 to remove
     """
-    # validate parameters
+    # validation
+
     if addQ not in (-1, 1):
         raise InvalidAPIUsage("Invalid arguments")
     try:
@@ -1084,6 +1085,32 @@ def public_level_set():
     the_list.public_level = perm
     the_list.save()
 
+
+@app.route("/api/permissions/forfeit", methods=['POST'])
+def permissions_forfeit():
+    """
+    Forfeit permissions to a list. Effectively sets permission
+    to Catalist.public_level.
+
+    POST: {
+        listid: <listid>
+    }
+    """
+    cur_user = flask_security.core.current_user
+    try:
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
+
+    for priv_list in ["owners", "editors", "viewers"]:
+        try:
+            getattr(the_list, priv_list).remove(cur_user)
+        except ValueError:
+            pass
+
+    return "OK"  # 200
 
 # # # # # # # # # # # # # #
 # WHY IS THIS STILL HERE?
