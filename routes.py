@@ -80,6 +80,9 @@ class User(db.Document, UserMixin):
     # we want to remove long-inactive users
     last_active = db.DateTimeField(required=True)
 
+    # users the current user has somehow interacted with
+    acquaintances = db.ListField(db.ReferenceField(User), default=[])
+
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
 
@@ -845,7 +848,10 @@ def vote():
         raise InvalidAPIUsage("Invalid vote value")
     the_user = User.objects.get(uid=uid)
 
-    the_list = Catalist.objects.get(listid=listid)
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     # pad the_list.contents if index eind out of bounds
     pad_len = entryind - len(the_list.contents) + 1
@@ -858,8 +864,6 @@ def vote():
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
     # find the current vote, possibly removing user from up/downvoters lists
-    # code works until  here and then 500s due to update_one being a method
-    # of the queryset instead of the document
     cur_vote = 0
     if the_user in the_entry.upvoters:
         cur_vote = 1
@@ -883,8 +887,6 @@ def vote():
 
     # update the score in the database
     the_entry.score += (vote_val - cur_vote)
-    # should voting count as "modifying the list"? prob not?
-    # the_list.last_visited = datetime.utcnow()
     the_list.save()
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
@@ -1013,8 +1015,14 @@ def permissions_set():
     if len(the_list.owners) == 0:
         the_list.public_level = "edit"
 
+    # add the target user to the current user's acquaintances attribute
+    acq = flask_security.core.current_user.acquaintances
+    if the_target not in acq:
+        acq.append(the_target)
+
     # save the list
-    # should permission editing count as "modification"? prob not
+    # should permission editing count as "modification"? prob not -txz
+    # hmm actually idk -txz
     # the_list.last_visited = datetime.utcnow()
     the_list.save()
     return "OK"  # 200 OK
@@ -1092,8 +1100,8 @@ def autocomplete():
 
 @app.route("/api/autocomplete/user", methods=['POST'])
 def autocomplete_user():
-    pass  # add stuff later
-    return "OK"  # 200 OK ^_^
+    cur_user = flask_security.core.current_user
+    return jsonify(acquaintances=cur_user.acquaintances)  # 200 OK ^_^
 
 # **********************************************************
 # Start Application
