@@ -11,24 +11,28 @@ if (n === 0) {
 $(document).ready(function() {
 
     if (listid === null) {
-        //$(".list").one("mouseenter", welcome);
-        $(".list").one("mouseenter", askForTutorial);
-        
+        $.ajax({
+            url: "/api/loggedin",
+            method: 'POST',
+            success: function(data, status, jqxhr) {
+                // logged in if true, guest if false
+                if(data.loggedin) {
+                    
+                }
+                else {
+                    $(".list").one("mouseenter", askForTutorial);
+                }
+            }
+        });
         //$(".list").one("focusout", askToMakeList);
-
-        // if they want to save, save the whole list and enable live save
-        // $(".list").on('click', ".yes", makeList);
-        $("body").on('click', ".yes", makeList);
-
-        // if they don't want to save, then make sure they don't want to
-        $("body").on('click', ".no", noSave);
     } else {
         // if this is route /list/<listid>,
         // bind all the ajax save listeners now
         enableLiveSave();
+        loadVotes($(".list"));
     }
     // load current votes
-    loadVotes($(".list"));
+    
 
     // button cosmetics and add new
     $(".list").on('focusin', ".itemTitle input", function() {
@@ -327,20 +331,24 @@ function addVote(that) {
             console.log("Current score is " + data.score);
             loadVotes($(item));
             return true;
+        },
+        error: function(jqxhr, error, exception) {
+            $.ajax({
+                url: "/api/loggedin",
+                method: 'POST',
+                success: function(data, status, jqxhr) {
+                    // logged in if true, guest if false
+                    if(data.loggedin) {
+                        $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
+                    }
+                    else {
+                        $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
+                    }
+                }
+            });
         }
     });
-    $.ajax({
-        url: "/api/loggedin",
-        method: 'POST',
-        success: function(data, status, jqxhr) {
-            // logged in if true, guest if false
-            if (!data.loggedin) {
-                $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
-            } else {
-                $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
-            }
-        }
-    });
+    
 }
 
 // undo vote
@@ -360,6 +368,21 @@ function deleteVote(that) {
             console.log("Current score is " + data.score);
             loadVotes($(item));
             return true;
+        },
+        error: function(jqxhr, error, exception) {
+            $.ajax({
+                url: "/api/loggedin",
+                method: 'POST',
+                success: function(data, status, jqxhr) {
+                    // logged in if true, guest if false
+                    if(data.loggedin) {
+                        $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
+                    }
+                    else {
+                        $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
+                    }
+                }
+            });
         }
     });
 }
@@ -422,8 +445,8 @@ function isHeartFilled(heart) {
 
 function askForTutorial() {
     $("#welcome").slideDown(300);
-    $("#pro").on("click", noTutorial);
-    $("#newb").on("click", tutorial);
+    $("#pro").one("click", noTutorial);
+    $("#newb").one("click", tutorial);
 }
                  
 function noTutorial() {

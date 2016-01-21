@@ -5,4 +5,4 @@ doc/*
 !doc/*.pdf
 !doc/*.txt
 static/css/.sass-cache
-*.map
+static/css/style_all.css.map

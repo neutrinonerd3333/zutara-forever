@@ -357,8 +357,8 @@ def preview_list(listid):
 def isLoggedIn():
     """ Used for .js to call """
     if flask_security.core.current_user.is_authenticated:
-        return jsonify(loggedin=True)
-    return jsonify(loggedin=False)
+        return jsonify(loggedin=1)
+    return jsonify(loggedin=0)
 
 def get_id():
     """ Return name of current user """

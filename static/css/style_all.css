@@ -52,7 +52,7 @@ a:hover { color: #4BF; }
 
 .error-container { margin-top: -1em; width: auto; text-align: center; }
 
-#link { margin-bottom: -2em; margin-top: -3em; text-align: center; }
+#link { margin-bottom: -2em; margin-top: -1em; text-align: center; }
 #link a:hover { font-weight: normal; color: #AEF; }
 
 /* TUTORIAL */
