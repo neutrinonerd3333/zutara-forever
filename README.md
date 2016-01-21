@@ -13,4 +13,5 @@ Catalist is built with Flask and relies on MongoDB for data persistence.
 
 ## Acknowledgements
 * API error exception class taken from the [Flask docs](http://flask.pocoo.org/docs/0.10/patterns/apierrors/)
+* Safety Pig brought to us by [Quora](http://qr.ae/RgLMU8)
 
