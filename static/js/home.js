@@ -9,7 +9,29 @@ if (n === 0) {
 }
 
 $(document).ready(function() {
+    $(".list").one("input", function() {
+        $.ajax({
+            url: "/api/makelist",
+            method: 'GET',
+            data: {
+                title: $(".listTitle input").val()
+            },
+            success: function(data, status, jqxhr){
+                // get list id, which we want to be a global var
 
+                listid = data.listid;
+                rel_url = "/list/" + listid
+                url = "http://" + location.host + rel_url
+                $("#link").html('Access or share your list at: <br><a href="'+url+'">'+url+"</a>");
+                // use pushState with same args to change url while preserving
+                // original in browser history; replaceState does same w/o preserving
+                window.history.pushState("", "Catalist", rel_url)
+                enableLiveSave()
+            }
+        });
+
+    })
+    
     if (listid === null) {
         $.ajax({
             url: "/api/loggedin",
@@ -20,11 +42,10 @@ $(document).ready(function() {
                     
                 }
                 else {
-                    $(".list").one("mouseenter", askForTutorial);
+                    $(".list, a").one("mouseenter", askForTutorial);
                 }
             }
         });
-        //$(".list").one("focusout", askToMakeList);
     } else {
         // if this is route /list/<listid>,
         // bind all the ajax save listeners now
@@ -34,16 +55,10 @@ $(document).ready(function() {
     // load current votes
     
 
-    // button cosmetics and add new
+    // save
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
         var heart = $(this).parent().prev();
-        $(heart).css("background-position", "-6em -3em");
-        if (isArrowUp(icon)) {
-            $(icon).css("background-position", "-1.5em -3em");
-        } else {
-            $(icon).css("background-position", "0 -3em");
-        }
 
         var curListItem = $(this).closest(".listItem");
         // this starts at 1 cuz div before it
@@ -53,17 +68,6 @@ $(document).ready(function() {
         if (totalItems === itemInd) {
             addItem(curListItem);
             loadVotes($(this));
-        }
-    });
-
-    $(".list").on('focusout', ".itemTitle input", function() {
-        var icon = $(this).parent().next();
-        var heart = $(this).parent().prev();
-        $(heart).css("background-position", "-6em 0");
-        if (isArrowUp(icon)) {
-            $(icon).css("background-position", "-1.5em 0");
-        } else {
-            $(icon).css("background-position", "0 0");
         }
     });
 
@@ -207,6 +211,10 @@ function enableLiveSave() {
     $(".listTitle input").focusout(function() {
         var that = $(this);
         var newval = that.val();
+        if(newval.length===0)
+        {
+            newval = "untitled list";
+        }
         $.ajax({
             url: "/api/savelisttitle",
             method: 'POST',
@@ -241,7 +249,7 @@ function makeList() {
             listid = data.listid;
             rel_url = "/list/" + listid
             url = "http://" + location.host + rel_url
-            $("#link").html('Access or share this list at: <br><a href="' + url + '">' + url + "</a>");
+            $("#link").html('Access or share your list at: <br><a href="' + url + '">' + url + "</a>");
             // use pushState with same args to change url while preserving
             // original in browser history; replaceState does same w/o preserving
             window.history.pushState("", "Catalist", rel_url)
@@ -397,12 +405,6 @@ function resize() {
     });
 }
 
-function welcome() {
-    $("#link").hide();
-    $("#link").html("Welcome! Would you like a tutorial?");
-    $("#link").fadeIn(500);
-}
-
 function loadVotes(that) {
     var voteBox = $(that).find(".votes");
 
@@ -433,6 +435,8 @@ function isArrowUp(icon) {
     }
 }
 
+// a bit of position hackiness
+// should typically be 10 and 18, so 15 seems safe
 function isHeartFilled(heart) {
     var css = $(heart).css("background-position");
 

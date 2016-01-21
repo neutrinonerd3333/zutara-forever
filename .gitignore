@@ -6,3 +6,4 @@ doc/*
 !doc/*.txt
 static/css/.sass-cache
 static/css/style_all.css.map
+*.map
