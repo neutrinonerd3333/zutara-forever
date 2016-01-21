@@ -12,7 +12,9 @@ $(document).ready(function() {
 
     if (listid === null) {
         //$(".list").one("mouseenter", welcome);
-        $(".list").one("focusout", askToMakeList);
+        $(".list").one("mouseenter", askForTutorial);
+        
+        //$(".list").one("focusout", askToMakeList);
 
         // if they want to save, save the whole list and enable live save
         // $(".list").on('click', ".yes", makeList);
@@ -157,7 +159,7 @@ $(document).ready(function() {
 });
 
 function askToMakeList() {
-    $("#link").html("<div class='yes'>Click here to save,</div> or <div class='no'>Just messing around</div>");
+    $("#link").html("<div class='yes'>Click to Save</div> or <div class='no'>Nah</div>");
 }
 
 // all event bindings will be attached upon saving the list
@@ -417,4 +419,47 @@ function isHeartFilled(heart) {
     } else {
         return false;
     }
+}
+
+function askForTutorial() {
+    $("#welcome").slideDown(300);
+    $("#pro").on("click", noTutorial);
+    $("#newb").on("click", tutorial);
+}
+                 
+function noTutorial() {
+    $("#welcome").html("No problem! Have fun creating!");
+    setTimeout(hideTutorial, 2000);
+}
+
+function hideTutorial() {
+    $("#welcome").fadeOut();
+}
+
+function tutorial() {
+    hideTutorial();
+    setTimeout(tutorial_1, 300);
+}
+
+function tutorial_1() {
+    $(".bubble").fadeIn();
+    $(".list").one("focusin", tutorial_2);
+}
+
+function tutorial_2() {
+    $(".bubble").fadeOut();
+    $(".bubble-2").fadeIn();
+    $(".list").one("click", ".icon", tutorial_3);
+}
+
+function tutorial_3() {
+    $(".bubble-2").fadeOut();
+    $(".bubble-3").fadeIn();
+    $(".list").one("focusin", ".attribute", tutorial_4);
+}
+
+function tutorial_4() {
+    $(".bubble-3").fadeOut();
+    //$(".bubble-3").fadeIn();
+    //$(".list").on("mouseover", ".icon", tutorial_4);
 }

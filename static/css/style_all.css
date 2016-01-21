@@ -1,8 +1,8 @@
 /* SASS VARIABLES */
 /* SASS EXTENSIONS AND MIXINS */
-.absolute-center, .relative-center, .errormsg, .errormsg-show, .register input, .list, .error-container, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+.absolute-center, .relative-center, #welcome, .errormsg, .errormsg-show, .register input, .list, .error-container, .bubble, .bubble-3, .bubble-2, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
 
-.relative-center, .errormsg, .errormsg-show, .register input, .list { position: relative; }
+.relative-center, #welcome, .errormsg, .errormsg-show, .register input, .list { position: relative; }
 
 /* MAN THESE TOOK FOREVER TO GET RIGHT IN SASS LOL */
 ::-webkit-input-placeholder { color: #999; }
@@ -55,11 +55,28 @@ a:hover { color: #4BF; }
 #link { margin-bottom: -2em; margin-top: -3em; text-align: center; }
 #link a:hover { font-weight: normal; color: #AEF; }
 
+/* TUTORIAL */
+#welcome { display: none; margin-top: -3em; margin-bottom: 3em; padding: 1em; border-radius: 20px; text-align: center; font-weight: normal; width: 40%; min-width: 300px; color: #FFF; background-color: rgba(0, 0, 0, 0.1); }
+#welcome #newb, #welcome #pro { font-size: 0.8em; background-color: #5CE; color: #FFF; width: 40%; display: inline-block; margin-top: 0.5em; padding: 0.5em; border-radius: 20px; cursor: pointer; }
+
+#tutorial-1 { display: block; position: absolute; }
+
+.bubble, .bubble-3, .bubble-2 { top: 25em; width: 40%; min-width: 300px; height: 2em; display: none; z-index: 200; padding: 0.5em 0.5em 0.5em 1em; background: #CEF; color: #666; border-radius: 20px; font-size: 0.8em; }
+
+.bubble-3 { top: 27em; height: 3em; }
+
+.bubble:after, .bubble-3:after, .bubble-2:after { content: ""; position: absolute; border-style: solid; border-width: 0 15px 15px; border-color: #CEF transparent; display: block; width: 0; z-index: 200; margin-left: -15px; top: -15px; left: 50%; }
+
+.bubble-2:after { left: 85%; }
+
+.bubble-3:after { left: 10%; }
+
+/* REGISTRATION */
 .user-form-container { color: #666; width: 100%; display: block; padding: 4px; align-items: center; }
 
 .topPlaceholder { position: absolute; top: 0; height: 2em; background-color: #4BF; width: 100%; min-width: 500px; }
 
-.yes, .no { z-index: 10; display: inline; cursor: pointer; }
+.yes, .no { z-index: 10; display: inline; cursor: pointer; background-color: rgba(255, 255, 255, 0.5); color: #666; padding: 0.5em; border-radius: 20px; }
 
 .yes:hover, .no:hover { font-weight: normal; }
 
@@ -90,7 +107,7 @@ input { outline: none; }
 /* FOOTER DOES NOT CURRENTLY WORK */
 #footer { width: 200%; height: 5em; background-color: #4BF; height: 4em; width: 100%; display: block; position: absolute; margin: 3em 0 -5em 0; right: -50px; /* account for wrapper */ bottom: 0em; }
 
-.list { width: 50%; min-width: 300px; height: 100%; min-height: 200px; display: block; border-radius: 20px; padding: 10px; margin-top: -2em; margin-bottom: 4em; color: #666; background-color: rgba(255, 255, 255, 0.2); font-size: 18px; font-weight: normal; overflow: auto; }
+.list { width: 50%; min-width: 300px; height: 100%; min-height: 200px; display: block; border-radius: 20px; padding: 1em; margin-top: -2em; margin-bottom: 4em; color: #666; background-color: rgba(255, 255, 255, 0.2); font-size: 18px; font-weight: normal; overflow: auto; }
 .list * input { color: #666; background-color: #CEF; font-size: 16px; border: 0; outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
 .list * input:hover { background-color: rgba(255, 255, 255, 0.2); }
 .list * input:focus { background-color: rgba(255, 255, 255, 0.5); }
@@ -106,8 +123,8 @@ input { outline: none; }
 .listItem .itemTitle input { background-color: #AEF; padding: 0 5em 0 1em; margin: 0; border-radius: 20px; height: 100%; width: calc(100% - 6em); }
 .listItem .attributes { border-radius: 0 0 20px 20px; display: none; }
 .listItem .attributes .attribute { overflow: hidden; width: 100%; height: 2em; display: block; padding: 0; margin: 0; border-radius: 0 0 20px 20px; }
-.listItem .attributes .attribute .key, .listItem .attributes .attribute .value { display: inline-block; height: 100%; margin: 0; width: 20%; }
-.listItem .attributes .attribute .value { width: 80%; }
+.listItem .attributes .attribute .key, .listItem .attributes .attribute .value { display: inline-block; height: 100%; margin: 0; width: 30%; }
+.listItem .attributes .attribute .value { width: 70%; }
 .listItem .attributes .attribute .key input, .listItem .attributes .attribute .value input { float: left; width: calc(100% - 2em); height: 100%; padding: 0 1em; }
 .listItem .attributes .attribute .value input { padding: 0 2.5em 0 1em; width: calc(100% - 3.5em); }
 
