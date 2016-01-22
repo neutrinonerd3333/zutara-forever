@@ -997,8 +997,8 @@ def permissions_set():
     print(perm)
     print(target)
     if target == '':
-        target = flask_security.core.current_user.uid
-
+        target = uname
+    
     try:
         the_list = Catalist.objects.get(listid=listid)
     except DoesNotExist:
@@ -1006,6 +1006,9 @@ def permissions_set():
 
     if perm not in perm_list:
         raise InvalidAPIUsage("Invalid arguments")
+
+    if cmp_permission(the_list.public_level, perm) >= 0:
+        raise InvalidAPIUsage("Higher Public Level")
 
     try:
         uperm = query_permission(User.objects.get(uid=uname), the_list)
@@ -1034,6 +1037,7 @@ def permissions_set():
     if perm in ["own", "view"]:
         getattr(the_list, perm + "ers").append(the_target)
     elif perm == "edit":
+        print('editor added')
         the_list.editors.append(the_target)
 
     # if owners is now empty, make the list publicly editable
