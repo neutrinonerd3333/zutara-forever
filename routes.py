@@ -554,10 +554,8 @@ def list_save():
 
 
 def key_val_save(req_form, key_or_val):
-    """
-    Save a key or value in a KVP. Auxillary method for `/api/savekey`
-    and `/api/savevalue` -- captures repetitive code.
-    """
+    """ Save a key or value in a KVP. Auxillary method for `/api/savekey`
+    and `/api/savevalue` -- captures repetitive code. """
     if key_or_val not in ("key", "value"):
         raise InvalidAPIUsage("Invalid argument {}".format(key_or_val))
     max_len = key_max_len if key_or_val == "key" else val_max_len
@@ -575,7 +573,6 @@ def key_val_save(req_form, key_or_val):
 
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
-
 
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
@@ -608,8 +605,6 @@ def key_save():
     return key_val_save(request.form, "key")
 
 
-# maybe merge this with /api/savekey and have client pass an extra
-# key-val pair; this would be repeat significantly less code [txz]
 @app.route("/api/savevalue", methods=['POST'])
 def value_save():
     """
