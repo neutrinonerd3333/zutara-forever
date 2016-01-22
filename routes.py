@@ -553,6 +553,45 @@ def list_save():
 # # # # # # # # # # # # # #
 
 
+def key_val_save(req_form, key_or_val):
+    """
+    Save a key or value in a KVP. Auxillary method for `/api/savekey`
+    and `/api/savevalue` -- captures repetitive code.
+    """
+    if key_or_val not in ("key", "value"):
+        raise InvalidAPIUsage("Invalid argument {}".format(key_or_val))
+    max_len = key_max_len if key_or_val == "key" else val_max_len
+
+    try:
+        eind = int(req_form["entryind"])
+        newval = req_form["newvalue"][:max_len]
+        ind = int(req_form["index"])
+        lid = req_form["listid"]
+        the_list = Catalist.objects.get(listid=lid)
+    except KeyError, ValueError:
+        raise InvalidAPIUsage("Invalid argument")
+    except DoesNotExist:
+        raise InvalidAPIUsage("List {} does not exist".format(lid))
+
+    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
+
+    # pad the_list.contents if index eind out of bounds
+    pad_len = eind - len(the_list.contents) + 1
+    the_list.contents.extend([CatalistEntry() for i in xrange(pad_len)])
+    the_entry = the_list.contents[eind]
+
+    # do the same for the_entry.contents and ind
+    pad_len = ind - len(the_entry.contents) + 1
+    the_entry.contents.extend([CatalistKVP() for i in xrange(pad_len)])
+
+    setattr(the_entry.contents[ind], key_or_val, newval)
+    the_list.last_visited = datetime.utcnow()
+    the_list.save()
+    return jsonify()  # return a blank 200
+
+
 @app.route("/api/savekey", methods=['POST'])
 def key_save():
     """
@@ -566,44 +605,7 @@ def key_save():
         newvalue: <new value of key>
     }
     """
-
-    try:
-        eind = int(request.form["entryind"])
-        val = request.form["newvalue"][:key_max_len]
-        ind = int(request.form["index"])
-        lid = request.form["listid"]
-        the_list = Catalist.objects.get(listid=lid)
-    except KeyError, ValueError:
-        raise InvalidAPIUsage("Invalid arguments")
-    except DoesNotExist:
-        raise InvalidAPIUsage("List {} does not exist".format(lid))
-
-    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
-        raise InvalidAPIUsage("Forbidden", status_code=403)
-
-    # pad the_list.contents if index eind out of bounds
-    pad_len = eind - len(the_list.contents) + 1
-    the_list.contents.extend([CatalistEntry() for i in xrange(pad_len)])
-    the_entry = the_list.contents[eind]
-
-    # do the same for the_entry.contents and ind
-    pad_len = ind - len(the_entry.contents) + 1
-    the_entry.contents.extend([CatalistKVP() for i in xrange(pad_len)])
-
-    # two options for updating key name: either we update it
-    # for this entry ONLY or update it for ALL entries
-
-    # option ONLY
-    the_entry.contents[ind].key = val
-
-    # option ALL
-    # for entry in the_list.contents:
-    #     entry.contents[ind].key = val
-
-    the_list.last_visited = datetime.utcnow()
-
-    the_list.save()
-    return jsonify()  # return a blank 200
+    return key_val_save(request.form, "key")
 
 
 # maybe merge this with /api/savekey and have client pass an extra
@@ -616,33 +618,7 @@ def value_save():
 
     The API is virtually identical the that of key_save()
     """
-    try:
-        eind = int(request.form["entryind"])
-        val = request.form["newvalue"][:val_max_len]
-        ind = int(request.form["index"])
-        lid = request.form["listid"]
-        the_list = Catalist.objects.get(listid=lid)
-    except KeyError, ValueError:
-        raise InvalidAPIUsage("Invalid arguments")
-    except DoesNotExist:
-        raise InvalidAPIUsage("List {} does not exist".format(lid))
-
-    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
-        raise InvalidAPIUsage("Forbidden", status_code=403)
-
-    # pad the_list.contents if index eind out of bounds
-    pad_len = eind - len(the_list.contents) + 1
-    the_list.contents.extend([CatalistEntry() for i in xrange(pad_len)])
-    the_entry = the_list.contents[eind]
-
-    pad_len = ind - len(the_entry.contents) + 1
-    the_entry.contents.extend([CatalistKVP() for i in xrange(pad_len)])
-
-    the_entry.contents[ind].value = val
-
-    the_list.last_visited = datetime.utcnow()
-    the_list.save()
-    return jsonify()  # return a 200
+    return key_val_save(request.form, "value")
 
 
 @app.route("/api/saveentrytitle", methods=['POST'])
