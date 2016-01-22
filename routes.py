@@ -83,6 +83,10 @@ class User(db.Document, UserMixin):
     # users the current user has somehow interacted with
     acquaintances = db.ListField(db.ReferenceField('self'), default=[])
 
+    # my lists
+    my_custom_lists = db.ListField(db.ReferenceField('Catalist'), default=[])
+    anti_my_lists = db.ListField(db.ReferenceField('Catalist'), default=[])
+
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
 
@@ -360,7 +364,9 @@ def userlists():
                     "Would you like to create one?")
 
     lists = lists.order_by('-last_visited').all()
-    return render_template('mylists.html', lists=lists, host=HOSTNAME)
+    return render_template('mylists.html',
+                            lists=[x for x in lists],
+                            host=HOSTNAME)
 
 
 @app.route("/preview/<listid>", methods=['GET'])
@@ -984,7 +990,16 @@ def my_lists_interact(listid, addQ):
     :param addQ: an integer specifying whether to add or remove:
                     1 to add, -1 to remove
     """
-    # validate parameters
+
+    # four cases:
+    # in mylists because permission
+    # in because added
+    # in because both
+
+
+
+    # validation
+
     if addQ not in (-1, 1):
         raise InvalidAPIUsage("Invalid arguments")
     try:
@@ -992,17 +1007,35 @@ def my_lists_interact(listid, addQ):
     except DoesNotExist:
         raise InvalidAPIUsage("List {} does not exist".format(listid))
 
-    # if nothing to do
     cur_user = flask_security.core.current_user
-    isIn = (cur_user in the_list.mylisters)
-    if (isIn and addQ == 1) or (not isIn and addQ == -1):
+    if not cur_user.is_authenticated:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
+    cur_state = 0
+    if the_list in cur_user.my_custom_lists:
+        cur_state = 1
+    elif the_list in cur_user.anti_my_lists:
+        cur_state = -1
+
+    # if there's nothing to do
+    if cur_state == addQ:
         return None  # we are done
+
+    # remove them from relevant lists
+    if cur_state == 1:
+        cur_user.my_custom_lists.remove(the_list)
+    elif cur_state == -1:
+        cur_user.anti_my_lists.remove(the_list)
+
+
 
     # else append/pop as required
     if addQ == 1:
         the_list.mylisters.append(cur_user)
     elif addQ == -1:
         the_list.mylisters.remove(cur_user)
+
+    cur_user.save()
 
 
 @app.route("/api/mylists/add", methods=['POST'])
@@ -1188,6 +1221,32 @@ def get_pref():
     uid = flask_security.core.current_user.uid
     user = User.objects.get(uid = uid)
     return jsonify(theme = user.preferred_theme)
+
+@app.route("/api/permissions/forfeit", methods=['POST'])
+def permissions_forfeit():
+    """
+    Forfeit permissions to a list. Effectively sets permission
+    to Catalist.public_level.
+
+    POST: {
+        listid: <listid>
+    }
+    """
+    cur_user = flask_security.core.current_user
+    try:
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
+
+    for priv_list in ["owners", "editors", "viewers"]:
+        try:
+            getattr(the_list, priv_list).remove(cur_user)
+        except ValueError:
+            pass
+
+    return "OK"  # 200
 
 # # # # # # # # # # # # # #
 # WHY IS THIS STILL HERE?
