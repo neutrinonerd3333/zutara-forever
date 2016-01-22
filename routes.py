@@ -1,3 +1,21 @@
+# Good luck brought to you by Safety Pig
+# http://qr.ae/RgLMU8
+#
+#                          _
+#  _._ _..._ .-',     _.._(`))
+# '-. `     '  /-._.-'    ',/
+#    )         \            '.
+#   / _    _    |             \
+#  |  a    a    /              |
+#  \   .-.                     ;
+#   '-('' ).-'       ,'       ;
+#      '-;           |      .'
+#         \           \    /
+#         | 7  .__  _.-\   \
+#         | |  |  ``/  /`  /
+#        /,_|  |   /,_/   /
+#           /,_/      '`-'
+
 # **********************************************************
 # Module Imports
 # **********************************************************
@@ -61,6 +79,9 @@ class User(db.Document, UserMixin):
 
     # we want to remove long-inactive users
     last_active = db.DateTimeField(required=True)
+
+    # users the current user has somehow interacted with
+    acquaintances = db.ListField(db.ReferenceField('self'), default=[])
 
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
@@ -313,6 +334,7 @@ def human_readable_time_since(tiem):
 
 app.jinja_env.globals.update(
     human_readable_time_since=human_readable_time_since)
+
 
 
 @app.route("/mylists", methods=['GET'])
@@ -832,7 +854,10 @@ def vote():
         raise InvalidAPIUsage("Invalid vote value")
     the_user = User.objects.get(uid=uid)
 
-    the_list = Catalist.objects.get(listid=listid)
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     # pad the_list.contents if index eind out of bounds
     pad_len = entryind - len(the_list.contents) + 1
@@ -845,8 +870,6 @@ def vote():
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
     # find the current vote, possibly removing user from up/downvoters lists
-    # code works until  here and then 500s due to update_one being a method
-    # of the queryset instead of the document
     cur_vote = 0
     if the_user in the_entry.upvoters:
         cur_vote = 1
@@ -870,8 +893,6 @@ def vote():
 
     # update the score in the database
     the_entry.score += (vote_val - cur_vote)
-    # should voting count as "modifying the list"? prob not?
-    # the_list.last_visited = datetime.utcnow()
     the_list.save()
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
@@ -949,6 +970,80 @@ def remove_from_my_lists():
 # PERMISSION EDITING
 # # # # # # # # # # # # # #
 
+# # # # # # # # # # # # # #
+# MY LISTS INTERACT
+# # # # # # # # # # # # # #
+
+
+def my_lists_interact(listid, addQ):
+    """
+    Add or remove a list with specified listid
+    from "My Lists".
+
+    :param listid: the listid of the list
+    :param addQ: an integer specifying whether to add or remove:
+                    1 to add, -1 to remove
+    """
+    # validate parameters
+    if addQ not in (-1, 1):
+        raise InvalidAPIUsage("Invalid arguments")
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        raise InvalidAPIUsage("List {} does not exist".format(listid))
+
+    # if nothing to do
+    cur_user = flask_security.core.current_user
+    isIn = (cur_user in the_list.mylisters)
+    if (isIn and addQ == 1) or (not isIn and addQ == -1):
+        return None  # we are done
+
+    # else append/pop as required
+    if addQ == 1:
+        the_list.mylisters.append(cur_user)
+    elif addQ == -1:
+        the_list.mylisters.remove(cur_user)
+
+
+@app.route("/api/mylists/add", methods=['POST'])
+def add_to_my_lists():
+    """
+    Add a specified list to "My Lists". POST
+    {
+        listid: <listid>
+    }
+    """
+    try:
+        listid = request.form["listid"]
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+
+    my_lists_interact(listid, 1)
+    return "OK"  # 200 OK ^_^
+
+
+@app.route("/api/mylists/remove", methods=['POST'])
+def remove_from_my_lists():
+    """
+    Remove a specified list from "My Lists". POST
+    {
+        listid: <listid>
+    }
+    """
+    try:
+        listid = request.form["listid"]
+    except KeyError:
+        raise InvalidAPIUsage("Invalid arguments")
+
+    my_lists_interact(listid, -1)
+    return "OK"  # 200 OK ^_^
+
+
+# # # # # # # # # # # # # #
+# PERMISSION EDITING
+# # # # # # # # # # # # # #
+
+
 @app.route("/api/setpermissions", methods=['POST'])
 def permissions_set():
     """
@@ -967,7 +1062,10 @@ def permissions_set():
     if target == '':
         target = flask_security.core.current_user.uid
 
-    the_list = Catalist.objects.get(listid=listid)
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     if perm not in perm_list:
         raise InvalidAPIUsage("Invalid arguments")
@@ -980,8 +1078,12 @@ def permissions_set():
     if cmp_permission(uperm, "own") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
-    the_target = User.objects.get(uid=target)
-    target_cur_perm = query_permission(the_target, the_list)
+    try:
+        the_target = Users.objects.get(uid=target)
+        target_cur_perm = query_permission(the_target, the_list)
+    except DoesNotExist:
+        raise InvalidAPIUsage("User does not exist")
+
     if target_cur_perm == perm:
         return "OK"  # 200 OK
 
@@ -1001,8 +1103,14 @@ def permissions_set():
     if len(the_list.owners) == 0:
         the_list.public_level = "edit"
 
+    # add the target user to the current user's acquaintances attribute
+    acq = flask_security.core.current_user.acquaintances
+    if the_target not in acq:
+        acq.append(the_target)
+
     # save the list
-    # should permission editing count as "modification"? prob not
+    # should permission editing count as "modification"? prob not -txz
+    # hmm actually idk -txz
     # the_list.last_visited = datetime.utcnow()
     the_list.save()
     return "OK"  # 200 OK
@@ -1023,7 +1131,10 @@ def permissions_get():
         permission: <the current permission>
     }
     """
-    catalist = Catalist.objects.get(listid=request.form["listid"])
+    try:
+        catalist = Catalist.objects.get(listid=request.form["listid"])
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
     return jsonify(permission=query_cur_perm(catalist))
 
 
@@ -1038,7 +1149,10 @@ def public_level_set():
         permission: {none | view | edit | own | admin}
     }
     """
-    the_list = Catalist.objects.get(listid=request.form["listid"])
+    try:
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
 
     # check permissions
     if cmp_permission(query_cur_perm(the_list), "own") < 0:
@@ -1072,7 +1186,6 @@ def get_pref():
     user = User.objects.get(uid = uid)
     return jsonify(theme = user.preferred_theme)
 
-
 # # # # # # # # # # # # # #
 # WHY IS THIS STILL HERE?
 # # # # # # # # # # # # # #
@@ -1097,6 +1210,11 @@ def autocomplete():
             completions.append(item)
     response = jsonify(completions=completions)
     return response
+
+@app.route("/api/autocomplete/user", methods=['POST'])
+def autocomplete_user():
+    cur_user = flask_security.core.current_user
+    return jsonify(acquaintances=cur_user.acquaintances)  # 200 OK ^_^
 
 # **********************************************************
 # Start Application
