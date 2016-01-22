@@ -295,7 +295,8 @@ def getlist(listid):
     the_list = Catalist.objects.get(listid=listid)
     if cmp_permission(query_cur_perm(the_list), "view") < 0:
         abort(403)
-    msg = 'Access or share this list at:<br><input type="url" id="listurl" value={0}>'.format(url)
+    msg = ('Access or share this list at:<br>'
+           '<input type="url" id="listurl" value={0}>').format(url)
 
     return render_template('loadlist.html', listtitle=the_list.title,
                            entries=the_list.contents, message=msg)
@@ -336,7 +337,6 @@ app.jinja_env.globals.update(
     human_readable_time_since=human_readable_time_since)
 
 
-
 @app.route("/mylists", methods=['GET'])
 @flask_security.login_required
 def userlists():
@@ -375,12 +375,14 @@ def preview_list(listid):
     return render_template('preview.html', listtitle=the_list.title,
                            entries=the_list.contents)
 
+
 @app.route("/api/loggedin", methods=['POST'])
 def isLoggedIn():
     """ Used for .js to call """
     if flask_security.core.current_user.is_authenticated:
         return jsonify(loggedin=1)
     return jsonify(loggedin=0)
+
 
 def get_id():
     """ Return name of current user """
@@ -903,14 +905,14 @@ def vote():
 
 
 """def my_lists_interact(listid, addQ):
-    
+
     Add or remove a list with specified listid
     from "My Lists".
 
     :param listid: the listid of the list
     :param addQ: an integer specifying whether to add or remove:
                     1 to add, -1 to remove
-    
+
     # validate parameters
     if addQ not in (-1, 1):
         raise InvalidAPIUsage("Invalid arguments")
@@ -934,12 +936,12 @@ def vote():
 """
 @app.route("/api/mylists/add", methods=['POST'])
 def add_to_my_lists():
-    
+
     Add a specified list to "My Lists". POST
     {
         listid: <listid>
     }
-    
+
     try:
         listid = request.form["listid"]
     except KeyError:
@@ -956,7 +958,7 @@ def remove_from_my_lists():
     {
         listid: <listid>
     }
-    
+
     try:
         listid = request.form["listid"]
     except KeyError:
@@ -1171,6 +1173,8 @@ def public_level_set():
 # # # # # # # # # # # # # #
 # CUSTOMIZATION
 # # # # # # # # # # # # # #
+
+
 @flask_security.login_required
 @app.route("/api/customize", methods=['POST'])
 def get_pref():
@@ -1186,8 +1190,9 @@ def get_pref():
     """
     # login required, so user must exist
     uid = flask_security.core.current_user.uid
-    user = User.objects.get(uid = uid)
-    return jsonify(theme = user.preferred_theme)
+    user = User.objects.get(uid=uid)
+    return jsonify(theme=user.preferred_theme)
+
 
 # # # # # # # # # # # # # #
 # WHY IS THIS STILL HERE?
@@ -1213,6 +1218,7 @@ def autocomplete():
             completions.append(item)
     response = jsonify(completions=completions)
     return response
+
 
 @app.route("/api/autocomplete/user", methods=['POST'])
 def autocomplete_user():
