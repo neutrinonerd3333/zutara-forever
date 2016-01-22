@@ -36,6 +36,7 @@ $(document).ready(function() {
         // bind all the ajax save listeners now
         enableLiveSave();
         loadVotes($(".list"));
+        $("#link input").show();
         // console.log(getPermissions(listid));
     }
     // load current votes

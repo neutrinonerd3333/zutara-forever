@@ -274,7 +274,8 @@ def getlist(listid):
     the_list = Catalist.objects.get(listid=listid)
     if cmp_permission(query_cur_perm(the_list), "view") < 0:
         abort(403)
-    msg = 'Access or share this list at:<br><a href="{0}">{0}</a>'.format(url)
+    msg = 'Access or share this list at:<br><input type="url" id="listurl" value={0}>'.format(url)
+
     return render_template('loadlist.html', listtitle=the_list.title,
                            entries=the_list.contents, message=msg)
 
@@ -312,7 +313,6 @@ def human_readable_time_since(tiem):
 
 app.jinja_env.globals.update(
     human_readable_time_since=human_readable_time_since)
-app.jinja_env.globals.update(query_cur_perm=query_cur_perm)
 
 
 @app.route("/mylists", methods=['GET'])
@@ -963,8 +963,9 @@ def permissions_set():
     uname = get_id()
     listid = request.form["listid"]
     perm = request.form["permission"]
-    # target = request.form["target"]
-    target = flask_security.core.current_user.uid
+    target = request.form["target"]
+    if target == '':
+        target = flask_security.core.current_user.uid
 
     the_list = Catalist.objects.get(listid=listid)
 
@@ -972,13 +973,14 @@ def permissions_set():
         raise InvalidAPIUsage("Invalid arguments")
 
     try:
-        uperm = query_permission(Users.objects.get(uid=uname), the_list)
+        uperm = query_permission(User.objects.get(uid=uname), the_list)
     except DoesNotExist:
         raise InvalidAPIUsage("No such user")
+    print (cmp_permission(uperm, "own"))
     if cmp_permission(uperm, "own") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
-    the_target = Users.objects.get(uid=target)
+    the_target = User.objects.get(uid=target)
     target_cur_perm = query_permission(the_target, the_list)
     if target_cur_perm == perm:
         return "OK"  # 200 OK
