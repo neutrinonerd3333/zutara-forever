@@ -299,7 +299,8 @@ def getlist(listid):
     the_list = Catalist.objects.get(listid=listid)
     if cmp_permission(query_cur_perm(the_list), "view") < 0:
         abort(403)
-    msg = 'Access or share this list at:<br><input type="url" id="listurl" value={0}>'.format(url)
+    msg = ('Access or share this list at:<br>'
+           '<input type="url" id="listurl" value={0}>').format(url)
 
     return render_template('loadlist.html', listtitle=the_list.title,
                            entries=the_list.contents, message=msg)
@@ -338,7 +339,6 @@ def human_readable_time_since(tiem):
 
 app.jinja_env.globals.update(
     human_readable_time_since=human_readable_time_since)
-
 
 
 @app.route("/mylists", methods=['GET'])
@@ -381,12 +381,14 @@ def preview_list(listid):
     return render_template('preview.html', listtitle=the_list.title,
                            entries=the_list.contents)
 
+
 @app.route("/api/loggedin", methods=['POST'])
 def isLoggedIn():
     """ Used for .js to call """
     if flask_security.core.current_user.is_authenticated:
         return jsonify(loggedin=1)
     return jsonify(loggedin=0)
+
 
 def get_id():
     """ Return name of current user """
@@ -557,28 +559,21 @@ def list_save():
 # # # # # # # # # # # # # #
 
 
-@app.route("/api/savekey", methods=['POST'])
-def key_save():
-    """
-    Save a key. Requires at least edit permission.
-
-    POST a JS associative array (basically a dict) like so:
-    {
-        listid:  <the list id>,
-        entryind: <index of entry w.r.t. list (0-indexing)>,
-        index: <index of key-val pair w.r.t. entry>,
-        newvalue: <new value of key>
-    }
-    """
+def key_val_save(req_form, key_or_val):
+    """ Save a key or value in a KVP. Auxillary method for `/api/savekey`
+    and `/api/savevalue` -- captures repetitive code. """
+    if key_or_val not in ("key", "value"):
+        raise InvalidAPIUsage("Invalid argument {}".format(key_or_val))
+    max_len = key_max_len if key_or_val == "key" else val_max_len
 
     try:
-        eind = int(request.form["entryind"])
-        val = request.form["newvalue"][:key_max_len]
-        ind = int(request.form["index"])
-        lid = request.form["listid"]
+        eind = int(req_form["entryind"])
+        newval = req_form["newvalue"][:max_len]
+        ind = int(req_form["index"])
+        lid = req_form["listid"]
         the_list = Catalist.objects.get(listid=lid)
     except KeyError, ValueError:
-        raise InvalidAPIUsage("Invalid arguments")
+        raise InvalidAPIUsage("Invalid argument")
     except DoesNotExist:
         raise InvalidAPIUsage("List {} does not exist".format(lid))
 
@@ -594,24 +589,28 @@ def key_save():
     pad_len = ind - len(the_entry.contents) + 1
     the_entry.contents.extend([CatalistKVP() for i in xrange(pad_len)])
 
-    # two options for updating key name: either we update it
-    # for this entry ONLY or update it for ALL entries
-
-    # option ONLY
-    the_entry.contents[ind].key = val
-
-    # option ALL
-    # for entry in the_list.contents:
-    #     entry.contents[ind].key = val
-
+    setattr(the_entry.contents[ind], key_or_val, newval)
     the_list.last_visited = datetime.utcnow()
-
     the_list.save()
     return jsonify()  # return a blank 200
 
 
-# maybe merge this with /api/savekey and have client pass an extra
-# key-val pair; this would be repeat significantly less code [txz]
+@app.route("/api/savekey", methods=['POST'])
+def key_save():
+    """
+    Save a key. Requires at least edit permission.
+
+    POST a JS associative array (basically a dict) like so:
+    {
+        listid:  <the list id>,
+        entryind: <index of entry w.r.t. list (0-indexing)>,
+        index: <index of key-val pair w.r.t. entry>,
+        newvalue: <new value of key>
+    }
+    """
+    return key_val_save(request.form, "key")
+
+
 @app.route("/api/savevalue", methods=['POST'])
 def value_save():
     """
@@ -620,33 +619,7 @@ def value_save():
 
     The API is virtually identical the that of key_save()
     """
-    try:
-        eind = int(request.form["entryind"])
-        val = request.form["newvalue"][:val_max_len]
-        ind = int(request.form["index"])
-        lid = request.form["listid"]
-        the_list = Catalist.objects.get(listid=lid)
-    except KeyError, ValueError:
-        raise InvalidAPIUsage("Invalid arguments")
-    except DoesNotExist:
-        raise InvalidAPIUsage("List {} does not exist".format(lid))
-
-    if cmp_permission(query_cur_perm(the_list), "edit") < 0:
-        raise InvalidAPIUsage("Forbidden", status_code=403)
-
-    # pad the_list.contents if index eind out of bounds
-    pad_len = eind - len(the_list.contents) + 1
-    the_list.contents.extend([CatalistEntry() for i in xrange(pad_len)])
-    the_entry = the_list.contents[eind]
-
-    pad_len = ind - len(the_entry.contents) + 1
-    the_entry.contents.extend([CatalistKVP() for i in xrange(pad_len)])
-
-    the_entry.contents[ind].value = val
-
-    the_list.last_visited = datetime.utcnow()
-    the_list.save()
-    return jsonify()  # return a 200
+    return key_val_save(request.form, "value")
 
 
 @app.route("/api/saveentrytitle", methods=['POST'])
@@ -903,78 +876,6 @@ def vote():
 
     return jsonify(current_vote=vote_val, score=the_entry.score)
 
-# # # # # # # # # # # # # #
-# MY LISTS INTERACT
-# # # # # # # # # # # # # #
-
-
-"""def my_lists_interact(listid, addQ):
-    
-    Add or remove a list with specified listid
-    from "My Lists".
-
-    :param listid: the listid of the list
-    :param addQ: an integer specifying whether to add or remove:
-                    1 to add, -1 to remove
-    
-    # validate parameters
-    if addQ not in (-1, 1):
-        raise InvalidAPIUsage("Invalid arguments")
-    try:
-        the_list = Catalist.objects.get(listid=listid)
-    except DoesNotExist:
-        raise InvalidAPIUsage("List {} does not exist".format(listid))
-
-    # if nothing to do
-    cur_user = flask_security.core.current_user
-    isIn = (cur_user in the_list.mylisters)
-    if (isIn and addQ == 1) or (not isIn and addQ == -1):
-        return None  # we are done
-
-    # else append/pop as required
-    if addQ == 1:
-        the_list.mylisters.append(cur_user)
-    elif addQ == -1:
-        the_list.mylisters.remove(cur_user)"""
-
-"""
-@app.route("/api/mylists/add", methods=['POST'])
-def add_to_my_lists():
-    
-    Add a specified list to "My Lists". POST
-    {
-        listid: <listid>
-    }
-    
-    try:
-        listid = request.form["listid"]
-    except KeyError:
-        raise InvalidAPIUsage("Invalid arguments")
-
-    my_lists_interact(listid, 1)
-    return "OK"  # 200 OK ^_^
-
-
-@app.route("/api/mylists/remove", methods=['POST'])
-def remove_from_my_lists():
-
-    Remove a specified list from "My Lists". POST
-    {
-        listid: <listid>
-    }
-    
-    try:
-        listid = request.form["listid"]
-    except KeyError:
-        raise InvalidAPIUsage("Invalid arguments")
-
-    my_lists_interact(listid, -1)
-    return "OK"  # 200 OK ^_^"""
-
-
-# # # # # # # # # # # # # #
-# PERMISSION EDITING
-# # # # # # # # # # # # # #
 
 # # # # # # # # # # # # # #
 # MY LISTS INTERACT
@@ -1204,6 +1105,8 @@ def public_level_set():
 # # # # # # # # # # # # # #
 # CUSTOMIZATION
 # # # # # # # # # # # # # #
+
+
 @flask_security.login_required
 @app.route("/api/customize", methods=['POST'])
 def get_pref():
@@ -1219,8 +1122,9 @@ def get_pref():
     """
     # login required, so user must exist
     uid = flask_security.core.current_user.uid
-    user = User.objects.get(uid = uid)
-    return jsonify(theme = user.preferred_theme)
+    user = User.objects.get(uid=uid)
+    return jsonify(theme=user.preferred_theme)
+
 
 @app.route("/api/permissions/forfeit", methods=['POST'])
 def permissions_forfeit():
@@ -1272,6 +1176,7 @@ def autocomplete():
             completions.append(item)
     response = jsonify(completions=completions)
     return response
+
 
 @app.route("/api/autocomplete/user", methods=['POST'])
 def autocomplete_user():
