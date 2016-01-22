@@ -902,15 +902,15 @@ def vote():
 # # # # # # # # # # # # # #
 
 
-def my_lists_interact(listid, addQ):
-    """
+"""def my_lists_interact(listid, addQ):
+    
     Add or remove a list with specified listid
     from "My Lists".
 
     :param listid: the listid of the list
     :param addQ: an integer specifying whether to add or remove:
                     1 to add, -1 to remove
-    """
+    
     # validate parameters
     if addQ not in (-1, 1):
         raise InvalidAPIUsage("Invalid arguments")
@@ -929,17 +929,17 @@ def my_lists_interact(listid, addQ):
     if addQ == 1:
         the_list.mylisters.append(cur_user)
     elif addQ == -1:
-        the_list.mylisters.remove(cur_user)
+        the_list.mylisters.remove(cur_user)"""
 
-
+"""
 @app.route("/api/mylists/add", methods=['POST'])
 def add_to_my_lists():
-    """
+    
     Add a specified list to "My Lists". POST
     {
         listid: <listid>
     }
-    """
+    
     try:
         listid = request.form["listid"]
     except KeyError:
@@ -951,19 +951,19 @@ def add_to_my_lists():
 
 @app.route("/api/mylists/remove", methods=['POST'])
 def remove_from_my_lists():
-    """
+
     Remove a specified list from "My Lists". POST
     {
         listid: <listid>
     }
-    """
+    
     try:
         listid = request.form["listid"]
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
 
     my_lists_interact(listid, -1)
-    return "OK"  # 200 OK ^_^
+    return "OK"  # 200 OK ^_^"""
 
 
 # # # # # # # # # # # # # #
@@ -1059,6 +1059,9 @@ def permissions_set():
     listid = request.form["listid"]
     perm = request.form["permission"]
     target = request.form["target"]
+    print(listid)
+    print(perm)
+    print(target)
     if target == '':
         target = flask_security.core.current_user.uid
 
@@ -1079,7 +1082,7 @@ def permissions_set():
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
     try:
-        the_target = Users.objects.get(uid=target)
+        the_target = User.objects.get(uid=target)
         target_cur_perm = query_permission(the_target, the_list)
     except DoesNotExist:
         raise InvalidAPIUsage("User does not exist")

@@ -103,7 +103,10 @@ function saveSettings() {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
+        console.log(listid);
+         
         for(var i = 0; i < n; i++) {
+            console.log(all[i]);
             setPermissions(listid, all[i], "edit");
         }
     }

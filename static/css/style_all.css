@@ -24,7 +24,7 @@ input:focus:-moz-placeholder { color: transparent; }
 /* START OF CSS */
 html { height: 100%; min-height: 333px; background: #AEF; overflow-x: hidden; }
 
-body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; height: 100%; min-width: 500px; margin: 0; background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: fixed; background-size: 100% 100%; background-repeat: no-repeat; }
+body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; height: 100%; margin: 0; background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: fixed; background-size: 100% 100%; background-repeat: no-repeat; }
 
 h1 { font-size: 1.2em; font-weight: lighter; letter-spacing: 0.2px; text-align: center; color: #CEF; margin: 0; position: relative; left: -10%; }
 
@@ -35,7 +35,7 @@ h3, h3 a { font-size: 1em; font-weight: lighter; text-align: center; color: #CEF
 h3 a { font-weight: normal; }
 
 a { font-weight: normal; text-decoration: none; color: #FFF; }
-a:hover { color: #4BF; }
+a:hover { color: #CEF; }
 
 /* INPUT PLACEHOLDER TEXT */
 /* WILL BE INCLUDED MANUALLY */
@@ -43,32 +43,33 @@ a:hover { color: #4BF; }
 ::-webkit-scrollbar { display: none; }
 
 /* LAYOUT TOP LINKS */
-.login-container { display: inline-block; margin: 0 1em 2em 0; position: relative; top: -50%; right: -50%; color: #CEF; font-weight: normal; letter-spacing: 0.2px; }
+.login-container { display: inline-block; margin: 0 1em 2em 0; position: absolute; top: 9%; right: 10%; color: #CEF; font-weight: normal; letter-spacing: 0.2px; }
 .login-container div { padding: 4px; text-align: right; font-size: 0.8em; }
 .login-container div a { background-color: rgba(255, 255, 255, 0.2); border-radius: 1em; padding: 0.3em 0.8em; }
-.login-container div a:hover { background-color: #CEF; }
+.login-container div a:hover { background-color: #CEF; color: #4BF; }
 .login-container div a:active { background-color: #CEF; color: #4BF; }
 .login-container .yes, .login-container .no { font-size: 1em; }
 
 .error-container { margin-top: -1em; width: auto; text-align: center; }
 
-#link { margin-bottom: -2em; margin-top: -1em; text-align: center; }
+#link { margin-bottom: -2em; margin-top: 3em; text-align: center; }
 #link a:hover { font-weight: normal; color: #AEF; }
 #link input { display: none; outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; color: #666; background-color: rgba(255, 255, 255, 0.2); height: 1.5em; padding: 5px 8px; margin-bottom: 10px; font-size: 1em; border-radius: 0; border: 0; width: 45%; }
 #link input:hover { background-color: rgba(255, 255, 255, 0.5); }
 #link input:focus { background-color: rgba(255, 255, 255, 0.7); }
 
 /* TUTORIAL */
-#welcome { display: none; margin-top: -2em; margin-bottom: 3em; padding: 1em; border-radius: 20px; text-align: center; font-weight: normal; width: 40%; min-width: 300px; color: #FFF; background-color: rgba(0, 0, 0, 0.1); }
+#welcome { display: none; margin-right: 25%; margin-top: 0em; margin-bottom: 0em; padding: 1em; border-radius: 20px; text-align: center; font-weight: normal; width: 40%; min-width: 300px; color: #FFF; background-color: rgba(0, 0, 0, 0.1); }
 #welcome #newb, #welcome #pro { font-size: 0.8em; background-color: #5CE; color: #FFF; width: 40%; display: inline-block; margin-top: 0.5em; padding: 0.5em; border-radius: 20px; cursor: pointer; }
+#welcome #newb:hover, #welcome #pro:hover { background-color: #CEF; color: #4BF; }
 
-.bubble-2, .bubble, .bubble-4, .bubble-3 { top: 60%; width: 40%; min-width: 300px; height: 2em; display: none; z-index: 200; padding: 0.5em 0.5em 0.5em 1em; background: #CEF; color: #666; border-radius: 20px; font-size: 0.8em; }
+.bubble-2, .bubble, .bubble-4, .bubble-3 { right: -5%; top: 53%; width: 40%; min-width: 300px; height: 2em; display: none; z-index: 200; padding: 0.5em 0.5em 0.5em 1em; background: #CEF; color: #666; border-radius: 20px; font-size: 0.8em; }
 
-.bubble, .bubble-4 { top: 45%; }
+.bubble, .bubble-4 { top: 35%; }
 
 .bubble-2, .bubble, .bubble-4 { height: 3em; }
 
-.bubble-4 { top: 65%; height: 3em; }
+.bubble-4 { top: 60%; height: 3em; }
 
 .bubble:after, .bubble-4:after, .bubble-3:after, .bubble-2:after, .bubble:after, .bubble-4:after, .bubble-3:after { content: ""; position: absolute; border-style: solid; border-width: 0 15px 15px; border-color: #CEF transparent; display: block; width: 0; z-index: 200; margin-left: -15px; top: -15px; left: 50%; }
 
@@ -112,7 +113,7 @@ input { outline: none; }
 /* FOOTER DOES NOT CURRENTLY WORK */
 #footer { width: 200%; height: 5em; background-color: #4BF; height: 4em; width: 100%; display: block; position: absolute; margin: 3em 0 -5em 0; right: -50px; /* account for wrapper */ bottom: 0em; }
 
-.list { width: 50%; min-width: 300px; height: 100%; min-height: 200px; display: block; border-radius: 20px; padding: 1em; margin-top: -2em; margin-bottom: 4em; color: #666; background-color: rgba(255, 255, 255, 0.2); font-size: 18px; font-weight: normal; overflow: auto; }
+.list { margin-right: 20%; width: 50%; min-width: 300px; height: 100%; min-height: 200px; display: block; border-radius: 20px; padding: 1em; margin-top: -2em; margin-bottom: 4em; color: #666; background-color: rgba(255, 255, 255, 0.2); font-size: 18px; font-weight: normal; overflow: auto; }
 .list * input { color: #666; background-color: #CEF; font-size: 16px; border: 0; outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
 .list * input:hover { background-color: rgba(255, 255, 255, 0.2); }
 .list * input:focus { background-color: rgba(255, 255, 255, 0.5); }
