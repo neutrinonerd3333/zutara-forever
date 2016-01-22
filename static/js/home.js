@@ -35,7 +35,9 @@ $(document).ready(function() {
         // if this is route /list/<listid>,
         // bind all the ajax save listeners now
         enableLiveSave();
-        loadVotes($(".list"));
+        $(".listItem").each(function(index) {
+            loadVotes($(this));
+        });
         $("#link input").show();
         // console.log(getPermissions(listid));
     }
@@ -406,6 +408,7 @@ function resize() {
     });
 }
 
+// that is the whole .list
 function loadVotes(that) {
     var voteBox = $(that).find(".votes");
 
