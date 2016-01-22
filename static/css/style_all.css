@@ -108,8 +108,8 @@ input { outline: none; }
 /* TEXT CONTAINER FOR ABOUT PAGE */
 .textcontainer { font-size: 18px; padding: 1em; margin-top: -4em; width: 50%; min-width: 400px; height: 40%; min-height: 300px; display: block; color: #666; background-color: rgba(255, 255, 255, 0.2); overflow: auto; border-radius: 20px; }
 .textcontainer p { font-weight: normal; letter-spacing: 0.5px; }
-.textcontainer a { color: #999; font-weight: normal; }
-.textcontainer a:hover { color: #FFF; }
+.textcontainer a { color: #FFF; font-weight: normal; }
+.textcontainer a:hover { color: #CEF; }
 
 /* FOOTER DOES NOT CURRENTLY WORK */
 #footer { width: 200%; height: 5em; background-color: #4BF; height: 4em; width: 100%; display: block; position: absolute; margin: 3em 0 -5em 0; right: -50px; /* account for wrapper */ bottom: 0em; }

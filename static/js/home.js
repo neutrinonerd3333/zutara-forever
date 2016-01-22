@@ -421,6 +421,12 @@ function loadVotes(that) {
         },
         success: function(data, status, jqxhr) {
             $(voteBox).html("<div><b>" + data.score + "</b>&#9829;</div>");
+            // default is 0, so only change if 1
+            if(parseInt(data.current_vote)===1)
+            {
+                $(voteBox).next().css("background-position","-10.5em 0");
+                console.log("okay");
+            }
             return data.cur_score;
         }
     });
