@@ -4,13 +4,14 @@
 <head>
 <meta charset=utf-8>
 <title>Catalist</title>
-<!--external stylesheets and scripts-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="{{ url_for('static',filename='js/preview.js')}}"></script>
+<!--external stylesheets and scripts
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+<script src="{{ url_for('static', filename='js/jquery-2.2.0.min.js') }}"></script>
 <!--page icon-->
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-16.png') }}" sizes="16x16">
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-32.png') }}" sizes="32x32">
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/preview.css') }}">
+<script src="{{ url_for('static', filename='js/preview.js') }}"></script>
 
 </head>
 <body>
@@ -23,7 +24,6 @@
         {% for entry in entries %}
         <div class="listItem">
             <!--list item-->
-            <div class="icon-heart icon"></div> 
             <div class="itemTitle">
                 <input type="text" placeholder="Item" value="{{ entry.title|e }}" disabled>
             </div>
@@ -34,7 +34,7 @@
                 <div class="attribute">
                     <!--single item attribute-->
                     <div class="key"
-                        ><input type="text" placeholder="Key" value="{{ kvp.key|e }}" disabled
+                        ><input type="text" placeholder="Note" value="{{ kvp.key|e }}" disabled
                     ></div
                     ><div class="value"
                         ><input type="text" placeholder="Value" value="{{ kvp.value|e }}" disabled
@@ -42,13 +42,42 @@
                     >
                 </div>
                 {% endfor %}
+                {% if entry.contents|length is equalto 0 %}
+                <div class="attribute">
+                    <!--single item attribute-->
+                    <div class="key"
+                        ><input type="text" placeholder="Note" disabled
+                    ></div
+                    ><div class="value"
+                        ><input type="text"placeholder="Value" disabled
+                    ></div>
+                </div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
+        {% if entries|length is equalto 0 %}
+        <div class="listItem">
+            <!--list item-->
+            <div class="itemTitle">
+                <input type="text" placeholder="Item" disabled>
+            </div>
+            <div class="icon-down icon"></div>
+            <div class="attributes">
+                <div class="attribute">
+                    <!--single item attribute-->
+                    <div class="key"
+                        ><input type="text" placeholder="Note" disabled
+                    ></div
+                    ><div class="value"
+                        ><input type="text" placeholder="Value" disabled
+                    ></div>
+                </div>
+            </div>
         </div>
+        {% endif %}
     </div>
 </section>
-
     
 </body>
 </html>

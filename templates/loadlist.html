@@ -5,6 +5,7 @@
 {% for entry in entries %}
 <div class="listItem">
     <!--list item-->
+    <div class='votes'><div><b>{{ entry.votes|e }}</b>&#9829;</div></div>
     <div class="icon-heart icon"></div> 
     <div class="itemTitle">
         <input type="text" placeholder="Item" value="{{ entry.title|e }}">
@@ -16,7 +17,7 @@
         <div class="attribute">
             <!--single item attribute-->
             <div class="key"
-                ><input type="text" placeholder="Key" value="{{ kvp.key|e }}"
+                ><input type="text" placeholder="Note" value="{{ kvp.key|e }}"
             ></div
             ><div class="value"
                 ><input type="text" placeholder="Value" value="{{ kvp.value|e }}"
@@ -28,7 +29,7 @@
         <div class="attribute">
             <!--single item attribute-->
             <div class="key"
-                ><input type="text" placeholder="Key"
+                ><input type="text" placeholder="Note"
             ></div
             ><div class="value"
                 ><input type="text"placeholder="Value"
@@ -42,6 +43,7 @@
 {% if entries|length is equalto 0 %}
 <div class="listItem">
     <!--list item-->
+    <div class='votes'></div>
     <div class="icon-heart icon"></div> 
     <div class="itemTitle">
         <input type="text" placeholder="Item">
@@ -51,7 +53,7 @@
         <div class="attribute">
             <!--single item attribute-->
             <div class="key"
-                ><input type="text" placeholder="Key"
+                ><input type="text" placeholder="Note"
             ></div
             ><div class="value"
                 ><input type="text" placeholder="Value"
@@ -62,6 +64,3 @@
 </div>
 {% endif %}
 {% endblock %}
-
-
-

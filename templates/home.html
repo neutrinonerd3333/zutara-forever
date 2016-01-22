@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}
-Launch your lists to the clouds and beyond.
+launch your lists to the clouds and beyond.
 {% endblock %}
 
 {% block content %}
 
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">
+<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
 <div id="wrapper">
     <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
@@ -13,8 +13,10 @@ Launch your lists to the clouds and beyond.
         <div class="listTitle">
             <input type="text" name="title" placeholder="Title">
         </div>
+        
         <div class="listItem">
             <!--list item-->
+            <div class='votes'><div><b>0</b>&#9829;</div></div>
             <div class="icon-heart icon"></div> 
             <div class="itemTitle">
                 <input type="text" placeholder="Item">
@@ -25,7 +27,7 @@ Launch your lists to the clouds and beyond.
                 <div class="attribute">
                     <!--single item attribute-->
                     <div class="key"
-                        ><input type="text" placeholder="Key"
+                        ><input type="text" placeholder="Note"
                     ></div
                     ><div class="value"
                         ><input type="text" placeholder="Value"
@@ -36,6 +38,7 @@ Launch your lists to the clouds and beyond.
         </div>
     </div>
     </form>
+    <!--<div id="footer"></div>-->
 </div>
 
 {% endblock %}

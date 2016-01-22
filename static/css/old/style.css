@@ -70,7 +70,7 @@ h3 a {
 h3 a {
     font-weight: normal;
 }
-.errorContainer {
+.error-container {
     position: absolute;
     left: 0;
     right: 0;
@@ -84,13 +84,17 @@ h3 a {
     margin-bottom: -2em;
     text-align: center;
 }
+#link a:hover {
+    font-weight: bold;
+    font-size: 0.9em;
+}
 a {
     /*font-size: 0.8em;*/
-    
     font-weight: lighter;
 }
 a:hover {
     color: #fff;
+    font-weight: bold;
 }
 .textcontainer {
     /* basically a rehash of .list from list.css */
@@ -132,7 +136,7 @@ a:hover {
 .textcontainer a:hover {
     color: #fff;
 }
-.register-container {
+.user-form-container {
     color: #666;
     width: 100%;
     display: block;
@@ -257,21 +261,31 @@ input:focus:-moz-placeholder {
     width: auto;
 }
 #wrapper {
-    height: calc(100% - 4em);
-    margin: 50px 50px;
+    height: calc(100% - 6em);
+    padding: 50px 50px;
     width: auto;
-}
-.footer {
-    margin-top: 1em;
-    height: 4em;
-    width: 100%;
-    background-color: #3CF;
-    display: block;
-    position: absolute;
-    bottom: 0em;
+    overflow-x: show;
 }
 /*page margin 50px*/
 
+#footer {
+    width: 200%;
+    height: 5em;
+    background-color: #4BF;
+    height: 4em;
+    width: 100%;
+    display: block;
+    position: absolute;
+    margin: 3em 0 -5em 0;
+    right: -50px;
+    /* account for wrapper */
+    
+    bottom: 0em;
+}
+form {
+    display: block;
+    margin: 0 0 3em 0;
+}
 article {
     min-height: 300px
 }

@@ -9,54 +9,52 @@ if (n === 0) {
 }
 
 $(document).ready(function() {
-
-    if(listid===null)
-    {
-        //$(".list").one("mouseenter", welcome);
-        $(".list").one("focusout", askToMakeList);
-
-        // if they want to save, save the whole list and enable live save
-        // $(".list").on('click', ".yes", makeList);
-        $("body").on('click', ".yes", makeList);
-
-        // if they don't want to save, then make sure they don't want to
-        $("body").on('click', ".no", noSave);
+    $(".list").one("input", makeList)
+    
+    $("body").on('click', "input[type='url']", function() {
+            $(this).select();
+            document.execCommand("copy");
+            alert("Link copied to clipboard!");
+        });
+    
+    if (listid === null) {
+        $.ajax({
+            url: "/api/loggedin",
+            method: 'POST',
+            success: function(data, status, jqxhr) {
+                // logged in if true, guest if false
+                if(data.loggedin) {
+                    
+                }
+                else {
+                    $(".list").one("mouseenter", askForTutorial);
+                }
+            }
+        });
     } else {
         // if this is route /list/<listid>,
         // bind all the ajax save listeners now
         enableLiveSave();
+        loadVotes($(".list"));
+        $("#link input").show();
+        // console.log(getPermissions(listid));
     }
+    // load current votes
+    
 
-    // button cosmetics and add new
+    // save
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
         var heart = $(this).parent().prev();
-        $(heart).css("background-position", "-6em -3em");
-        if (isArrowUp(icon)) {
-            $(icon).css("background-position", "-1.5em -3em");
-        } else {
-            $(icon).css("background-position", "0 -3em");
-        }
-        
+
         var curListItem = $(this).closest(".listItem");
         // this starts at 1 cuz div before it
         var itemInd = $(curListItem).index();
         var totalItems = $(this).closest(".list").find(".listItem").length;
-        
-        if(totalItems===itemInd)
-        {
+
+        if (totalItems === itemInd) {
             addItem(curListItem);
-        }
-    });
-    
-    $(".list").on('focusout', ".itemTitle input", function() {
-        var icon = $(this).parent().next();
-        var heart = $(this).parent().prev();
-        $(heart).css("background-position", "-6em 0");
-        if (isArrowUp(icon)) {
-            $(icon).css("background-position", "-1.5em 0");
-        } else {
-            $(icon).css("background-position", "0 0");
+            loadVotes($(this));
         }
     });
 
@@ -70,9 +68,8 @@ $(document).ready(function() {
         // starts at 0 cuz nothing else in attributes
         var attrInd = $(curAttribute).index() + 1;
         var totalItems = $(this).closest(".listItem").find(".attribute").length;
-        
-        if(totalItems===attrInd)
-        {
+
+        if (totalItems === attrInd) {
             addAttribute(curAttribute);
         }
     });
@@ -108,7 +105,9 @@ $(document).ready(function() {
                     }
                 }
                 var newLength = $(attrs).find(".attribute").length;
-                if(newLength===0) { appendAttribute(attrs); }
+                if (newLength === 0) {
+                    appendAttribute(attrs);
+                }
             }
         }
         // if currently down arrow, click should show attributes and switch
@@ -120,17 +119,15 @@ $(document).ready(function() {
             resize();
         }
     });
-
     // clicking heart will add a vote to the item (or remove it if existing)
     $(".list").on("click", ".icon-heart", vote);
 
     // clicking minus will delete the current key-value pair
     $(".list").on("click", ".icon-minus", function() {
         var item = $(this).closest(".listItem");
-        
+
         var totalItems = $(this).closest(".listItem").find(".attribute").length;
-        if(totalItems > 1)
-        {
+        if (totalItems > 1) {
             var eind = $(".list .listItem").index(item);
             var siblings = $(this).closest(".attributes").children(".attribute");
             var kvpind = siblings.index($(this).closest(".attribute"));
@@ -150,23 +147,19 @@ $(document).ready(function() {
             });
 
             $(this).closest(".attribute").remove();
-        }
-        else
-        {
+        } else {
             $("#link").html("Oops! you can't delete the last entry!");
         }
     });
 });
 
 function askToMakeList() {
-    $("#link").html("<div class='yes'>Click here to save,</div> or <div class='no'>Just messing around</div>");
+    $("#link").html("<div class='yes'>Click to Save</div> or <div class='no'>Nah</div>");
 }
 
 // all event bindings will be attached upon saving the list
 // so since list MUST exist, no need to call ifNoListMakeOne
 function enableLiveSave() {
-    $(".list").off('click', ".yes")
-    $(".list").off('click', ".no")
 
     // binding to save key and value
     $(".list").on('focusout', ".key input", function() {
@@ -203,6 +196,10 @@ function enableLiveSave() {
     $(".listTitle input").focusout(function() {
         var that = $(this);
         var newval = that.val();
+        if(newval.length===0)
+        {
+            newval = "untitled list";
+        }
         $.ajax({
             url: "/api/savelisttitle",
             method: 'POST',
@@ -237,7 +234,8 @@ function makeList() {
             listid = data.listid;
             rel_url = "/list/" + listid
             url = "http://" + location.host + rel_url
-            $("#link").html('Access or share this list at: <br><a href="' + url + '">' + url + "</a>");
+            $("#link").html("Access or share your list at: <br><input type='url' id='listurl' value=" + url + ">");
+            $("#link input").show();
             // use pushState with same args to change url while preserving
             // original in browser history; replaceState does same w/o preserving
             window.history.pushState("", "Catalist", rel_url)
@@ -251,23 +249,23 @@ function isLastItem() {
     var curListItem = $(this).closest(".listItem");
     var totalItems = $(this).closest(".list").find(".listItem").length;
     var itemInd = $(curListItem).index(); // this starts at 1
-    return totalItems===itemInd;
+    return totalItems === itemInd;
 }
 
 function addItem(curListItem) {
-    $(curListItem).after("<div class='listItem'> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
+    $(curListItem).after("<div class='listItem'><div class='votes'><div><b>0</b>&#9829;</div></div> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
     resize();
 }
 
 function addAttribute(curAttribute) {
     $(curAttribute).css("border-radius", "0");
-    $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+    $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
     $(curAttribute).next().css("border-radius", "0 0 20px 20px");
     resize();
 }
 
 function appendAttribute(parentElement) {
-    $(parentElement).append("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Key' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
+    $(parentElement).append("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
     resize();
 }
 
@@ -304,10 +302,9 @@ function saveKeyOrValue(that, toSave) {
 
 function vote() {
     var that = $(this);
-    if(isHeartFilled(that)){
+    if (isHeartFilled(that)) {
         deleteVote(that);
-    }
-    else{
+    } else {
         addVote(that);
     }
 }
@@ -325,14 +322,31 @@ function addVote(that) {
         },
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-10.5em 0");
-            $("#link").html("Heart!");
             console.log("Current score is " + data.score);
+            loadVotes($(item));
             return true;
+        },
+        error: function(jqxhr, error, exception) {
+            $.ajax({
+                url: "/api/loggedin",
+                method: 'POST',
+                success: function(data, status, jqxhr) {
+                    // logged in if true, guest if false
+                    if(data.loggedin) {
+                        $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
+                    }
+                    else {
+                        $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
+                    }
+                }
+            });
+            $("body").one('click', ".yes", makeList);
         }
     });
-    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
+    
 }
-// undo vote, need to update backend with this
+
+// undo vote
 function deleteVote(that) {
     var item = $(that).closest(".listItem");
     var eind = $(".list .listItem").index(item);
@@ -346,12 +360,40 @@ function deleteVote(that) {
         },
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-6em 0");
-            $("#link").html("Unvote!");
             console.log("Current score is " + data.score);
+            loadVotes($(item));
             return true;
+        },
+        error: function(jqxhr, error, exception) {
+            $.ajax({
+                url: "/api/loggedin",
+                method: 'POST',
+                success: function(data, status, jqxhr) {
+                    // logged in if true, guest if false
+                    if(data.loggedin) {
+                        $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
+                    }
+                    else {
+                        $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
+                    }
+                }
+            });
         }
     });
-    $("#link").html("Oops! Please login or make a list &#40;start typing!&#41; to vote.");
+}
+
+function getPermissions(listid) {
+    $.ajax({
+                data: {
+                    listid: listid,
+                },
+                url: "/api/getpermissions",
+                method: 'POST',
+                success: function(data, status, jqxhr) {
+                    // logged in if true, guest if false
+                    console.log(data.permission);
+                }
+            });
 }
 
 function resize() {
@@ -364,10 +406,24 @@ function resize() {
     });
 }
 
-function welcome() {
-    $("#link").hide();
-    $("#link").html("Welcome! Would you like a tutorial?");
-    $("#link").fadeIn(500);
+function loadVotes(that) {
+    var voteBox = $(that).find(".votes");
+
+    var item = $(voteBox).closest(".listItem");
+    var eind = $(".list .listItem").index(item);
+    $.ajax({
+        url: "/api/vote",
+        method: 'POST',
+        data: {
+            listid: listid,
+            entryind: eind,
+            vote: 100
+        },
+        success: function(data, status, jqxhr) {
+            $(voteBox).html("<div><b>" + data.score + "</b>&#9829;</div>");
+            return data.cur_score;
+        }
+    });
 }
 
 function isArrowUp(icon) {
@@ -380,6 +436,8 @@ function isArrowUp(icon) {
     }
 }
 
+// a bit of position hackiness
+// should typically be 10 and 18, so 15 seems safe
 function isHeartFilled(heart) {
     var css = $(heart).css("background-position");
 
@@ -388,4 +446,53 @@ function isHeartFilled(heart) {
     } else {
         return false;
     }
+}
+
+function askForTutorial() {
+    $("#welcome").slideDown(300);
+    $("#pro").one("click", noTutorial);
+    $("#newb").one("click", tutorial);
+}
+                 
+function noTutorial() {
+    $("#welcome").html("No problem! Have fun creating! We'll auto-save your lists.");
+    setTimeout(hideTutorial, 2000);
+}
+
+function hideTutorial() {
+    $("#welcome").fadeOut();
+}
+
+function tutorial() {
+    hideTutorial();
+    setTimeout(tutorial_1, 300);
+}
+
+function tutorial_1() {
+    $(".bubble").fadeIn();
+    $(".list").one("input", ".listTitle", tutorial_2);
+}
+
+function tutorial_2() {
+    $(".bubble").fadeOut();
+    $(".bubble-2").fadeIn();
+    $(".list").one("input", ".itemTitle", tutorial_3);
+}
+
+function tutorial_3() {
+    $(".bubble-2").fadeOut();
+    $(".bubble-3").fadeIn();
+    $(".list").one("click", ".icon-down", tutorial_4);
+}
+
+function tutorial_4() {
+    $(".bubble-3").fadeOut();
+    $(".bubble-4").fadeIn();
+    $(".list").one("input", ".attribute", tutorial_5);
+}
+
+function tutorial_5() {
+    $(".bubble-4").fadeOut();
+    $("#welcome").html("And that's it! Remember to register to manage your lists, and click hearts to vote!");
+    $("#welcome").fadeIn();
 }
