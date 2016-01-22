@@ -13,4 +13,5 @@ Catalist was built by Rachel Wu '19 and Tony Zhang '19 with Flask and relies on 
 
 ## Acknowledgements
 * API error exception class taken from the [Flask docs](http://flask.pocoo.org/docs/0.10/patterns/apierrors/)
+* Safety Pig brought to us by [Quora](http://qr.ae/RgLMU8)
 

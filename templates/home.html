@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}
-Launch your lists to the clouds and beyond.
+launch your lists to the clouds and beyond.
 {% endblock %}
 
 {% block content %}
 
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">
+<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
 <div id="wrapper">
     <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
@@ -38,6 +38,7 @@ Launch your lists to the clouds and beyond.
         </div>
     </div>
     </form>
+    <!--<div id="footer"></div>-->
 </div>
 
 {% endblock %}

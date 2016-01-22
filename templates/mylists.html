@@ -1,31 +1,31 @@
 {% extends "layout.html" %}
 {% block title %}
-My Lists
+my lists
 {% endblock %}
 
 {% block content %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/mylists.js') }}"></script>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/mylists.css') }}">
 
 <p align="center"><h2><div id="link">{{ message }}</div></h2></p>
 
+<div class="mylists">
 <section id="wrapper">
     <!--src of iframe will be edited in jquery later upon choosing a list to preview-->
     <div class="listBlock">
-        <div class="blockTitle">LIVE PREVIEW</div>
+        <div class="blockTitle">Live Preview</div>
         <div class="scrollWrapper">
             <iframe src={{ "/preview/" + lists[0].listid }} width = "100%" height = "200px"></iframe>
         </div>
     </div>
     <div class="listBlock2">
-        <div class="blockTitle">LISTS</div>
+        <div class="blockTitle">Lists</div>
         <div class="listHead">
             <div class="titles">Titles</div><div class="times">Last Modified</div>
         </div>
         <div class="scrollWrapper">  
         {% for catalist in lists %}
         <div class="listWrapper">
-        <div class="list">
+        <div class="mylist">
             <input type="hidden" value={{ host + "/list/" + catalist.listid }}>
             <input type="hidden" value={{ "/preview/" + catalist.listid }}>
     
@@ -33,7 +33,7 @@ My Lists
             ><div class="listTime">{{ human_readable_time_since(catalist.last_visited) }}</div
         ></div>
         <div class="toolbox">
-            <input type="hidden" value={{ query_cur_perm(catalist) }}>
+            <input type="hidden" value=''>
         </div>
         </div>
         {% endfor %}
@@ -41,4 +41,5 @@ My Lists
         </div>
     </div>
 </section>
+</div>
 {% endblock %}

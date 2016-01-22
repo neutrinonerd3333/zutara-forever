@@ -2,7 +2,6 @@
     display: none;
     /* thank god for Chrome :P (and that they only check Chrome) */
 }
-
 .list {
     position: relative;
     left: 0;
@@ -15,7 +14,7 @@
     height: 100%;
     min-height: 200px;
     display: block;
-    background-color: #CEF;
+    background-color: rgba(255,255,255,0.8);
     border: 0px;
     border-style: solid;
     border-color: #FFF;
@@ -66,7 +65,7 @@
 .listItem {
     width: 90%;
     min-height: 2em;
-    background-color: rgba(150, 150, 255, 0);
+    background-color: transparent;
     border-radius: 20px;
     margin: 0;
     margin-bottom: 1em;

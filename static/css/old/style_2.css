@@ -1,0 +1,191 @@
+html {
+    background: #FA8;
+}
+body {
+    background: #FA8; /* fallback for old browsers */
+    background: -webkit-linear-gradient(#023 2em, #FA8 calc(100% - 8em)); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(#023 2em, #FA8 calc(100% - 8em)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: -moz-linear-gradient(#023 2em, #FA8 calc(100% - 8em));
+}
+.login-container,
+h1,
+a,
+h2,
+h2 a {
+    color: #FEE;
+}
+.register .inputLabel,
+.errormsg {
+    color: #FEE;
+}
+.register input:hover,
+.register input:focus{
+    color: #FEE;
+}
+.topPlaceholder {
+    background-color: #023;
+}
+#footer {
+    background-color: #023;
+}
+.list * input {
+    color: #666;
+    font-size: 16px;
+    border: 0;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: background .25s ease-in-out;
+    -moz-transition: background .25s ease-in-out;
+    -webkit-transition: background .25s ease-in-out;
+    /* same as 12pt font */
+}
+.list * input:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+.list * input:focus {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.list .listTitle {
+    width: 100%;
+    height: 3em;
+    background-color: transparent;
+    margin: 0 0 .5em 0;
+}
+.listTitle input {
+    height: 100%;
+    width: calc(100% - 2em);
+    background-color: transparent;
+    padding: 0 1em;
+    outline: none;
+    border: 0;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 1.2em;
+}
+.listTitle input:focus {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+.listItem {
+    width: 90%;
+    min-height: 2em;
+    background-color: rgba(150, 150, 255, 0);
+    border-radius: 20px;
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 0;
+    position: relative;
+    display: inline-block;
+}
+.votes {
+    width: 10%;
+    min-height: 2em;
+    background-color: transparent;
+    border-radius: 20px;
+    margin: 0;
+    margin-bottom: 1em;
+    right: -10%;
+    padding: 0;
+    position: absolute;
+}
+.votes div {
+    color: #888;
+    font-size: 1em;
+    position: absolute;
+    top: .3em;
+    left: 10%;
+    letter-spacing: 0.8px;
+    font-weight: lighter;
+}
+.icon {
+    background-image: url("/static/img/icons.svg");
+    background-size: 18em 4.5em;
+    background-clip: border-box;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    display: block;
+    width: 1.5em;
+    height: 1.5em;
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    z-index: 100;
+}
+.icon-down {
+    right: .3em;
+    top: .3em;
+}
+.icon-minus {
+    position: relative;
+    right: calc(-100% + 26px + .3em);
+    top: -2em;
+    background-position: -4.5em -1.5em;
+}
+.icon-heart {
+    right: 2.1em;
+    top: .3em;
+    background-position: -6em 0;
+}
+.itemTitle {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 2em;
+    background-color: transparent;
+    border-radius: 20px 20px 0 0;
+    padding: 0;
+    margin: 0;
+}
+.itemTitle input {
+    background-color: #9DF;
+    padding: 0 5em 0 1em;
+    margin: 0;
+    border-radius: 20px;
+    height: 100%;
+    width: calc(100% - 6em);
+}
+.attributes {
+    border-radius: 0 0 20px 20px;
+    display: none;
+}
+.attribute {
+    overflow: hidden;
+    width: 100%;
+    height: 2em;
+    display: block;
+    padding: 0;
+    margin: 0;
+    border-radius: 0 0 20px 20px;
+}
+.key,
+.value {
+    display: inline-block;
+    height: 100%;
+    margin: 0;
+}
+.key {
+    width: 20%;
+}
+.value {
+    width: 80%;
+}
+.key input,
+.value input {
+    float: left;
+    width: calc(100% - 2em);
+    height: 100%;
+    padding: 0 1em;
+}
+.value input {
+    padding: 0 2.5em 0 1em;
+    width: calc(100% - 3.5em);
+}
+.yes,
+.no {
+    display: inline;
+    cursor: pointer;
+}
+.yes:hover,
+.no:hover {
+    font-weight: bold;
+    font-size: 0.9em;
+}
