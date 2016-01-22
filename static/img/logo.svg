@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="299.82599mm"
-   height="66.039192mm"
-   viewBox="0 0 1062.3756 233.99714"
+   width="307.80841mm"
+   height="66.039185mm"
+   viewBox="0 0 1090.6598 233.99711"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="450.17594"
-     inkscape:cy="171.06774"
+     inkscape:cx="330.97787"
+     inkscape:cy="171.06772"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1600"
-     inkscape:window-height="782"
+     inkscape:window-width="1440"
+     inkscape:window-height="788"
      inkscape:window-x="0"
-     inkscape:window-y="23"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -43,7 +43,7 @@
     <inkscape:grid
        type="xygrid"
        id="grid4136"
-       originx="185.05562"
+       originx="213.33985"
        originy="-311.62576" />
   </sodipodi:namedview>
   <metadata
@@ -62,7 +62,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(185.05563,-506.73936)">
+     transform="translate(213.33983,-506.73936)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:40px;line-height:125%;font-family:Futura;-inkscape-font-specification:'Futura Medium';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -98,7 +98,7 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M -180,647.36224 -70,735.73672 80,512.36224"
+       d="m -208.28427,647.36224 109.999995,88.37448 150,-223.37448"
        id="path4160"
        inkscape:connector-curvature="0" />
   </g>

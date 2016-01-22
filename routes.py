@@ -977,7 +977,6 @@ def remove_from_my_lists():
 # PERMISSION EDITING
 # # # # # # # # # # # # # #
 
-
 @app.route("/api/setpermissions", methods=['POST'])
 def permissions_set():
     """
@@ -1008,7 +1007,7 @@ def permissions_set():
         raise InvalidAPIUsage("Invalid arguments")
 
     if cmp_permission(the_list.public_level, perm) >= 0:
-        raise InvalidAPIUsage("Higher Public Level")
+        raise InvalidAPIUsage("Higher public level")
 
     try:
         uperm = query_permission(User.objects.get(uid=uname), the_list)
@@ -1105,6 +1104,7 @@ def public_level_set():
 
     the_list.public_level = perm
     the_list.save()
+    return "set"
 
 # # # # # # # # # # # # # #
 # CUSTOMIZATION

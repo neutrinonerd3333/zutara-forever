@@ -80,12 +80,24 @@ function useButtons() {
     }
 }
 
+function setPublicPermission(listid, permission) {
+     $.ajax({
+        url: "/api/setpubliclevel",
+        method: "POST",
+        data: {
+            listid: listid,
+            permission: permission
+        }
+    });
+}
+
 function saveSettings() {
     // if user types delete, list will be deleted
     if ($(this).attr("id") === "delete") {
+        setPublicPermission(listid, $(this).val());
         if ($(this).val() === "delete") {
-            console.log("deleted")
-            deleteList(listid);
+            
+            // deleteList(listid);
         }
     }
     // if user types in names, add them as viewers
