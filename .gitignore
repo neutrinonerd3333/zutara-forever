@@ -4,6 +4,9 @@
 doc/*
 !doc/*.pdf
 !doc/*.txt
+!doc/Makefile
+!doc/conf.py
+!doc/index.rst
 static/css/.sass-cache
 static/css/style_all.css.map
 *.map
