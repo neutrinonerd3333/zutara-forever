@@ -94,10 +94,9 @@ function setPublicPermission(listid, permission) {
 function saveSettings() {
     // if user types delete, list will be deleted
     if ($(this).attr("id") === "delete") {
-        setPublicPermission(listid, $(this).val());
+        // setPublicPermission(listid, $(this).val());
         if ($(this).val() === "delete") {
-            
-            // deleteList(listid);
+            deleteList(listid);
         }
     }
     // if user types in names, add them as viewers
