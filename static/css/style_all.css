@@ -151,7 +151,7 @@ input { outline: none; }
 .mylists body { height: calc(100% - 2em); }
 .mylists .listBlock { left: 10%; border-radius: 20px 0 0 0; background-color: #CEF; }
 .mylists .listBlock2 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
-.mylists .listBlock, .mylists .listBlock2 { display: inline-block; position: absolute; height: 50%; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
+.mylists .listBlock, .mylists .listBlock2 { display: inline-block; position: absolute; height: 55%; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
 .mylists .scrollWrapper { overflow: scroll; height: 100%; }
 .mylists .blockTitle { position: absolute; width: 100%; top: 0; height: 2em; padding-top: 1em; background-color: rgba(0, 0, 0, 0.1); color: #FFF; text-align: center; font-weight: bold; letter-spacing: 2px; }
 .mylists .listHead { width: 100%; height: 1.5em; padding-bottom: 0.5em; }
