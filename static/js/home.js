@@ -84,7 +84,7 @@ $(document).ready(function() {
         // to up arrow
         if (isArrowUp($(this))) {
             var attrs = $(this).next(".attributes");
-            var that = $(this)
+            var that = $(this);
             $(attrs).slideUp(500, function(){
                 that.prev(".itemTitle").find("input").css("border-radius", "20px");
             });

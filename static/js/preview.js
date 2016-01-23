@@ -24,9 +24,11 @@ $(document).ready(function() {
         // to up arrow
         if (isArrowUp($(this))) {
             var attrs = $(this).next(".attributes");
-            $(attrs).slideUp(500);
+            var that = $(this);
+            $(attrs).slideUp(500, function(){
+                that.prev(".itemTitle").find("input").css("border-radius", "20px");
+            });
             $(this).css("background-position", "0 0");
-            $(this).prev(".itemTitle").find("input").css("border-radius", "20px");
         }
         // if currently down arrow, click should show attributes and switch
         // to up arrow
