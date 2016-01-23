@@ -54,7 +54,7 @@ function showToolbox(perm) {
                 $(permInput).val(perm);
 
                 if (perm === "own") {
-                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div>  <div class="icon-edit"></div> <div class="icon-view"></div> <div class="icon-link"></div> <div class="icon-trash"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="edit" placeholder="Editors" type="text"> <input class="editors" id="view" placeholder="Viewers" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <div class="line">Click icon to delete permanently."</div> </div>');
+                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div>  <div class="icon-edit"></div> <div class="icon-view"></div> <div class="icon-link"></div> <div class="icon-trash"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="edit" placeholder="Editors" type="text"> <input class="editors" id="view" placeholder="Viewers" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <div class="line">Click icon to delete list.</div> </div>');
                     $(tools).css("height", "11em");
                 } else if (perm === "edit") {
                     $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div></div> <div class="permissions"> <div class="line">You may edit and view this list.</div><input class="editors" id="url" type="text" value=' + url + '> </div>');

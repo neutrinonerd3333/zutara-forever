@@ -7,6 +7,31 @@ launch your lists to the clouds and beyond.
 
 <!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/list.css') }}">-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
+<p align='center'>
+        <div id="welcome">
+            Welcome! Would you like a tutorial?
+            <br>
+            <div id="newb">Yes, please!</div>
+            <div id="pro">Nope, I'm a Pro.</div>
+        </div>
+    </p>
+    <p class="bubble">
+        This is your list's title. Type in one now, and your list will save!
+    </p>
+    <p class="bubble-2">
+        This is your first list item! We'll continue after you fill it out. It automatically saves, and a new item appears.
+    </p>
+    <p class="bubble-3">
+        Now click here to add some item details.
+    </p>
+    <p class="bubble-4">
+        Describe your item as you see fit! For example, the author of a book, producer of a movie, or price of broccoli.
+    </p>
+
+    <p align='center'>
+        <h2><div id="link">{{ message|safe }}</div></h2>
+    </p>
+
 <div id="wrapper">
     <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
     <div class="list">
