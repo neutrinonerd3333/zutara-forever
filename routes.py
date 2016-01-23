@@ -788,7 +788,7 @@ def kvp_delete():
     try:
         entryind = int(request.form["entryind"])
         ind = int(request.form["index"])
-        listid = req_json["listid"]
+        listid = request.form["listid"]
         the_list = Catalist.objects.get(listid=listid)
     except KeyError, ValueError:
         raise InvalidAPIUsage("Invalid arguments")

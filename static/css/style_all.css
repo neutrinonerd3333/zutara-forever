@@ -128,7 +128,7 @@ input { outline: none; }
 
 /* SPECIFICS OF EACH LIST ITEM */
 .listItem .itemTitle { position: relative; display: block; width: 100%; height: 2em; background-color: transparent; border-radius: 20px 20px 0 0; padding: 0; margin: 0; }
-.listItem .itemTitle input { background-color: #AEF; padding: 0 3em 0 1em; margin: 0; border-radius: 20px; height: 100%; width: calc(100% - 4em); }
+.listItem .itemTitle input { background-color: #AEF; padding: 0 2.5em 0 1em; margin: 0; border-radius: 20px; height: 100%; width: calc(100% - 3.5em); }
 .listItem .attributes { border-radius: 0 0 20px 20px; display: none; }
 .listItem .attributes .attribute { overflow: hidden; width: 100%; height: 2em; display: block; padding: 0; margin: 0; border-radius: 0 0 20px 20px; }
 .listItem .attributes .attribute .key, .listItem .attributes .attribute .value { display: inline-block; height: 100%; margin: 0; width: 30%; }
@@ -141,11 +141,11 @@ input { outline: none; }
 
 .icon-down { right: 0.3em; top: 0.3em; }
 
-.icon-minus { position: relative; right: calc(-100% + 26px + .3em); top: -2em; background-position: -4.5em -1.5em; }
+.icon-minus { position: relative; right: calc(-100% + 26px + .3em); top: -2em; background-position: -4.5em 0; }
 
-.icon-heart { right: 2em; top: 0.3em; background-position: -6em 0; display: none; }
+.icon-heart { right: 1.9em; top: 0.3em; background-position: -6em 0; display: none; }
 
-.icon-trash-2 { background-position: -15em 0; top: 0.3em; left: 0.2em; }
+.icon-trash-2 { background-position: -15em 0; top: 0.3em; right: 3.5em; display: none; }
 
 /* MY LISTS INTERFACE */
 .mylists { /* ICONS FOR PERMISSIONS */ }

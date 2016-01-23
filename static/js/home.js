@@ -30,7 +30,10 @@ $(document).ready(function() {
                 }
             }
         });
-
+    
+    $(".list").on('mouseenter', ".listItem", buttonsVisible);
+    $(".list").on('mouseleave', ".listItem", buttonsHidden);
+    
     // save
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
@@ -143,9 +146,19 @@ $(document).ready(function() {
 
 function votesVisible() {
     $(".votes").show();
-    $(".icon-heart").show();
     $(".listItem").css("width", "90%");
-    $(".itemTitle input").css({"padding": "0 5em 0 1em", "width": "calc(100% - 6em)"});
+}
+
+function buttonsVisible() {
+    $(this).find(".icon-heart").show();
+    $(this).find(".itemTitle input").css({"padding": "0 6em 0 1em", "width": "calc(100% - 7em)"});
+    $(this).find(".icon-trash-2").show();
+}
+
+function buttonsHidden() {
+    $(this).find(".icon-heart").hide();
+    $(this).find(".itemTitle input").css({"padding": "0 2.5em 0 1em", "width": "calc(100% - 3.5em)"});
+    $(this).find(".icon-trash-2").hide();
 }
 
 function authenticated() {
@@ -271,7 +284,7 @@ function isLastItem() {
 }
 
 function addItem(curListItem) {
-    $(curListItem).after("<div class='listItem'><div class='votes'><div><b>0</b>&#9829;</div></div> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
+    $(curListItem).after("<div class='listItem'><div class='icon-trash-2'></div> <div class='votes'><div><b>0</b>&#9829;</div></div> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
     if(loggedIn) {votesVisible();}
     resize();
 }
@@ -443,7 +456,6 @@ function loadVotes(that) {
             // default is 0, so only change if 1
             if (parseInt(data.current_vote) === 1) {
                 $(voteBox).next().css("background-position", "-10.5em 0");
-                console.log("okay");
             }
             return data.cur_score;
         }
