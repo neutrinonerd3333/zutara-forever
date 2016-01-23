@@ -364,9 +364,7 @@ def userlists():
                     "Would you like to create one?")
 
     lists = lists.order_by('-last_visited').all()
-    return render_template('mylists.html',
-                            lists=[x for x in lists],
-                            host=HOSTNAME)
+    return render_template('mylists.html', lists=lists, host=HOSTNAME)
 
 
 @app.route("/preview/<listid>", methods=['GET'])
@@ -798,7 +796,6 @@ def vote():
     {
         listid: <listid>,
         entryind: <entryind>,
-        userid: <userid>,
         vote: {1 (upvote) | 0 (no vote) |
                -1 (downvote) | 100 (get the current vote)}
     }
@@ -815,10 +812,7 @@ def vote():
     """
 
     listid = request.form["listid"]
-    print(listid)
     entryind = int(request.form["entryind"])
-    print(entryind)
-    # uid = request.form["userid"]
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
         headers = {'Content-Type': 'text/html'}
@@ -893,15 +887,6 @@ def my_lists_interact(listid, addQ):
                     1 to add, -1 to remove
     """
 
-    # four cases:
-    # in mylists because permission
-    # in because added
-    # in because both
-
-
-
-    # validation
-
     if addQ not in (-1, 1):
         raise InvalidAPIUsage("Invalid arguments")
     try:
@@ -928,8 +913,6 @@ def my_lists_interact(listid, addQ):
         cur_user.my_custom_lists.remove(the_list)
     elif cur_state == -1:
         cur_user.anti_my_lists.remove(the_list)
-
-
 
     # else append/pop as required
     if addQ == 1:
@@ -998,7 +981,7 @@ def permissions_set():
     print(target)
     if target == '':
         target = uname
-    
+
     try:
         the_list = Catalist.objects.get(listid=listid)
     except DoesNotExist:
