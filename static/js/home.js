@@ -43,7 +43,6 @@ $(document).ready(function() {
 
         if (totalItems === itemInd) {
             addItem(curListItem);
-            loadVotes($(this));
         }
     });
 
@@ -430,6 +429,7 @@ function loadVotes(that) {
 
     var item = $(voteBox).closest(".listItem");
     var eind = $(".list .listItem").index(item);
+    console.log(eind);
     $.ajax({
         url: "/api/vote",
         method: 'POST',
