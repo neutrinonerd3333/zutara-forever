@@ -1,5 +1,11 @@
 /* label animations, upon active */
-$(document).ready(startAnimations);
+
+$(document).ready(function() {
+    startAnimations();
+    
+    
+    // $("#register").on("submit", register);
+});
 
 function startAnimations() {
     $(".inputField").on("focus", function() {
@@ -117,7 +123,7 @@ function signup(form) {
     if (!validate_signup(email, uid, password, 4, 12))
         return false;
 
-    var formData = new formData();
+    var formData = new FormData();
 
     formData.append('uid', uid);
     formData.append('password', password);
@@ -131,15 +137,18 @@ function signup(form) {
 }
 
 function signin(form) {
+    
     var uid = form.elements["uid"];
     var password = form.elements["password"];
+    
+    var data = new FormData();
 
-    var formData = new formData();
-    formData.append('uid', uid);
-    formData.append('password', password);
+    data.append('uid', uid);
+    data.append('password', password);
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/signin');
 
-    xhr.send(formData);
+    xhr.send(data);
+    return true;
 }

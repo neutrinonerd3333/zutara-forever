@@ -10,23 +10,22 @@ if (n === 0) {
 
 $(document).ready(function() {
     $(".list").one("input", makeList)
-    
+
     $("body").on('click', "input[type='url']", function() {
-            $(this).select();
-            document.execCommand("copy");
-            alert("Link copied to clipboard!");
-        });
-    
+        $(this).select();
+        document.execCommand("copy");
+        alert("Link copied to clipboard!");
+    });
+
     if (listid === null) {
         $.ajax({
             url: "/api/loggedin",
             method: 'POST',
             success: function(data, status, jqxhr) {
                 // logged in if true, guest if false
-                if(data.loggedin) {
-                    
-                }
-                else {
+                if (data.loggedin) {
+
+                } else {
                     $(".list").one("mouseenter", askForTutorial);
                 }
             }
@@ -42,7 +41,7 @@ $(document).ready(function() {
         // console.log(getPermissions(listid));
     }
     // load current votes
-    
+
 
     // save
     $(".list").on('focusin', ".itemTitle input", function() {
@@ -198,8 +197,7 @@ function enableLiveSave() {
     $(".listTitle input").focusout(function() {
         var that = $(this);
         var newval = that.val();
-        if(newval.length===0)
-        {
+        if (newval.length === 0) {
             newval = "untitled list";
         }
         $.ajax({
@@ -334,10 +332,9 @@ function addVote(that) {
                 method: 'POST',
                 success: function(data, status, jqxhr) {
                     // logged in if true, guest if false
-                    if(data.loggedin) {
+                    if (data.loggedin) {
                         $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
-                    }
-                    else {
+                    } else {
                         $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
                     }
                 }
@@ -345,7 +342,7 @@ function addVote(that) {
             $("body").one('click', ".yes", makeList);
         }
     });
-    
+
 }
 
 // undo vote
@@ -372,10 +369,9 @@ function deleteVote(that) {
                 method: 'POST',
                 success: function(data, status, jqxhr) {
                     // logged in if true, guest if false
-                    if(data.loggedin) {
+                    if (data.loggedin) {
                         $("#link").html("Oops! <div class='yes'>Click here to save the current list</div> to vote.");
-                    }
-                    else {
+                    } else {
                         $("#link").html("Oops! <a href='/login'>Click here to login</a> to vote.");
                     }
                 }
@@ -386,16 +382,16 @@ function deleteVote(that) {
 
 function getPermissions(listid) {
     $.ajax({
-                data: {
-                    listid: listid,
-                },
-                url: "/api/getpermissions",
-                method: 'POST',
-                success: function(data, status, jqxhr) {
-                    // logged in if true, guest if false
-                    console.log(data.permission);
-                }
-            });
+        data: {
+            listid: listid,
+        },
+        url: "/api/getpermissions",
+        method: 'POST',
+        success: function(data, status, jqxhr) {
+            // logged in if true, guest if false
+            console.log(data.permission);
+        }
+    });
 }
 
 function resize() {
@@ -425,9 +421,8 @@ function loadVotes(that) {
         success: function(data, status, jqxhr) {
             $(voteBox).html("<div><b>" + data.score + "</b>&#9829;</div>");
             // default is 0, so only change if 1
-            if(parseInt(data.current_vote)===1)
-            {
-                $(voteBox).next().css("background-position","-10.5em 0");
+            if (parseInt(data.current_vote) === 1) {
+                $(voteBox).next().css("background-position", "-10.5em 0");
                 console.log("okay");
             }
             return data.cur_score;
@@ -462,7 +457,7 @@ function askForTutorial() {
     $("#pro").one("click", noTutorial);
     $("#newb").one("click", tutorial);
 }
-                 
+
 function noTutorial() {
     $("#welcome").html("No problem! Have fun creating! We'll auto-save your lists.");
     setTimeout(hideTutorial, 2000);
