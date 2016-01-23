@@ -147,7 +147,7 @@ input { outline: none; }
 /* MY LISTS INTERFACE */
 .mylists { /* ICONS FOR PERMISSIONS */ }
 .mylists #wrapper { height: 80%; }
-.mylists body { height: calc(100% - 2em); }
+.mylists body { height: calc(100% - 2em); max-height: 100%; }
 .mylists .listBlock { left: 10%; border-radius: 20px 0 0 0; background-color: #CEF; }
 .mylists .listBlock2 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
 .mylists .listBlock, .mylists .listBlock2 { display: inline-block; position: absolute; height: 50%; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
@@ -177,7 +177,7 @@ input { outline: none; }
 .mylists .toolbox * input:hover, .mylists .toolbox * input:focus { background-color: #FFF; }
 .mylists .toolbox .permissions { width: calc(100% - 5em); height: calc(100% - .5em); position: relative; left: -1em; top: -1.6em; display: inline-block; outline: none; padding: 0em 0.5em 0; }
 .mylists .toolbox .permissions .editors { height: 2em; width: calc(100% - 2em); margin-bottom: 0.5em; display: block; position: relative; top: 0.5em; left: 0; color: #666; font-size: 16px; text-align: left; }
-.mylists .toolbox * .line { height: 1em; width: calc(100% - 2em); padding-left: 0.5em; padding-top: 1em; margin-bottom: 0.5em; display: block; color: #666; font-size: 16px; text-align: left; }
+.mylists .toolbox * .line { height: 1em; width: calc(100% - 2em); padding-left: 0.5em; padding-top: 1em; margin-bottom: 0; margin-top: 0; display: block; color: #666; font-size: 16px; text-align: left; }
 
 /* CLOUDS!! */
 #clouds { padding: 100px 0; background: transparent; position: absolute; top: 0em; z-index: 0; height: 5em; }
