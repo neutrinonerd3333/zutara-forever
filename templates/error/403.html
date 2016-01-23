@@ -1,9 +1,8 @@
-{% extends "layout.html" %}
+{% extends "error/layout.html" %}
 {% block title %}
 403: Forbidden
 {% endblock %}
 
-{% block content %}
-<div class="error-container">
-<h3>Oops! We couldn't find what you were looking for! Click <a href="{{ url_for('index') }}">here</a> to return home.</h3></div>
+{% block message %}
+Oops! Looks like you don't have permission to see this page.
 {% endblock %}
