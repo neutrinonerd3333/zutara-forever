@@ -4,6 +4,11 @@ from flask.ext.security import Security, MongoEngineUserDatastore, \
 import flask.ext.security as flask_security
 
 
+# **********************************************************
+# Flask-Security and MongoEngine Setup
+# **********************************************************
+
+
 # Maximum lengths for different things.
 key_max_len = 32
 val_max_len = 1024

@@ -1,5 +1,6 @@
 from catalist import app, db, HOSTNAME
 
+from flask import Blueprint
 from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required
 import flask.ext.security as flask_security
@@ -12,6 +13,59 @@ import uuid as uuid_module
 from permissions import *
 from database import Role, User, Catalist, CatalistEntry, CatalistKVP
 import database as dbase
+
+# **********************************************************
+# THE API!!!
+# **********************************************************
+
+api_blueprint = Blueprint('api', __name__)
+
+# # # # # # # # # # # # # #
+# EXCEPTION HANDLING
+# # # # # # # # # # # # # #
+
+class InvalidAPIUsage(Exception):
+    """
+    A class for exceptions to raise in invalid API usage.
+    Shamelessly pillaged from `Flask's documentation
+    <http://flask.pocoo.org/docs/0.10/patterns/apierrors/>`_
+    """
+    status_code = 400
+
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        return rv
+
+
+@api_blueprint.errorhandler(InvalidAPIUsage)
+def handle_invalid_usage(error):
+    print("\033[93m{} -- {}\033[0m".format(error.status_code, error.message))
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
+# # # # # # # # # # # # # #
+# MISCELLANEOUS
+# # # # # # # # # # # # # #
+
+
+@api_blueprint.route("/loggedin", methods=['POST'])
+def logged_in():
+    # print("hi")
+    """ Used for .js to call """
+    if flask_security.core.current_user.is_authenticated:
+        return jsonify(loggedin=1)
+    return jsonify(loggedin=0)
+
 
 # # # # # # # # # # # # # #
 # LIST-WIDE FUNCTIONS
@@ -43,7 +97,7 @@ def create_list():
     return list_id
 
 
-@app.route("/api/makelist", methods=['GET'])
+@api_blueprint.route("/makelist", methods=['GET'])
 def make_list():
     """
     Upon making the first edit, an empty list will be
@@ -53,7 +107,7 @@ def make_list():
     return jsonify(listid=list_id)
 
 
-@app.route("/api/savelist", methods=['POST'])
+@api_blueprint.route("/savelist", methods=['POST'])
 def list_save():
     """
     Save an entire list. If listid is provided, the list is
@@ -140,7 +194,7 @@ def key_val_save(req_form, key_or_val):
     return jsonify()  # return a blank 200
 
 
-@app.route("/api/savekey", methods=['POST'])
+@api_blueprint.route("/savekey", methods=['POST'])
 def key_save():
     """
     Save a key. Requires at least edit permission.
@@ -156,7 +210,7 @@ def key_save():
     return key_val_save(request.form, "key")
 
 
-@app.route("/api/savevalue", methods=['POST'])
+@api_blueprint.route("/savevalue", methods=['POST'])
 def value_save():
     """
     Save the value in a particular key-value pair. Requires
@@ -167,7 +221,7 @@ def value_save():
     return key_val_save(request.form, "value")
 
 
-@app.route("/api/saveentrytitle", methods=['POST'])
+@api_blueprint.route("/saveentrytitle", methods=['POST'])
 def entry_title_save():
     """
     AJAXily save the title of an entry. Requires at least edit permission
@@ -202,7 +256,7 @@ def entry_title_save():
     return "OK"  # 200 OK ^_^
 
 
-@app.route("/api/savelisttitle", methods=['POST'])
+@api_blueprint.route("/savelisttitle", methods=['POST'])
 def list_title_save():
     """
     AJAXily save the title of a Catalist ^_^
@@ -232,7 +286,7 @@ def list_title_save():
     return jsonify()  # 200 OK ^_^
 
 
-@app.route("/api/deletelist", methods=['POST'])
+@api_blueprint.route("/deletelist", methods=['POST'])
 def list_delete():
     """
     Delete a Catalist. Requires at least own permission
@@ -255,7 +309,7 @@ def list_delete():
     return 'OK'  # this should return a 200
 
 
-@app.route("/api/deleteentry", methods=['POST'])
+@api_blueprint.route("/deleteentry", methods=['POST'])
 def entry_delete():
     """
     Delete an entry from a Catalist. Requires at least edit permission.
@@ -284,7 +338,7 @@ def entry_delete():
     return 'OK'  # 200 OK
 
 
-@app.route("/api/deletekvp", methods=['POST'])
+@api_blueprint.route("/deletekvp", methods=['POST'])
 def kvp_delete():
     """
     Delete a key-value pair from a Catalist entry.
@@ -330,7 +384,7 @@ def kvp_delete():
 # # # # # # # # # # # # # #
 
 
-@app.route("/api/vote", methods=['POST'])
+@api_blueprint.route("/vote", methods=['POST'])
 def vote():
     """
     Two options:
@@ -469,7 +523,7 @@ def my_lists_interact(listid, addQ):
     cur_user.save()
 
 
-@app.route("/api/mylists/add", methods=['POST'])
+@api_blueprint.route("/mylists/add", methods=['POST'])
 def add_to_my_lists():
     """
     Add a specified list to "My Lists". POST
@@ -486,7 +540,7 @@ def add_to_my_lists():
     return "OK"  # 200 OK ^_^
 
 
-@app.route("/api/mylists/remove", methods=['POST'])
+@api_blueprint.route("/mylists/remove", methods=['POST'])
 def remove_from_my_lists():
     """
     Remove a specified list from "My Lists". POST
@@ -507,7 +561,7 @@ def remove_from_my_lists():
 # PERMISSION EDITING
 # # # # # # # # # # # # # #
 
-@app.route("/api/setpermissions", methods=['POST'])
+@api_blueprint.route("/setpermissions", methods=['POST'])
 def permissions_set():
     """
     {
@@ -586,7 +640,7 @@ def permissions_set():
     return "OK"  # 200 OK
 
 
-@app.route("/api/getpermissions", methods=['POST'])
+@api_blueprint.route("/getpermissions", methods=['POST'])
 def permissions_get():
     """
     Get the permission level a user has for a particular list.
@@ -608,7 +662,7 @@ def permissions_get():
     return jsonify(permission=query_cur_perm(catalist))
 
 
-@app.route("/api/setpubliclevel", methods=['POST'])
+@api_blueprint.route("/setpubliclevel", methods=['POST'])
 def public_level_set():
     """
     Set the permission level for a list for the public at-large.
@@ -642,7 +696,7 @@ def public_level_set():
 
 
 @flask_security.login_required
-@app.route("/api/customize", methods=['POST'])
+@api_blueprint.route("/customize", methods=['POST'])
 def get_pref():
     """
     Get the preferred theme for the user
@@ -660,7 +714,7 @@ def get_pref():
     return jsonify(theme=user.preferred_theme)
 
 
-@app.route("/api/permissions/forfeit", methods=['POST'])
+@api_blueprint.route("/permissions/forfeit", methods=['POST'])
 def permissions_forfeit():
     """
     Forfeit permissions to a list. Effectively sets permission
@@ -694,7 +748,7 @@ autocomplete_dict = ["contacts", "groceries", "movie", "shopping"]
 autocomplete_dict.sort()
 
 
-@app.route("/api/autocomplete", methods=['POST'])
+@api_blueprint.route("/autocomplete", methods=['POST'])
 def autocomplete():
     """
     completes a word fragment with a possible list type
@@ -712,7 +766,7 @@ def autocomplete():
     return response
 
 
-@app.route("/api/autocomplete/user", methods=['POST'])
+@api_blueprint.route("/autocomplete/user", methods=['POST'])
 def autocomplete_user():
     cur_user = flask_security.core.current_user
     return jsonify(acquaintances=cur_user.acquaintances)  # 200 OK ^_^

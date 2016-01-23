@@ -2,6 +2,10 @@ from flask import Flask, render_template, jsonify, \
     request, redirect, url_for, make_response
 import flask.ext.security as flask_security
 
+# **********************************************************
+# Permissions
+# **********************************************************
+
 #: A list of all permission levels, from lowest to highest.
 #: The levels:
 #:

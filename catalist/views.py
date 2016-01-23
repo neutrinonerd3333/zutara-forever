@@ -8,6 +8,11 @@ from database import Role, User, Catalist, CatalistEntry, CatalistKVP
 from permissions import cmp_permission, query_cur_perm
 
 
+# **********************************************************
+# User Interaction Section
+# **********************************************************
+
+
 @app.route("/signup", methods=['POST'])
 def signup():
     """
@@ -38,11 +43,11 @@ def signup():
     # if multiple objects, then something just screwed up
     except:
         return render_template('error.html')  # DNE yet
-    
+
     # we just made the user so they better exist
     user = User.objects.get(uid=unicode(user_id))
     flask_security.utils.login_user(user, remember=None)
-    
+
     return render_template('home.html',
                            message="Welcome to Catalist, " + user_id)
 
@@ -52,9 +57,8 @@ def signin():
     """ Sign the user in, given valid credentials. """
     user_id = request.form['uid']
     pw = request.form['password']
- 
     pw_hash = flask_security.utils.get_hmac(pw)
-    
+
     whoops = "You have entered a wrong username or password. Please try again."
     try:
         # if user exists, then sign in
@@ -177,14 +181,6 @@ def preview_list(listid):
     return render_template('preview.html', listtitle=the_list.title,
                            entries=the_list.contents)
 
-
-@app.route("/api/loggedin", methods=['POST'])
-def logged_in():
-    print("hi")
-    """ Used for .js to call """
-    if flask_security.core.current_user.is_authenticated:
-        return jsonify(loggedin=1)
-    return jsonify(loggedin=0)
 
 def get_id():
     """ Return name of current user """
