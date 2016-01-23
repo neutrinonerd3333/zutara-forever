@@ -14,34 +14,22 @@ $(document).ready(function() {
     $("body").on('click', "input[type='url']", function() {
         $(this).select();
         document.execCommand("copy");
-        alert("Link copied to clipboard!");
+        // alert("Link copied to clipboard!");
     });
-
-    if (listid === null) {
-        $.ajax({
+    
+    var loggedIn = false;
+    $.ajax({
             url: "/api/loggedin",
             method: 'POST',
             success: function(data, status, jqxhr) {
                 // logged in if true, guest if false
                 if (data.loggedin) {
-
+                    authenticated();
                 } else {
-                    $(".list").one("mouseenter", askForTutorial);
+                    guest();
                 }
             }
         });
-    } else {
-        // if this is route /list/<listid>,
-        // bind all the ajax save listeners now
-        enableLiveSave();
-        $(".listItem").each(function(index) {
-            loadVotes($(this));
-        });
-        $("#link input").show();
-        // console.log(getPermissions(listid));
-    }
-    // load current votes
-
 
     // save
     $(".list").on('focusin', ".itemTitle input", function() {
@@ -154,6 +142,37 @@ $(document).ready(function() {
     });
 });
 
+function votesVisible() {
+    $(".votes").show();
+    $(".icon-heart").show();
+    $(".listItem").css("width", "90%");
+    $(".itemTitle input").css({"padding": "0 5em 0 1em", "width": "calc(100% - 6em)"});
+}
+
+function authenticated() {
+    loggedIn = true;
+    if (listid !== null) {
+        // if this is route /list/<listid>, bind listeners
+        enableLiveSave();
+        $(".listItem").each(function(index) {
+            loadVotes($(this));
+        });
+        $("#link input").show();
+    }
+    votesVisible();
+}
+
+function guest() {
+    loggedIn = false;
+    if (listid === null) {
+        $(".list").one("mouseenter", askForTutorial);
+    }
+    else {
+        enableLiveSave();
+        $("#link input").show();
+    }
+}
+
 function askToMakeList() {
     $("#link").html("<div class='yes'>Click to Save</div> or <div class='no'>Nah</div>");
 }
@@ -254,6 +273,7 @@ function isLastItem() {
 
 function addItem(curListItem) {
     $(curListItem).after("<div class='listItem'><div class='votes'><div><b>0</b>&#9829;</div></div> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
+    if(loggedIn) {votesVisible();}
     resize();
 }
 

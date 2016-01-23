@@ -118,16 +118,16 @@ input { outline: none; }
 .list * input { color: #666; background-color: #CEF; font-size: 16px; border: 0; outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
 .list * input:hover { background-color: rgba(255, 255, 255, 0.2); }
 .list * input:focus { background-color: rgba(255, 255, 255, 0.5); }
-.list .listTitle { width: 100; height: 3em; background-color: transparent; margin: 0 0 0.5em 0; }
+.list .listTitle { width: 100%; height: 3em; background-color: transparent; margin: 0 0 0.5em 0; }
 .list .listTitle input { height: 100%; width: calc(100% - 2em); background-color: transparent; padding: 0 1em; outline: none; border: 0; border-radius: 20px; text-align: center; font-size: 1.2em; }
 .list .listTitle input:focus { background-color: rgba(255, 255, 255, 0.5); }
-.list .listItem { width: 90%; min-height: 2em; background-color: transparent; border-radius: 20px; margin: 0; margin-bottom: 1em; padding: 0; position: relative; display: inline-block; }
-.list .votes { width: 10%; min-height: 2em; background-color: #AEF; border-radius: 20px; margin-right: -5px; margin-bottom: 1em; right: -10%; padding: 0; position: absolute; }
+.list .listItem { width: 100%; min-height: 2em; background-color: transparent; border-radius: 20px; margin: 0; margin-bottom: 1em; padding: 0; position: relative; display: inline-block; }
+.list .votes { display: none; width: 10%; min-height: 2em; background-color: #AEF; border-radius: 20px; margin-right: -5px; margin-bottom: 1em; right: -10%; padding: 0; position: absolute; }
 .list .votes div { color: #999; font-size: 1em; position: absolute; padding-top: 15%; padding-left: 15%; padding-right: 15%; left: 10%; letter-spacing: 0.8px; font-weight: lighter; }
 
 /* SPECIFICS OF EACH LIST ITEM */
 .listItem .itemTitle { position: relative; display: block; width: 100%; height: 2em; background-color: transparent; border-radius: 20px 20px 0 0; padding: 0; margin: 0; }
-.listItem .itemTitle input { background-color: #AEF; padding: 0 5em 0 1em; margin: 0; border-radius: 20px; height: 100%; width: calc(100% - 6em); }
+.listItem .itemTitle input { background-color: #AEF; padding: 0 3em 0 1em; margin: 0; border-radius: 20px; height: 100%; width: calc(100% - 4em); }
 .listItem .attributes { border-radius: 0 0 20px 20px; display: none; }
 .listItem .attributes .attribute { overflow: hidden; width: 100%; height: 2em; display: block; padding: 0; margin: 0; border-radius: 0 0 20px 20px; }
 .listItem .attributes .attribute .key, .listItem .attributes .attribute .value { display: inline-block; height: 100%; margin: 0; width: 30%; }
@@ -142,7 +142,7 @@ input { outline: none; }
 
 .icon-minus { position: relative; right: calc(-100% + 26px + .3em); top: -2em; background-position: -4.5em -1.5em; }
 
-.icon-heart { right: 2.1em; top: 0.3em; background-position: -6em 0; }
+.icon-heart { right: 2.1em; top: 0.3em; background-position: -6em 0; display: none; }
 
 /* MY LISTS INTERFACE */
 .mylists { /* ICONS FOR PERMISSIONS */ }
