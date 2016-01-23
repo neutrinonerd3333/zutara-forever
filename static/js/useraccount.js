@@ -1,5 +1,11 @@
 /* label animations, upon active */
-$(document).ready(startAnimations);
+
+$(document).ready(function() {
+    startAnimations();
+    
+    
+    // $("#register").on("submit", register);
+});
 
 function startAnimations() {
     $(".inputField").on("focus", function() {
@@ -83,23 +89,19 @@ function validate_signup(email, uid, pw, min, max) {
     var email_okay = validateEmail(email);
 
     if (!email_okay) {
-        $(".errormsg").show();// placeholder
+        $(".errormsg").show(); // placeholder
         $(".errormsg").html("Please select a valid email.");
     }
     if (!uid_okay) {
-        if (!pw_okay)
-        {
-            $(".errormsg").show();// placeholder
+        if (!pw_okay) {
+            $(".errormsg").show(); // placeholder
             $(".errormsg").html("Please select a valid username and password.");
-        }
-        else
-        {
-            $(".errormsg").show();// placeholder
+        } else {
+            $(".errormsg").show(); // placeholder
             $(".errormsg").html("Please select a valid username.");
         }
-    } else if (!pw_okay)
-    {
-        $(".errormsg").show();// placeholder
+    } else if (!pw_okay) {
+        $(".errormsg").show(); // placeholder
         $(".errormsg").html("Please select a valid password.");
     }
 
@@ -117,7 +119,7 @@ function signup(form) {
     if (!validate_signup(email, uid, password, 4, 12))
         return false;
 
-    var formData = new formData();
+    var formData = new FormData();
 
     formData.append('uid', uid);
     formData.append('password', password);
@@ -131,15 +133,18 @@ function signup(form) {
 }
 
 function signin(form) {
+    
     var uid = form.elements["uid"];
     var password = form.elements["password"];
+    
+    var data = new FormData();
 
-    var formData = new formData();
-    formData.append('uid', uid);
-    formData.append('password', password);
+    data.append('uid', uid);
+    data.append('password', password);
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/signin');
 
-    xhr.send(formData);
+    xhr.send(data);
+    return true;
 }

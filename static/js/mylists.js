@@ -12,6 +12,9 @@ $(document).ready(function() {
 
     // copy url to clipboard upon clicking in it
     $(".toolbox").on("click", "input", useButtons);
+    
+    // on click delete, delete
+    $(".toolbox").on("click", ".icon-trash", buttonListener);
 
     // focusout saves permissions and checks for delete
     $(".toolbox").on("focusout", "input", saveSettings);
@@ -37,7 +40,8 @@ function showToolbox(perm) {
     var n = url.indexOf('/list/');
     // cut out "/list/"
     listid = url.slice(n + 6);
-    if($(permInput).val()===''){
+
+    if ($(permInput).val() === '') {
         // console.log(listid);
         $.ajax({
             data: {
@@ -51,7 +55,7 @@ function showToolbox(perm) {
                 $(permInput).val(perm);
 
                 if (perm === "own") {
-                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div>  <div class="icon-edit"></div> <div class="icon-view"></div> <div class="icon-link"></div> <div class="icon-trash"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="edit" placeholder="Editors" type="text"> <input class="editors" id="view" placeholder="Viewers" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <input class="editors" id="delete" type="text" placeholder="Type &quot;delete&quot; to delete list."> </div>');
+                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div>  <div class="icon-edit"></div> <div class="icon-view"></div> <div class="icon-link"></div> <div class="icon-trash"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="edit" placeholder="Editors" type="text"> <input class="editors" id="view" placeholder="Viewers" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <div class="line">Click icon to delete permanently."</div> </div>');
                     $(tools).css("height", "11em");
                 } else if (perm === "edit") {
                     $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div></div> <div class="permissions"> <div class="line">You may edit and view this list.</div><input class="editors" id="url" type="text" value=' + url + '> </div>');
@@ -80,8 +84,13 @@ function useButtons() {
     }
 }
 
+// this must be a .icon that was clicked
+function buttonListener() {
+    deleteList(listid);
+}
+
 function setPublicPermission(listid, permission) {
-     $.ajax({
+    $.ajax({
         url: "/api/setpubliclevel",
         method: "POST",
         data: {
@@ -93,30 +102,32 @@ function setPublicPermission(listid, permission) {
 
 function saveSettings() {
     // if user types delete, list will be deleted
-    if ($(this).attr("id") === "delete") {
+    // can reuse this bit for set public perm
+    /*if ($(this).attr("id") === "delete") {
         // setPublicPermission(listid, $(this).val());
         if ($(this).val() === "delete") {
+
             deleteList(listid);
         }
-    }
+    }*/
     // if user types in names, add them as viewers
     // or editors, as specified
     // names delimited by whitespace
-    else if ($(this).attr("id") === "view") {
+    if ($(this).attr("id") === "view") {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
-        for(var i = 0; i < n; i++) {
+        for (var i = 0; i < n; i++) {
             setPermissions(listid, all[i], "view");
         }
-    }
-    else if ($(this).attr("id") === "edit") {
+    } else if ($(this).attr("id") === "edit") {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
+
         // console.log(listid);
-         
-        for(var i = 0; i < n; i++) {
+
+        for (var i = 0; i < n; i++) {
             // console.log(all[i]);
             setPermissions(listid, all[i], "edit");
         }
@@ -148,7 +159,7 @@ function deleteList(listid) {
         },
         success: function(data, status, jqxhr) {
             var perm = data.permission;
-            if(perm==='own') {
+            if (perm === 'own') {
                 if (confirm("Are you sure you want to permanently delete your list?")) {
                     $.ajax({
                         url: "/api/deletelist",

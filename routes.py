@@ -15,6 +15,31 @@
 #         | |  |  ``/  /`  /
 #        /,_|  |   /,_/   /
 #           /,_/      '`-'
+#           http://www.asciiworld.com/-Mangas,48-.html
+#                   and T O T O R O <3
+#                           ~ t o t o r o ~
+#
+#                              !         !
+#                             ! !       ! !          
+#                            ! . !     ! . !          
+#                               ^^^^^^^^^ ^            
+#                             ^             ^          
+#                           ^  (0)       (0)  ^       
+#                          ^        ""         ^       
+#                         ^   ***************    ^     
+#                       ^   *                 *   ^    
+#                      ^   *   /\   /\   /\    *    ^   
+#                     ^   *                     *    ^
+#                    ^   *   /\   /\   /\   /\   *    ^
+#                   ^   *                         *    ^
+#                   ^  *                           *   ^
+#                   ^  *                           *   ^
+#                    ^ *                           *  ^  
+#                     ^*                           * ^ 
+#                      ^ *                        * ^
+#                      ^  *                      *  ^
+#                        ^  *       ) (         * ^
+#                            ^^^^^^^^ ^^^^^^^^^
 
 # **********************************************************
 # Module Imports
@@ -51,7 +76,7 @@ app.config['SECRET_KEY'] = "bc5e9bf3-3d4a-4860-b34a-248dbc0ebd5c"
 app.config['SECURITY_PASSWORD_SALT'] = "eddb960e-269c-4458-8e08-c1027d8b290"
 
 # we'll need this later for actual app
-HOSTNAME = '0.0.0.0:6005'
+HOSTNAME = 'catalist.eastus2.cloudapp.azure.com'
 
 db = MongoEngine(app)
 
@@ -235,18 +260,20 @@ def signup():
             user = User.objects.get(email=unicode(email))
             return render_template(
                 'register.html',
-                message="Sorry, that email is taken! " +
-                "Did you forget your password?")
+                message="Sorry, that email is taken!")
         except:
             user_datastore.create_user(uid=user_id, password=pw_hash,
                                        last_active=time, email=email)
     # if multiple objects, then something just screwed up
     except:
         return render_template('error.html')  # DNE yet
-
-    return render_template('./security/login_user.html',
-                           success="You have successfully signed up! " +
-                                   "Please login now.")
+    
+    # we just made the user so they better exist
+    user = User.objects.get(uid=unicode(user_id))
+    flask_security.utils.login_user(user, remember=None)
+    
+    return render_template('home.html',
+                           message="Welcome to Catalist, " + user_id)
 
 
 @app.route("/signin", methods=['POST'])
@@ -254,7 +281,9 @@ def signin():
     """ Sign the user in, given valid credentials. """
     user_id = request.form['uid']
     pw = request.form['password']
+ 
     pw_hash = flask_security.utils.get_hmac(pw)
+    
     whoops = "You have entered a wrong username or password. Please try again."
     try:
         # if user exists, then sign in
@@ -262,14 +291,12 @@ def signin():
         if flask_security.utils.verify_and_update_password(pw_hash, user):
             time = datetime.utcnow()
             user.last_active = time
-            print("user last active {}".format(user.last_active))
             flask_security.utils.login_user(user, remember=None)
             message = ""
         else:
             message = whoops
     except:  # user DNE
         message = whoops
-
     return render_template('./security/login_user.html', success=message)
 
 
@@ -381,12 +408,12 @@ def preview_list(listid):
 
 
 @app.route("/api/loggedin", methods=['POST'])
-def isLoggedIn():
+def logged_in():
+    print("hi")
     """ Used for .js to call """
     if flask_security.core.current_user.is_authenticated:
         return jsonify(loggedin=1)
     return jsonify(loggedin=0)
-
 
 def get_id():
     """ Return name of current user """
@@ -422,6 +449,10 @@ def forbidden(e):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error/404.html'), 404
+
+@app.errorhandler(405)
+def method_not_found(e):
+    return render_template('404.html'), 405
 
 
 @app.errorhandler(405)
