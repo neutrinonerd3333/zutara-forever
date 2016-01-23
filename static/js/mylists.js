@@ -37,7 +37,7 @@ function showToolbox(perm) {
     var n = url.indexOf('/list/');
     // cut out "/list/"
     listid = url.slice(n + 6);
-    if($(permInput).val()===''){
+    if ($(permInput).val() === '') {
         console.log(listid);
         $.ajax({
             data: {
@@ -81,7 +81,7 @@ function useButtons() {
 }
 
 function setPublicPermission(listid, permission) {
-     $.ajax({
+    $.ajax({
         url: "/api/setpubliclevel",
         method: "POST",
         data: {
@@ -96,7 +96,7 @@ function saveSettings() {
     if ($(this).attr("id") === "delete") {
         setPublicPermission(listid, $(this).val());
         if ($(this).val() === "delete") {
-            
+
             // deleteList(listid);
         }
     }
@@ -107,17 +107,16 @@ function saveSettings() {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
-        for(var i = 0; i < n; i++) {
+        for (var i = 0; i < n; i++) {
             setPermissions(listid, all[i], "view");
         }
-    }
-    else if ($(this).attr("id") === "edit") {
+    } else if ($(this).attr("id") === "edit") {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
         console.log(listid);
-         
-        for(var i = 0; i < n; i++) {
+
+        for (var i = 0; i < n; i++) {
             console.log(all[i]);
             setPermissions(listid, all[i], "edit");
         }
@@ -149,7 +148,7 @@ function deleteList(listid) {
         },
         success: function(data, status, jqxhr) {
             var perm = data.permission;
-            if(perm==='own') {
+            if (perm === 'own') {
                 if (confirm("Are you sure you want to permanently delete your list?")) {
                     $.ajax({
                         url: "/api/deletelist",

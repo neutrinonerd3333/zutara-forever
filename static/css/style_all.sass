@@ -505,9 +505,9 @@ input
             color: $color-gray-medium
             font-size: 1em
             position: absolute
-            top: .3em
-            padding-top: 2px
-            padding-left: 3px
+            padding-top: 15%
+            padding-left: 15%
+            padding-right: 15%
             left: 10%
             letter-spacing: 0.8px
             font-weight: lighter
@@ -624,6 +624,9 @@ input
         color: $color-gray-darkest
         text-align: center
         overflow: hidden
+    .hideOverflow
+        overflow: hidden
+        height: 100%
     .scrollWrapper
         overflow: scroll
         height: 100%
@@ -653,6 +656,7 @@ input
             margin: 0
     .listWrapper
         margin: 0
+        overflow: auto
         .mylist
             height: 1em    
             width: calc(100% - 2em)
@@ -684,11 +688,12 @@ input
             left: 10%
             height: 30%
             width: 80%
-            background-color: $color-bright-light
+            background-color: $color-transparent-light
         .listBlock
             border-radius: 20px 20px 0 0
         .listBlock2
             border-radius: 0
+            margin-top: 1.5em
             top: 0
 
     iframe
@@ -835,19 +840,19 @@ input
     .x2
         left: 10%
         +transform(0.6)
-        opacity: 0.3
+        opacity: 0.15
         +animation(75s)
     .x3
         left: -20%
         top: -40%
         +transform(0.8)
-        opacity: 0.4
+        opacity: 0.2
         +animation(80s)
     .x4
         left: 50%
         top: -30%
         +transform(0.75)
-        opacity: 0.2
+        opacity: 0.15
         +animation(90s)
     .x5
         left: -10%

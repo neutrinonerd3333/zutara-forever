@@ -83,23 +83,19 @@ function validate_signup(email, uid, pw, min, max) {
     var email_okay = validateEmail(email);
 
     if (!email_okay) {
-        $(".errormsg").show();// placeholder
+        $(".errormsg").show(); // placeholder
         $(".errormsg").html("Please select a valid email.");
     }
     if (!uid_okay) {
-        if (!pw_okay)
-        {
-            $(".errormsg").show();// placeholder
+        if (!pw_okay) {
+            $(".errormsg").show(); // placeholder
             $(".errormsg").html("Please select a valid username and password.");
-        }
-        else
-        {
-            $(".errormsg").show();// placeholder
+        } else {
+            $(".errormsg").show(); // placeholder
             $(".errormsg").html("Please select a valid username.");
         }
-    } else if (!pw_okay)
-    {
-        $(".errormsg").show();// placeholder
+    } else if (!pw_okay) {
+        $(".errormsg").show(); // placeholder
         $(".errormsg").html("Please select a valid password.");
     }
 

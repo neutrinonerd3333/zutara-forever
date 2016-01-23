@@ -9,19 +9,19 @@ login
 <section id="wrapper">
 <article>
 {% if not (current_user.is_authenticated) %}
-    <div class="errormsg-show">{{ success }}</div>
-        <div class="user-form-container">
-            <form action="/signin" method="POST" onsubmit="return signin(this)">
-                <div class="register">
-                    <input type="text" class="inputField" name="uid" placeholder="Username" required>
-                    <div class="inputLabel">Please enter your username</div>
-                    <input type="password" class="inputField" name="password" placeholder="Password" required>
-                    <div class="inputLabel">Please enter your password</div>
-                    <br>
-                    <input type="submit" value="Login">
-                </div>
-            </form>
+<div class="errormsg-show">{{ success }}</div>
+<div class="user-form-container">
+    <form action="/signin" method="POST" onsubmit="return signin(this)">
+        <div class="register">
+            <input type="text" class="inputField" name="uid" placeholder="Username" required>
+            <div class="inputLabel">Please enter your username</div>
+            <input type="password" class="inputField" name="password" placeholder="Password" required>
+            <div class="inputLabel">Please enter your password</div>
+            <br>
+            <input type="submit" value="Login">
         </div>
+    </form>
+</div>
 {% endif %}
     
 {% if (current_user.is_authenticated) %}
