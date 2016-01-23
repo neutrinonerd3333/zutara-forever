@@ -84,9 +84,11 @@ $(document).ready(function() {
         // to up arrow
         if (isArrowUp($(this))) {
             var attrs = $(this).next(".attributes");
-            $(attrs).slideUp(500);
+            var that = $(this)
+            $(attrs).slideUp(500, function(){
+                that.prev(".itemTitle").find("input").css("border-radius", "20px");
+            });
             $(this).css("background-position", "0 0");
-            $(this).prev(".itemTitle").find("input").css("border-radius", "20px");
 
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
