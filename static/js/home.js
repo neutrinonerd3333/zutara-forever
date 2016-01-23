@@ -326,7 +326,7 @@ function addVote(that) {
         },
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-10.5em 0");
-            console.log("Current score is " + data.score);
+            // console.log("Current score is " + data.score);
             loadVotes($(item));
             return true;
         },
@@ -364,7 +364,7 @@ function deleteVote(that) {
         },
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-6em 0");
-            console.log("Current score is " + data.score);
+            // console.log("Current score is " + data.score);
             loadVotes($(item));
             return true;
         },
@@ -395,7 +395,7 @@ function getPermissions(listid) {
                 method: 'POST',
                 success: function(data, status, jqxhr) {
                     // logged in if true, guest if false
-                    console.log(data.permission);
+                    // console.log(data.permission);
                 }
             });
 }
@@ -430,7 +430,7 @@ function loadVotes(that) {
             if(parseInt(data.current_vote)===1)
             {
                 $(voteBox).next().css("background-position","-10.5em 0");
-                console.log("okay");
+                // console.log("okay");
             }
             return data.cur_score;
         }

@@ -38,7 +38,7 @@ function showToolbox(perm) {
     // cut out "/list/"
     listid = url.slice(n + 6);
     if($(permInput).val()===''){
-        console.log(listid);
+        // console.log(listid);
         $.ajax({
             data: {
                 listid: listid,
@@ -114,10 +114,10 @@ function saveSettings() {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
-        console.log(listid);
+        // console.log(listid);
          
         for(var i = 0; i < n; i++) {
-            console.log(all[i]);
+            // console.log(all[i]);
             setPermissions(listid, all[i], "edit");
         }
     }
