@@ -490,6 +490,7 @@ class InvalidAPIUsage(Exception):
 
 @app.errorhandler(InvalidAPIUsage)
 def handle_invalid_usage(error):
+    print("{} -- {}".format(error.status_code, error.message))
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response

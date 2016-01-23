@@ -11,13 +11,12 @@ Launch your lists to the clouds and beyond.
 
 <section id="wrapper">
     <form id="catalist" enctype='jsonForm' action="/ajax/savelist" method="POST">
-    <div class="list">
-        <div class="listTitle">
-            <input type="text" name="title" placeholder="Title" value="{{ listtitle|e }}">
+        <div class="list">
+            <div class="listTitle">
+                <input type="text" name="title" placeholder="Title" value="{{ listtitle|e }}">
+            </div>
+            {% block listcontent %} {% endblock %}
         </div>
-        {% block listcontent %}
-        {% endblock %}
-    </div>
     </form>
 </section>
 {% endblock %}
