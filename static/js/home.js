@@ -16,24 +16,24 @@ $(document).ready(function() {
         document.execCommand("copy");
         // alert("Link copied to clipboard!");
     });
-    
+
     var loggedIn = false;
     $.ajax({
-            url: "/api/loggedin",
-            method: 'POST',
-            success: function(data, status, jqxhr) {
-                // logged in if true, guest if false
-                if (data.loggedin) {
-                    authenticated();
-                } else {
-                    guest();
-                }
+        url: "/api/loggedin",
+        method: 'POST',
+        success: function(data, status, jqxhr) {
+            // logged in if true, guest if false
+            if (data.loggedin) {
+                authenticated();
+            } else {
+                guest();
             }
-        });
-    
+        }
+    });
+
     $(".list").on('mouseenter', ".listItem", buttonsVisible);
     $(".list").on('mouseleave', ".listItem", buttonsHidden);
-    
+
     // save
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
@@ -76,6 +76,12 @@ $(document).ready(function() {
             $(attrs).slideUp(500);
             $(this).css("background-position", "0 0");
             $(this).prev(".itemTitle").find("input").css("border-radius", "20px");
+            $(this).mouseenter(function() {
+                $(this).css("background-position-y", "-3em");
+            });
+            $(this).mouseleave(function() {
+                $(this).css("background-position-y", "0");
+            });
 
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
@@ -112,7 +118,7 @@ $(document).ready(function() {
     });
     // clicking heart will add a vote to the item (or remove it if existing)
     $(".list").on("click", ".icon-heart", vote);
-    
+
     // clicking a specific item's trash will delete that item
     $(".list").on("click", ".icon-trash-2", deleteEntry);
 
@@ -141,9 +147,9 @@ $(document).ready(function() {
             });
 
             $(this).closest(".attribute").remove();
-            
+
             // if we have a new last, we want new rounded corners
-            
+
         } else {
             $("#link").html("Oops! you can't delete the last entry!");
         }
@@ -152,7 +158,7 @@ $(document).ready(function() {
 
 function deleteEntry() {
     var entry = $(this).parent();
-    
+
     var totalItems = $(this).closest(".list").find(".listItem").length;
     if (totalItems > 1) {
         var eind = $(".list .listItem").index(entry);
@@ -169,9 +175,8 @@ function deleteEntry() {
                 console.log("deleted entry");
             }
         });
-            $(entry).remove();
-        }
-    else {
+        $(entry).remove();
+    } else {
         $("#link").html("Oops! you can't delete the last item!");
         $("#link").show();
     }
@@ -184,13 +189,19 @@ function votesVisible() {
 
 function buttonsVisible() {
     $(this).find(".icon-heart").show();
-    $(this).find(".itemTitle input").css({"padding": "0 6em 0 1em", "width": "calc(100% - 7em)"});
+    $(this).find(".itemTitle input").css({
+        "padding": "0 6em 0 1em",
+        "width": "calc(100% - 7em)"
+    });
     $(this).find(".icon-trash-2").show();
 }
 
 function buttonsHidden() {
     $(this).find(".icon-heart").hide();
-    $(this).find(".itemTitle input").css({"padding": "0 2.5em 0 1em", "width": "calc(100% - 3.5em)"});
+    $(this).find(".itemTitle input").css({
+        "padding": "0 2.5em 0 1em",
+        "width": "calc(100% - 3.5em)"
+    });
     $(this).find(".icon-trash-2").hide();
 }
 
@@ -211,8 +222,7 @@ function guest() {
     loggedIn = false;
     if (listid === null) {
         $(".list").one("mouseenter", askForTutorial);
-    }
-    else {
+    } else {
         enableLiveSave();
         $("#link input").show();
     }
@@ -318,7 +328,9 @@ function isLastItem() {
 
 function addItem(curListItem) {
     $(curListItem).after("<div class='listItem'><div class='icon-trash-2'></div> <div class='votes'><div><b>0</b>&#9829;</div></div> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
-    if(loggedIn) {votesVisible();}
+    if (loggedIn) {
+        votesVisible();
+    }
     resize();
 }
 
@@ -386,6 +398,13 @@ function addVote(that) {
         },
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-10.5em 0");
+            $(that).mouseenter(function() {
+                $(that).css("background-position-y", "-3em");
+            });
+            $(that).mouseleave(function() {
+                $(that).css("background-position-y", "0");
+            });
+
             console.log("Current score is " + data.score);
             loadVotes($(item));
             return true;
@@ -500,6 +519,7 @@ function isArrowUp(icon) {
     if (css.charAt(0) === "0") {
         return false;
     } else {
+        // bind hover color if arrow up (css doesn't work)
         return true;
     }
 }

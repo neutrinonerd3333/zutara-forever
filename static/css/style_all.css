@@ -1,6 +1,6 @@
 /* SASS VARIABLES */
 /* SASS EXTENSIONS AND MIXINS */
-.absolute-center, .relative-center, #link input, #welcome, .errormsg, .errormsg-show, .register input, .list, .error-container, .bubble-2, .bubble, .bubble-4, .bubble-3, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+.absolute-center, .relative-center, #link input, #welcome, .errormsg, .errormsg-show, .register input, .list, .error-container, .bubble-2, .bubble, .bubble-4, .bubble-3, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer, #popup, #popup div { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
 
 .relative-center, #link input, #welcome, .errormsg, .errormsg-show, .register input, .list { position: relative; }
 
@@ -138,6 +138,7 @@ input { outline: none; }
 
 /* DEFAULT SPRITE IS DOWN ARROW */
 .icon, .icon-down, .icon-minus, .icon-heart, .icon-trash-2, .mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2 { background-image: url("/static/img/icons.svg"); background-size: 18em 4.5em; background-clip: border-box; background-repeat: no-repeat; background-position: 0 0; display: block; width: 1.5em; height: 1.5em; position: absolute; padding: 0; margin: 0; z-index: 100; }
+.icon:hover, .icon-down:hover, .icon-minus:hover, .icon-heart:hover, .icon-trash-2:hover, .mylists .icon2:hover, .mylists .icon-share:hover, .mylists .icon-edit:hover, .mylists .icon-view:hover, .mylists .icon-trash:hover, .mylists .icon-link:hover, .mylists .icon-link-2:hover { background-position-y: -3em; }
 
 .icon-down { right: 0.3em; top: 0.3em; }
 
@@ -168,6 +169,7 @@ input { outline: none; }
 .mylists iframe { display: block; border: none; height: 100%; }
 .mylists .icon-container { display: inline-block; width: 1.5em; padding-left: 0.5em; height: 100%; position: relative; left: -0.5em; overflow: hidden; }
 .mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2 { background-position: -12em 0; position: relative; }
+.mylists .icon2:hover, .mylists .icon-share:hover, .mylists .icon-edit:hover, .mylists .icon-view:hover, .mylists .icon-trash:hover, .mylists .icon-link:hover, .mylists .icon-link-2:hover { background-position-y: -3em; }
 .mylists .icon-share { top: 0.5em; }
 .mylists .icon-edit { background-position: -13.5em 0; top: 1em; }
 .mylists .icon-view { background-position: -16.5em 0; top: 1.5em; }
@@ -180,6 +182,9 @@ input { outline: none; }
 .mylists .toolbox .permissions { width: calc(100% - 4em); height: calc(100% - .5em); position: relative; left: -0.5em; top: -1.6em; display: inline-block; outline: none; padding: 0em 0.2em 0; }
 .mylists .toolbox .permissions .editors { height: 2em; width: calc(100% - 2em); margin-bottom: 0.5em; display: block; position: relative; top: 0.5em; left: 0; color: #666; font-size: 16px; text-align: left; }
 .mylists .toolbox * .line { height: 1em; width: calc(100% - 2em); padding-left: 0.5em; padding-top: 1em; margin-bottom: 0; margin-top: 0; display: block; color: #666; font-size: 16px; text-align: left; overflow-x: scroll; }
+
+#popup { top: 30%; width: 50%; height: 30%; min-width: 200px; min-height: 200px; background-color: rgba(170, 240, 255, 0.8); border: 1em solid #5CE; border-left: none; border-right: none; z-index: 200; }
+#popup div { font-weight: normal; color: #666; text-align: center; letter-spacing: 3px; margin-top: 0.5em; }
 
 /* CLOUDS!! */
 #clouds { padding: 100px 0; background: transparent; position: absolute; top: 0em; z-index: 0; height: 5em; }

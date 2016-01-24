@@ -15,6 +15,8 @@ $color-bright-light: #AEF
 $color-bright-medium: #5CE
 $color-bright-dark: #4BF
 
+$color-bright-transparent-matte: rgba(170, 240, 255, 0.8)
+
 $color-gray-light: #CCC
 $color-gray-medium: #999
 $color-gray-dark: #666
@@ -584,6 +586,8 @@ input
     padding: 0
     margin: 0
     z-index: 100
+    &:hover
+        background-position-y: -3em
     
 .icon-down
     @extend .icon
@@ -733,6 +737,8 @@ input
         @extend .icon
         background-position: -12em 0
         position: relative
+        &:hover
+            background-position-y: -3em
 
     .icon-share
         @extend .icon2
@@ -818,6 +824,27 @@ input
             font-size: 16px
             text-align: left
             overflow-x: scroll
+            
+#popup
+    @extend .absolute-center
+    top: 30%
+    width: 50%
+    height: 30%
+    min-width: 200px
+    min-height: 200px
+    
+    background-color: $color-bright-transparent-matte
+    border: 1em solid $color-bright-medium
+    border-left: none
+    border-right: none
+    z-index: 200
+    div
+        @extend .absolute-center
+        font-weight: normal
+        color: $color-gray-dark
+        text-align: center
+        letter-spacing: 3px
+        margin-top: 0.5em
             
 /* CLOUDS!! */
 #clouds
