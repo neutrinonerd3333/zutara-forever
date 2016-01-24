@@ -33,9 +33,6 @@ $(document).ready(function() {
         }
     });
 
-    $(".list").on('mouseenter', ".listItem", buttonsVisible);
-    $(".list").on('mouseleave', ".listItem", buttonsHidden);
-
     // save
     $(".list").on('focusin', ".itemTitle input", function() {
         var icon = $(this).parent().next();
@@ -178,7 +175,7 @@ function deleteEntry() {
                 entryind: eind,
             },
             success: function(data, status, jqxhr) {
-                console.log("deleted entry");
+                // console.log("deleted entry");
             }
         });
         $(entry).remove();
@@ -191,6 +188,9 @@ function deleteEntry() {
 function votesVisible() {
     $(".votes").show();
     $(".listItem").css("width", "90%");
+    
+    $(".list").on('mouseenter', ".listItem", buttonsVisible);
+    $(".list").on('mouseleave', ".listItem", buttonsHidden);
 }
 
 function buttonsVisible() {
@@ -425,8 +425,6 @@ function addVote(that) {
             });
 
             // console.log("Current score is " + data.score);
-
-            // loadVotes($(item));
             return true;
         },
         error: function(jqxhr, error, exception) {
@@ -472,7 +470,6 @@ function deleteVote(that) {
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-6em 0");
             // console.log("Current score is " + data.score);
-            // loadVotes($(item));
             return true;
         },
         error: function(jqxhr, error, exception) {
@@ -522,7 +519,6 @@ function loadVotes(that) {
 
     var item = $(voteBox).closest(".listItem");
     var eind = $(".list .listItem").index(item);
-    console.log(eind);
     $.ajax({
         url: "/api/vote",
         method: 'POST',
@@ -610,6 +606,6 @@ function tutorial_4() {
 
 function tutorial_5() {
     $(".bubble-4").fadeOut();
-    $("#welcome").html("And that's it! Remember to register to manage your lists, and click hearts to vote!");
+    $("#welcome").html("And that's it! Remember to register to manage your lists and vote on items!");
     $("#welcome").fadeIn();
 }
