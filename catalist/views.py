@@ -1,5 +1,4 @@
-from flask import Flask, render_template, jsonify, \
-    request, redirect, url_for, make_response
+from flask import render_template, request
 import flask.ext.security as flask_security
 from datetime import datetime, date, timedelta
 

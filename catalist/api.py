@@ -15,40 +15,37 @@
 #         | |  |  ``/  /`  /
 #        /,_|  |   /,_/   /
 #           /,_/      '`-'
-# 
+#
 #           http://www.asciiworld.com/-Mangas,48-.html
 #                   and T O T O R O <3
 #                           ~ t o t o r o ~
 #
 #                              !         !
-#                             ! !       ! !          
-#                            ! . !     ! . !          
-#                               ^^^^^^^^^ ^            
-#                             ^             ^          
-#                           ^  (0)       (0)  ^       
-#                          ^        ""         ^       
-#                         ^   ***************    ^     
-#                       ^   *                 *   ^    
-#                      ^   *   /\   /\   /\    *    ^   
+#                             ! !       ! !
+#                            ! . !     ! . !
+#                               ^^^^^^^^^ ^
+#                             ^             ^
+#                           ^  (0)       (0)  ^
+#                          ^        ""         ^
+#                         ^   ***************    ^
+#                       ^   *                 *   ^
+#                      ^   *   /\   /\   /\    *    ^
 #                     ^   *                     *    ^
 #                    ^   *   /\   /\   /\   /\   *    ^
 #                   ^   *                         *    ^
 #                   ^  *                           *   ^
 #                   ^  *                           *   ^
-#                    ^ *                           *  ^  
-#                     ^*                           * ^ 
+#                    ^ *                           *  ^
+#                     ^*                           * ^
 #                      ^ *                        * ^
 #                      ^  *                      *  ^
 #                        ^  *       ) (         * ^
 #                            ^^^^^^^^ ^^^^^^^^^
 
-from catalist import app, db, HOSTNAME
-
-from flask import Blueprint
-from flask.ext.security import Security, MongoEngineUserDatastore, \
-    UserMixin, RoleMixin, login_required
+from flask import Flask, render_template, jsonify, \
+    request, redirect, url_for, make_response, Blueprint
+from flask.ext.security import Security, login_required
 import flask.ext.security as flask_security
-from flask.ext.mongoengine import MongoEngine
 from flask.ext.mongoengine import *
 
 from datetime import datetime, date, timedelta
@@ -67,6 +64,7 @@ api_blueprint = Blueprint('api', __name__)
 # # # # # # # # # # # # # #
 # EXCEPTION HANDLING
 # # # # # # # # # # # # # #
+
 
 class InvalidAPIUsage(Exception):
     """
@@ -615,6 +613,8 @@ def remove_from_my_lists():
 # PERMISSION EDITING
 # # # # # # # # # # # # # #
 
+
+@api_blueprint.route("/permissions/set", methods=['POST'])
 @api_blueprint.route("/setpermissions", methods=['POST'])
 def permissions_set():
     """
@@ -694,6 +694,7 @@ def permissions_set():
     return "OK"  # 200 OK
 
 
+@api_blueprint.route("/permissions/get", methods=['POST'])
 @api_blueprint.route("/getpermissions", methods=['POST'])
 def permissions_get():
     """
@@ -716,6 +717,7 @@ def permissions_get():
     return jsonify(permission=query_cur_perm(catalist))
 
 
+@api_blueprint.route("/permissions/public-set", methods=['POST'])
 @api_blueprint.route("/setpubliclevel", methods=['POST'])
 def public_level_set():
     """
@@ -744,29 +746,6 @@ def public_level_set():
     the_list.save()
     return "set"
 
-# # # # # # # # # # # # # #
-# CUSTOMIZATION
-# # # # # # # # # # # # # #
-
-
-@flask_security.login_required
-@api_blueprint.route("/customize", methods=['POST'])
-def get_pref():
-    """
-    Get the preferred theme for the user
-    POST: {
-        uid: <uid>,
-    }
-    returns:
-    {
-        theme: <preferred theme [0, 1, ..]>
-    }
-    """
-    # login required, so user must exist
-    uid = flask_security.core.current_user.uid
-    user = User.objects.get(uid=uid)
-    return jsonify(theme=user.preferred_theme)
-
 
 @api_blueprint.route("/permissions/forfeit", methods=['POST'])
 def permissions_forfeit():
@@ -793,6 +772,30 @@ def permissions_forfeit():
             pass
 
     return "OK"  # 200
+
+
+# # # # # # # # # # # # # #
+# CUSTOMIZATION
+# # # # # # # # # # # # # #
+
+
+@flask_security.login_required
+@api_blueprint.route("/customize", methods=['POST'])
+def get_pref():
+    """
+    Get the preferred theme for the user
+    POST: {
+        uid: <uid>,
+    }
+    returns:
+    {
+        theme: <preferred theme [0, 1, ..]>
+    }
+    """
+    # login required, so user must exist
+    uid = flask_security.core.current_user.uid
+    user = User.objects.get(uid=uid)
+    return jsonify(theme=user.preferred_theme)
 
 # # # # # # # # # # # # # #
 # WHY IS THIS STILL HERE?
@@ -824,4 +827,3 @@ def autocomplete():
 def autocomplete_user():
     cur_user = flask_security.core.current_user
     return jsonify(acquaintances=cur_user.acquaintances)  # 200 OK ^_^
-

@@ -1,4 +1,4 @@
-from catalist import app, db, HOSTNAME
+from catalist import app, db
 from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required
 import flask.ext.security as flask_security

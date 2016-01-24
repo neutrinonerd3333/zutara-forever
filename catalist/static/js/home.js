@@ -9,7 +9,9 @@ if (n === 0) {
 }
 
 $(document).ready(function() {
-    $(".list").one("input", makeList)
+    if (listid === null){
+        $(".list").one("input", makeList);
+    }
 
     $("body").on('click', "input[type='url']", function() {
         $(this).select();

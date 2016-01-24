@@ -1,5 +1,4 @@
-from flask import Flask, render_template, jsonify, \
-    request, redirect, url_for, make_response
+from flask import Flask
 import flask.ext.security as flask_security
 
 # **********************************************************
@@ -22,7 +21,7 @@ admin_unames = ['rmwu', 'txz']
 
 
 def cmp_permission(perm1, perm2):
-    """ Return a positive/0/negative integer when perm1 >/=/< perm2 """
+    """ Return a positive/0/negative integer when perm1 >/=/< perm2. """
     return perm_list.index(perm1) - perm_list.index(perm2)
 
 
