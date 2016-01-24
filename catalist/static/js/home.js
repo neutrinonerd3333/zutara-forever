@@ -14,34 +14,25 @@ $(document).ready(function() {
     $("body").on('click', "input[type='url']", function() {
         $(this).select();
         document.execCommand("copy");
-        alert("Link copied to clipboard!");
+        // alert("Link copied to clipboard!");
     });
 
-    if (listid === null) {
-        $.ajax({
-            url: "/api/loggedin",
-            method: 'POST',
-            success: function(data, status, jqxhr) {
-                // logged in if true, guest if false
-                if (data.loggedin) {
-
-                } else {
-                    $(".list").one("mouseenter", askForTutorial);
-                }
+    var loggedIn = false;
+    $.ajax({
+        url: "/api/loggedin",
+        method: 'POST',
+        success: function(data, status, jqxhr) {
+            // logged in if true, guest if false
+            if (data.loggedin) {
+                authenticated();
+            } else {
+                guest();
             }
-        });
-    } else {
-        // if this is route /list/<listid>,
-        // bind all the ajax save listeners now
-        enableLiveSave();
-        $(".listItem").each(function(index) {
-            loadVotes($(this));
-        });
-        $("#link input").show();
-        // console.log(getPermissions(listid));
-    }
-    // load current votes
+        }
+    });
 
+    $(".list").on('mouseenter', ".listItem", buttonsVisible);
+    $(".list").on('mouseleave', ".listItem", buttonsHidden);
 
     // save
     $(".list").on('focusin', ".itemTitle input", function() {
@@ -55,7 +46,6 @@ $(document).ready(function() {
 
         if (totalItems === itemInd) {
             addItem(curListItem);
-            loadVotes($(this));
         }
     });
 
@@ -88,6 +78,15 @@ $(document).ready(function() {
                 that.prev(".itemTitle").find("input").css("border-radius", "20px");
             });
             $(this).css("background-position", "0 0");
+
+            $(this).prev(".itemTitle").find("input").css("border-radius", "20px");
+            $(this).mouseenter(function() {
+                $(this).css("background-position-y", "-3em");
+            });
+            $(this).mouseleave(function() {
+                $(this).css("background-position-y", "0");
+            });
+
 
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
@@ -125,6 +124,9 @@ $(document).ready(function() {
     // clicking heart will add a vote to the item (or remove it if existing)
     $(".list").on("click", ".icon-heart", vote);
 
+    // clicking a specific item's trash will delete that item
+    $(".list").on("click", ".icon-trash-2", deleteEntry);
+
     // clicking minus will delete the current key-value pair
     $(".list").on("click", ".icon-minus", function() {
         var item = $(this).closest(".listItem");
@@ -150,11 +152,86 @@ $(document).ready(function() {
             });
 
             $(this).closest(".attribute").remove();
+
+            // if we have a new last, we want new rounded corners
+
         } else {
             $("#link").html("Oops! you can't delete the last entry!");
         }
     });
 });
+
+function deleteEntry() {
+    var entry = $(this).parent();
+
+    var totalItems = $(this).closest(".list").find(".listItem").length;
+    if (totalItems > 1) {
+        var eind = $(".list .listItem").index(entry);
+
+        // delete from database
+        $.ajax({
+            url: "/api/deleteentry",
+            method: 'POST',
+            data: {
+                listid: listid,
+                entryind: eind,
+            },
+            success: function(data, status, jqxhr) {
+                console.log("deleted entry");
+            }
+        });
+        $(entry).remove();
+    } else {
+        $("#link").html("Oops! you can't delete the last item!");
+        $("#link").show();
+    }
+}
+
+function votesVisible() {
+    $(".votes").show();
+    $(".listItem").css("width", "90%");
+}
+
+function buttonsVisible() {
+    $(this).find(".icon-heart").show();
+    $(this).find(".itemTitle input").css({
+        "padding": "0 6em 0 1em",
+        "width": "calc(100% - 7em)"
+    });
+    $(this).find(".icon-trash-2").show();
+}
+
+function buttonsHidden() {
+    $(this).find(".icon-heart").hide();
+    $(this).find(".itemTitle input").css({
+        "padding": "0 2.5em 0 1em",
+        "width": "calc(100% - 3.5em)"
+    });
+    $(this).find(".icon-trash-2").hide();
+}
+
+function authenticated() {
+    loggedIn = true;
+    if (listid !== null) {
+        // if this is route /list/<listid>, bind listeners
+        enableLiveSave();
+        $(".listItem").each(function(index) {
+            loadVotes($(this));
+        });
+        $("#link input").show();
+    }
+    votesVisible();
+}
+
+function guest() {
+    loggedIn = false;
+    if (listid === null) {
+        $(".list").one("mouseenter", askForTutorial);
+    } else {
+        enableLiveSave();
+        $("#link input").show();
+    }
+}
 
 function askToMakeList() {
     $("#link").html("<div class='yes'>Click to Save</div> or <div class='no'>Nah</div>");
@@ -255,14 +332,17 @@ function isLastItem() {
 }
 
 function addItem(curListItem) {
-    $(curListItem).after("<div class='listItem'><div class='votes'><div><b>0</b>&#9829;</div></div> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
+    $(curListItem).after("<div class='listItem'><div class='icon-trash-2'></div> <div class='votes'><div><b>0</b>&#9829;</div></div> <!--list item--> <div class='icon-heart icon'></div>  <div class='itemTitle'> <input type='text' placeholder='Item'> </div> <div class='icon-down icon'></div> <div class='attributes'> <!--all item attributes--> <div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div> </div></div> </div>");
+    if (loggedIn) {
+        votesVisible();
+    }
     resize();
 }
 
 function addAttribute(curAttribute) {
     $(curAttribute).css("border-radius", "0");
     $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
-    $(curAttribute).next().css("border-radius", "0 0 20px 20px");
+    // $(curAttribute).next().css("border-radius", "0 0 20px 20px");
     resize();
 }
 
@@ -301,7 +381,6 @@ function saveKeyOrValue(that, toSave) {
     })
 }
 
-
 function vote() {
     var that = $(this);
     if (isHeartFilled(that)) {
@@ -324,7 +403,16 @@ function addVote(that) {
         },
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-10.5em 0");
-            // console.log("Current score is " + data.score);
+
+            $(that).mouseenter(function() {
+                $(that).css("background-position-y", "-3em");
+            });
+            $(that).mouseleave(function() {
+                $(that).css("background-position-y", "0");
+            });
+
+            console.log("Current score is " + data.score);
+
             loadVotes($(item));
             return true;
         },
@@ -412,6 +500,7 @@ function loadVotes(that) {
 
     var item = $(voteBox).closest(".listItem");
     var eind = $(".list .listItem").index(item);
+    console.log(eind);
     $.ajax({
         url: "/api/vote",
         method: 'POST',
@@ -425,7 +514,6 @@ function loadVotes(that) {
             // default is 0, so only change if 1
             if (parseInt(data.current_vote) === 1) {
                 $(voteBox).next().css("background-position", "-10.5em 0");
-                // console.log("okay");
             }
             return data.cur_score;
         }
@@ -438,6 +526,7 @@ function isArrowUp(icon) {
     if (css.charAt(0) === "0") {
         return false;
     } else {
+        // bind hover color if arrow up (css doesn't work)
         return true;
     }
 }

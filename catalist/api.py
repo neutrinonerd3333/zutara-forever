@@ -1,3 +1,47 @@
+# Good luck brought to you by Safety Pig
+# http://qr.ae/RgLMU8
+#
+#                          _
+#  _._ _..._ .-',     _.._(`))
+# '-. `     '  /-._.-'    ',/
+#    )         \            '.
+#   / _    _    |             \
+#  |  a    a    /              |
+#  \   .-.                     ;
+#   '-('' ).-'       ,'       ;
+#      '-;           |      .'
+#         \           \    /
+#         | 7  .__  _.-\   \
+#         | |  |  ``/  /`  /
+#        /,_|  |   /,_/   /
+#           /,_/      '`-'
+# 
+#           http://www.asciiworld.com/-Mangas,48-.html
+#                   and T O T O R O <3
+#                           ~ t o t o r o ~
+#
+#                              !         !
+#                             ! !       ! !          
+#                            ! . !     ! . !          
+#                               ^^^^^^^^^ ^            
+#                             ^             ^          
+#                           ^  (0)       (0)  ^       
+#                          ^        ""         ^       
+#                         ^   ***************    ^     
+#                       ^   *                 *   ^    
+#                      ^   *   /\   /\   /\    *    ^   
+#                     ^   *                     *    ^
+#                    ^   *   /\   /\   /\   /\   *    ^
+#                   ^   *                         *    ^
+#                   ^  *                           *   ^
+#                   ^  *                           *   ^
+#                    ^ *                           *  ^  
+#                     ^*                           * ^ 
+#                      ^ *                        * ^
+#                      ^  *                      *  ^
+#                        ^  *       ) (         * ^
+#                            ^^^^^^^^ ^^^^^^^^^
+
 from catalist import app, db, HOSTNAME
 
 from flask import Blueprint
@@ -361,7 +405,7 @@ def kvp_delete():
     try:
         entryind = int(request.form["entryind"])
         ind = int(request.form["index"])
-        listid = req_json["listid"]
+        listid = request.form["listid"]
         the_list = Catalist.objects.get(listid=listid)
     except KeyError, ValueError:
         raise InvalidAPIUsage("Invalid arguments")
@@ -780,3 +824,4 @@ def autocomplete():
 def autocomplete_user():
     cur_user = flask_security.core.current_user
     return jsonify(acquaintances=cur_user.acquaintances)  # 200 OK ^_^
+

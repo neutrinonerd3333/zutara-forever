@@ -15,6 +15,8 @@ $color-bright-light: #AEF
 $color-bright-medium: #5CE
 $color-bright-dark: #4BF
 
+$color-bright-transparent-matte: rgba(170, 240, 255, 0.8)
+
 $color-gray-light: #CCC
 $color-gray-medium: #999
 $color-gray-dark: #666
@@ -97,6 +99,7 @@ body
     background-attachment: fixed
     background-size: 100% 100%
     background-repeat: no-repeat
+    background-position: left top
 
 h1
     font-size: 1.2em
@@ -242,9 +245,9 @@ a
 .bubble-3
     @extend .absolute-center
     top: 53%
-    width: 40%
+    width: 50%
     min-width: 300px
-    height: 2em
+    height: 1em
     display: none
     z-index: 200
     
@@ -267,6 +270,11 @@ a
     top: 60%
     height: 3em
 
+@media (min-width: 900px)
+    .bubble-2,
+    .bubble-4
+        height: 2em
+
 .bubble:after,
 .bubble-2:after
     content: ''
@@ -283,11 +291,11 @@ a
     
 .bubble-3:after
     @extend .bubble:after
-    left: 85%
+    left: 90%
 
 .bubble-4:after
     @extend .bubble:after
-    left: 10%
+    left: 20%
 
 /* REGISTRATION */    
 .user-form-container
@@ -465,7 +473,7 @@ input
         &:focus
             background-color: $color-transparent-medium
     .listTitle
-        width: 100
+        width: 100%
         height: 3em
         background-color: transparent
         margin: 0 0 .5em 0
@@ -482,7 +490,7 @@ input
             &:focus
                 background-color: $color-transparent-medium
     .listItem
-        width: 90%
+        width: 100%
         min-height: 2em
         background-color: transparent
         border-radius: 20px
@@ -492,6 +500,7 @@ input
         position: relative
         display: inline-block
     .votes
+        display: none
         width: 10%
         min-height: 2em
         background-color: $color-bright-light
@@ -525,14 +534,17 @@ input
         margin: 0
         input
             background-color: $color-bright-light
-            padding: 0 5em 0 1em
+            padding: 0 2.5em 0 1em
+            //padding: 0 3em 0 3em
             margin: 0
             border-radius: 20px
             height: 100%
-            width: calc(100% - 6em)
+            width: calc(100% - 3.5em)
+            //width: calc(100% - 6em)
     .attributes
         border-radius: 0 0 20px 20px
         display: none
+        overflow: hidden
         .attribute
             overflow: hidden
             width: 100%
@@ -540,6 +552,7 @@ input
             display: block
             padding: 0
             margin: 0
+            border-radius: 0
             .key,
             .value
                 display: inline-block
@@ -575,6 +588,8 @@ input
     padding: 0
     margin: 0
     z-index: 100
+    &:hover
+        background-position-y: -3em
     
 .icon-down
     @extend .icon
@@ -586,21 +601,29 @@ input
     position: relative
     right: calc(-100% + 26px + .3em)
     top: -2em
-    background-position: -4.5em -1.5em
+    background-position: -4.5em 0
     
 .icon-heart
     @extend .icon
-    right: 2.1em
+    right: 1.9em
     top: .3em
     background-position: -6em 0
+    display: none
+    
+.icon-trash-2
+    @extend .icon
+    background-position: -15em 0
+    top: .3em
+    right: 3.5em
+    display: none
 
 /* MY LISTS INTERFACE */
 .mylists
+    height: calc(100% - 8em)
     #wrapper
-        height: 80%
-    body
-        height: calc(100% - 2em)
-        max-height: 100%
+        height: 100%
+        overflow: hidden
+        position: relative
     .listBlock
         left: 10%
         border-radius: 20px 0 0 0
@@ -626,11 +649,90 @@ input
         color: $color-gray-darkest
         text-align: center
         overflow: hidden
+    .listBlock3
+        @extend .listBlock2
+        background-color: #fff
+        .listPerms
+            height: 100%
+            width: 100%
+            
+            position: relative
+            overflow: hidden
+            background-color: $color-bright-light
+        .back
+            text-align: left
+            position: relative
+            width: 50%
+            height: .8em
+            padding: .5em 1em .7em 2em
+            
+            border-radius: 20px
+            background-color: $color-transparent-light
+        .icon-container
+            width: 2em
+            height: 100%
+            position: absolute
+            left: 0
+            .icon-back
+                @extend .icon
+                display: block
+                position: relative
+                background-position: -3em 0
+                top: 3em
+            .icon-share
+                @extend .icon-back
+                background-position: -12em 0
+                top: .5em
+            .icon-edit
+                @extend .icon-back
+                background-position: -13.5em 0
+                top: 1em
+            .icon-view
+                @extend .icon-back
+                background-position: -16.5em 0
+                top: 1.5em
+            .icon-trash
+                @extend .icon-back
+                background-position: -15em 0
+                top: 2.5em
+            .icon-link
+                @extend .icon-back
+                background-position: -9em 0
+                top: 2em
+            .icon-link-2
+                @extend .icon-back
+                background-position: -9em 0
+                top: 1em
+        .options
+            width: calc(100% - 2em)
+            height: calc(100% - .2em)
+            padding-top: .2em
+            
+            display: inline-block
+            position: absolute
+            left: 2em
+            tr
+                height: 1.9em
+                text-align: left
+            input
+                width: calc(100% - 2em)
+                height: 2em
+                display: inline-block
+                position: relative
+                top: -2.5em
+                right: -1em
+                color: $color-gray-dark
+                font-size: 16px
+                border: 0
+                outline: none
+                padding: 0 .5em
+                background-color: $color-bright-light
+                +transition(background, .25s, ease-in-out)
     .hideOverflow
-        overflow: hidden
+        overflow: scroll
         height: 100%
     .scrollWrapper
-        overflow: scroll
+        overflow: auto
         height: 100%
     .blockTitle
         position: absolute
@@ -691,14 +793,13 @@ input
             left: 10%
             height: 30%
             width: 80%
-            background-color: $color-transparent-light
+            overflow: hidden
         .listBlock
             border-radius: 20px 20px 0 0
         .listBlock2
             border-radius: 0
             margin-top: 1.5em
             top: 0
-
     iframe
         display: block
         border: none
@@ -718,6 +819,8 @@ input
         @extend .icon
         background-position: -12em 0
         position: relative
+        &:hover
+            background-position-y: -3em
 
     .icon-share
         @extend .icon2
@@ -772,14 +875,14 @@ input
         * input:focus
             background-color: $color-white
         .permissions
-            width: calc(100% - 5em)
+            width: calc(100% - 4em)
             height: calc(100% - .5em)
             position: relative
-            left: -1em
+            left: -.5em
             top: -1.6em
             display: inline-block
             outline: none
-            padding: 0em .5em 0
+            padding: 0em .2em 0
             .editors
                 height: 2em
                 width: calc(100% - 2em)
@@ -802,6 +905,28 @@ input
             color: $color-gray-dark
             font-size: 16px
             text-align: left
+            overflow-x: scroll
+            
+#popup
+    @extend .absolute-center
+    top: 30%
+    width: 50%
+    height: 30%
+    min-width: 200px
+    min-height: 200px
+    
+    background-color: $color-bright-transparent-matte
+    border: 1em solid $color-bright-medium
+    border-left: none
+    border-right: none
+    z-index: 200
+    div
+        @extend .absolute-center
+        font-weight: normal
+        color: $color-gray-dark
+        text-align: center
+        letter-spacing: 3px
+        margin-top: 0.5em
             
 /* CLOUDS!! */
 #clouds
@@ -879,3 +1004,5 @@ input
             margin-left: 1000px
         100%
             margin-left: -1000px
+#hidden
+    display: none

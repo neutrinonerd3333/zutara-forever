@@ -5,12 +5,13 @@
 {% for entry in entries %}
 <div class="listItem">
     <!--list item-->
+    <div class="icon-trash-2"></div>
     <div class='votes'><div><b>{{ entry.votes|e }}</b>&#9829;</div></div>
-    <div class="icon-heart icon"></div> 
+    <div class="icon-heart"></div> 
     <div class="itemTitle">
         <input type="text" placeholder="Item" value="{{ entry.title|e }}">
     </div>
-    <div class="icon-down icon"></div> 
+    <div class="icon-down"></div> 
     <div class="attributes">
         <!--all item attributes-->
         {% for kvp in entry.contents %}
@@ -22,7 +23,7 @@
             ><div class="value"
                 ><input type="text" placeholder="Value" value="{{ kvp.value|e }}"
             ></div
-            ><div class="icon-minus icon"></div>
+            ><div class="icon-minus"></div>
         </div>
         {% endfor %}
         {% if entry.contents|length is equalto 0 %}
@@ -34,7 +35,7 @@
             ><div class="value"
                 ><input type="text"placeholder="Value"
             ></div
-            ><div class="icon-minus icon"></div>
+            ><div class="icon-minus"></div>
         </div>
         {% endif %}
     </div>
@@ -42,12 +43,13 @@
 {% endfor %}
 <div class="listItem">
     <!--list item-->
+    <div class="icon-trash-2"></div>
     <div class='votes'></div>
-    <div class="icon-heart icon"></div> 
+    <div class="icon-heart"></div> 
     <div class="itemTitle">
         <input type="text" placeholder="Item">
     </div>
-    <div class="icon-down icon"></div>
+    <div class="icon-down"></div>
     <div class="attributes">
         <div class="attribute">
             <!--single item attribute-->
@@ -57,7 +59,7 @@
             ><div class="value"
                 ><input type="text" placeholder="Value"
             ></div
-            ><div class="icon-minus icon"></div>
+            ><div class="icon-minus"></div>
         </div>
     </div>
 </div>
