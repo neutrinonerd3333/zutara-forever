@@ -81,7 +81,6 @@ $(document).ready(function() {
             });
             $(this).css("background-position", "0 0");
 
-            $(this).prev(".itemTitle").find("input").css("border-radius", "20px");
             $(this).mouseenter(function() {
                 $(this).css("background-position-y", "-3em");
             });
