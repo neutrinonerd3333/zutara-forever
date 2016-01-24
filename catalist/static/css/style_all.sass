@@ -1,4 +1,9 @@
 /* SASS VARIABLES */
+
+font-face
+    font-family: 'Helvetica Neue'
+    src: url('/static/font/HelveticaNeue.dfont')
+
 $font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif
 
 $color-transparent-light: rgba(255, 255, 255, 0.2)
@@ -652,13 +657,14 @@ input
     .listBlock3
         @extend .listBlock2
         color: $color-gray-dark
+        display: none
         .listPerms
             height: 100%
             width: 100%
             
             position: relative
             overflow: hidden
-            background-color: $color-bright-light
+            background-color: $color-transparent-light
         .back
             text-align: left
             position: relative
@@ -717,6 +723,7 @@ input
                 cell-spacing: 0
                 width: 100%
                 height: 100%
+                font-size: 0.8em
             tr
                 width: 100%
                 height: 2em
@@ -724,14 +731,17 @@ input
                 margin: 0
                 display: block
             td
-                width: 100%
                 height: 2em
+                width: 100%
                 text-align: left
                 display: block
             div
+                position: relative
                 padding: 0 .5em
+                display: block
             input
-                width: 100%
+                width: calc(100% - 1.2em)
+                left: .5em
                 margin-top: -.2em
                 height: 1.5em
                 display: block
@@ -740,7 +750,7 @@ input
                 font-size: inherit
                 border: 0
                 outline: none
-                padding: 0 .5em
+                padding: 0 .5em 0 .2
                 background-color: transparent
                 +transition(background, .25s, ease-in-out)
                 &:hover,

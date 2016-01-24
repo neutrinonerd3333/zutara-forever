@@ -5,19 +5,28 @@ $(document).ready(function() {
     $(".listBlock2").on("mouseenter", ".mylist", previewLink);
 
     // view toolbox on hover
-    $(".listWrapper").on("mouseenter", showToolbox);
+    // $(".listWrapper").on("mouseenter", showToolbox);
+    
+    // view toolbox on clicking settings
+    $(".listWrapper").on("click", ".icon-settings", openSettings);
+    
+    // hide toolbox on clicking back
+    $(".listBlock3").on("click", ".icon-back", hideSettings);   
 
     // hide toolbox on leave
-    $(".listWrapper").on("mouseleave", hideToolbox);
+    // $(".listWrapper").on("mouseleave", hideToolbox);
 
     // copy url to clipboard upon clicking in it
-    $(".toolbox").on("click", "input", useButtons);
+    // $(".toolbox").on("click", "input", useButtons);
+    $(".listBlock3").on("click", "input", useButtons);
     
     // on click delete, delete
-    $(".toolbox").on("click", ".icon-trash", buttonListener);
+    // $(".toolbox").on("click", ".icon-trash", buttonListener);
+    $(".listBlock3").on("click", ".icon-trash", buttonListener);
 
     // focusout saves permissions and checks for delete
-    $(".toolbox").on("focusout", "input", saveSettings);
+    // $(".toolbox").on("focusout", "input", saveSettings);
+    $(".listBlock3").on("focusout", "input", saveSettings);
 
 });
 
@@ -30,13 +39,25 @@ function previewLink() {
     }
 }
 
-function showToolbox(perm) {
-    var tools = $(this).find(".toolbox");
+function openSettings() {
+    $(".listBlock3").fadeIn(500);
+    $(".listBlock2").fadeOut(500);
+}
+
+function hideSettings() {
+    $(".listBlock2").fadeIn(500);
+    $(".listBlock3").fadeOut(500);
+}
+
+function showToolbox() {
+    console.log("hiiii");
+    var listItem = $(this).parent();
+    var tools = $(listItem).find(".toolbox");
     var permInput = $(tools).find("input");
     tools.show();
 
-    $(this).find(".mylist").css("background-color", "rgba(255, 255, 255, 0.5)");
-    var url = $(this).find(".mylist input").val();
+    $(listItem).find(".mylist").css("background-color", "rgba(255, 255, 255, 0.5)");
+    var url = $(listItem).find(".mylist input").val();
     var n = url.indexOf('/list/');
     // cut out "/list/"
     listid = url.slice(n + 6);
