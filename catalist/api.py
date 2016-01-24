@@ -115,10 +115,7 @@ def logged_in():
 
 
 def create_list():
-    """ Create a new list and return the assigned listid
-
-    Returns: the assigned listid
-    """
+    """ Create a new, empty list and return the assigned listid """
     list_id = str(uuid_module.uuid4())
     title = ""
     time = datetime.utcnow()
