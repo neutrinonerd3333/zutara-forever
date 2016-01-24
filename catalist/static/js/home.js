@@ -393,6 +393,18 @@ function vote() {
 function addVote(that) {
     var item = $(that).closest(".listItem");
     var eind = $(".list .listItem").index(item);
+    
+    if(listid !== null)
+    {
+        // change it live
+        var voteBox = $(item).find(".votes div");
+        var curVal = $(voteBox).text();
+        
+        curVal = parseInt(curVal.substring(0, curVal.length-1));
+        curVal = curVal + 1;
+        $(voteBox).html('<div><b>' + curVal + '</b>&#9829;</div>');
+    }
+    
     $.ajax({
         url: "/api/vote",
         method: 'POST',
@@ -411,9 +423,9 @@ function addVote(that) {
                 $(that).css("background-position-y", "0");
             });
 
-            console.log("Current score is " + data.score);
+            // console.log("Current score is " + data.score);
 
-            loadVotes($(item));
+            // loadVotes($(item));
             return true;
         },
         error: function(jqxhr, error, exception) {
@@ -439,6 +451,15 @@ function addVote(that) {
 function deleteVote(that) {
     var item = $(that).closest(".listItem");
     var eind = $(".list .listItem").index(item);
+    
+    var voteBox = $(item).find(".votes div");
+    var curVal = $(voteBox).text();
+
+    curVal = parseInt(curVal.substring(0, curVal.length-1));
+    curVal = curVal + -1;
+    if(curVal < 0) { curVal = 0; }
+    $(voteBox).html('<div><b>' + curVal + '</b>&#9829;</div>');
+    
     $.ajax({
         url: "/api/vote",
         method: 'POST',
@@ -450,7 +471,7 @@ function deleteVote(that) {
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-6em 0");
             // console.log("Current score is " + data.score);
-            loadVotes($(item));
+            // loadVotes($(item));
             return true;
         },
         error: function(jqxhr, error, exception) {
@@ -494,7 +515,7 @@ function resize() {
     });
 }
 
-// that is the whole .list
+// that is the whole .listItem
 function loadVotes(that) {
     var voteBox = $(that).find(".votes");
 
