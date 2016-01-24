@@ -141,8 +141,11 @@ $(document).ready(function() {
             });
 
             $(this).closest(".attribute").remove();
+            
+            // if we have a new last, we want new rounded corners
+            
         } else {
-            $("#link").html("Oops! you can't delete the last item!");
+            $("#link").html("Oops! you can't delete the last entry!");
         }
     });
 });
@@ -169,7 +172,7 @@ function deleteEntry() {
             $(entry).remove();
         }
     else {
-        $("#link").html("Oops! you can't delete the last entry!");
+        $("#link").html("Oops! you can't delete the last item!");
         $("#link").show();
     }
 }
@@ -322,7 +325,7 @@ function addItem(curListItem) {
 function addAttribute(curAttribute) {
     $(curAttribute).css("border-radius", "0");
     $(curAttribute).after("<div class='attribute'> <!--single item attribute--> <div class='key' ><input type='text' placeholder='Note' ></div ><div class='value' ><input type='text' placeholder='Value' ></div><div class='icon-minus icon'></div></div>");
-    $(curAttribute).next().css("border-radius", "0 0 20px 20px");
+    // $(curAttribute).next().css("border-radius", "0 0 20px 20px");
     resize();
 }
 
