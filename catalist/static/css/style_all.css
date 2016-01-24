@@ -155,7 +155,7 @@ input { outline: none; }
 .mylists .listBlock { left: 10%; border-radius: 20px 0 0 0; background-color: #CEF; }
 .mylists .listBlock2, .mylists .listBlock3 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
 .mylists .listBlock, .mylists .listBlock2, .mylists .listBlock3 { display: inline-block; position: absolute; height: 55%; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
-.mylists .listBlock3 { background-color: #fff; }
+.mylists .listBlock3 { color: #666; }
 .mylists .listBlock3 .listPerms { height: 100%; width: 100%; position: relative; overflow: hidden; background-color: #AEF; }
 .mylists .listBlock3 .back { text-align: left; position: relative; width: 50%; height: 0.8em; padding: 0.5em 1em 0.7em 2em; border-radius: 20px; background-color: rgba(255, 255, 255, 0.2); }
 .mylists .listBlock3 .icon-container { width: 2em; height: 100%; position: absolute; left: 0; }
@@ -166,9 +166,14 @@ input { outline: none; }
 .mylists .listBlock3 .icon-container .icon-trash { background-position: -15em 0; top: 2.5em; }
 .mylists .listBlock3 .icon-container .icon-link { background-position: -9em 0; top: 2em; }
 .mylists .listBlock3 .icon-container .icon-link-2 { background-position: -9em 0; top: 1em; }
-.mylists .listBlock3 .options { width: calc(100% - 2em); height: calc(100% - .2em); padding-top: 0.2em; display: inline-block; position: absolute; left: 2em; }
-.mylists .listBlock3 .options tr { height: 1.9em; text-align: left; }
-.mylists .listBlock3 .options input { width: calc(100% - 2em); height: 2em; display: inline-block; position: relative; top: -2.5em; right: -1em; color: #666; font-size: 16px; border: 0; outline: none; padding: 0 0.5em; background-color: #AEF; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
+.mylists .listBlock3 .options { width: calc(100% - 2em); height: calc(100% - .2em); padding-top: 0.6em; display: inline-block; position: absolute; left: 2em; }
+.mylists .listBlock3 .options table { border-collapse: collapse; border-spacing: 0; cell-spacing: 0; width: 100%; height: 100%; }
+.mylists .listBlock3 .options tr { width: 100%; height: 2em; padding: 0; margin: 0; display: block; }
+.mylists .listBlock3 .options td { width: 100%; height: 2em; text-align: left; display: block; }
+.mylists .listBlock3 .options div { padding: 0 0.5em; }
+.mylists .listBlock3 .options input { width: 100%; margin-top: -0.2em; height: 1.5em; display: block; position: relative; color: #666; font-size: inherit; border: 0; outline: none; padding: 0 0.5em; background-color: transparent; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
+.mylists .listBlock3 .options input:hover, .mylists .listBlock3 .options input:focus { background-color: rgba(255, 255, 255, 0.5); }
+.mylists .listBlock3 .title { padding: 0.5em 0; }
 .mylists .hideOverflow { overflow: scroll; height: 100%; }
 .mylists .scrollWrapper { overflow: auto; height: 100%; }
 .mylists .blockTitle { position: absolute; width: 100%; top: 0; height: 2em; padding-top: 1em; background-color: rgba(0, 0, 0, 0.1); color: #FFF; text-align: center; font-weight: bold; letter-spacing: 2px; }

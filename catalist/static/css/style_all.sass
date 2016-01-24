@@ -651,7 +651,7 @@ input
         overflow: hidden
     .listBlock3
         @extend .listBlock2
-        background-color: #fff
+        color: $color-gray-dark
         .listPerms
             height: 100%
             width: 100%
@@ -706,28 +706,48 @@ input
         .options
             width: calc(100% - 2em)
             height: calc(100% - .2em)
-            padding-top: .2em
+            padding-top: .6em
             
             display: inline-block
             position: absolute
             left: 2em
+            table
+                border-collapse: collapse
+                border-spacing: 0
+                cell-spacing: 0
+                width: 100%
+                height: 100%
             tr
-                height: 1.9em
-                text-align: left
-            input
-                width: calc(100% - 2em)
+                width: 100%
                 height: 2em
-                display: inline-block
+                padding: 0
+                margin: 0
+                display: block
+            td
+                width: 100%
+                height: 2em
+                text-align: left
+                display: block
+            div
+                padding: 0 .5em
+            input
+                width: 100%
+                margin-top: -.2em
+                height: 1.5em
+                display: block
                 position: relative
-                top: -2.5em
-                right: -1em
                 color: $color-gray-dark
-                font-size: 16px
+                font-size: inherit
                 border: 0
                 outline: none
                 padding: 0 .5em
-                background-color: $color-bright-light
+                background-color: transparent
                 +transition(background, .25s, ease-in-out)
+                &:hover,
+                &:focus
+                    background-color: $color-transparent-medium
+        .title
+            padding: .5em 0
     .hideOverflow
         overflow: scroll
         height: 100%
