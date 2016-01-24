@@ -137,8 +137,8 @@ input { outline: none; }
 .listItem .attributes .attribute .value input { padding: 0 2.5em 0 1em; width: calc(100% - 3.5em); }
 
 /* DEFAULT SPRITE IS DOWN ARROW */
-.icon, .icon-down, .icon-minus, .icon-heart, .icon-trash-2, .mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2 { background-image: url("/static/img/icons.svg"); background-size: 18em 4.5em; background-clip: border-box; background-repeat: no-repeat; background-position: 0 0; display: block; width: 1.5em; height: 1.5em; position: absolute; padding: 0; margin: 0; z-index: 100; }
-.icon:hover, .icon-down:hover, .icon-minus:hover, .icon-heart:hover, .icon-trash-2:hover, .mylists .icon2:hover, .mylists .icon-share:hover, .mylists .icon-edit:hover, .mylists .icon-view:hover, .mylists .icon-trash:hover, .mylists .icon-link:hover, .mylists .icon-link-2:hover { background-position-y: -3em; }
+.icon, .icon-down, .icon-minus, .icon-heart, .icon-trash-2, .mylists .listBlock3 .icon-container .icon-back, .mylists .listBlock3 .icon-container .icon-share, .mylists .listBlock3 .icon-container .icon-edit, .mylists .listBlock3 .icon-container .icon-view, .mylists .listBlock3 .icon-container .icon-trash, .mylists .listBlock3 .icon-container .icon-link, .mylists .listBlock3 .icon-container .icon-link-2, .mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2 { background-image: url("/static/img/icons.svg"); background-size: 18em 4.5em; background-clip: border-box; background-repeat: no-repeat; background-position: 0 0; display: block; width: 1.5em; height: 1.5em; position: absolute; padding: 0; margin: 0; z-index: 100; }
+.icon:hover, .icon-down:hover, .icon-minus:hover, .icon-heart:hover, .icon-trash-2:hover, .mylists .listBlock3 .icon-container .icon-back:hover, .mylists .listBlock3 .icon-container .icon-share:hover, .mylists .listBlock3 .icon-container .icon-edit:hover, .mylists .listBlock3 .icon-container .icon-view:hover, .mylists .listBlock3 .icon-container .icon-trash:hover, .mylists .listBlock3 .icon-container .icon-link:hover, .mylists .listBlock3 .icon-container .icon-link-2:hover, .mylists .icon2:hover, .mylists .icon-share:hover, .mylists .icon-edit:hover, .mylists .icon-view:hover, .mylists .icon-trash:hover, .mylists .icon-link:hover, .mylists .icon-link-2:hover { background-position-y: -3em; }
 
 .icon-down { right: 0.3em; top: 0.3em; }
 
@@ -152,8 +152,22 @@ input { outline: none; }
 .mylists { height: calc(100% - 8em); /* ICONS FOR PERMISSIONS */ }
 .mylists #wrapper { height: 100%; overflow: hidden; position: relative; }
 .mylists .listBlock { left: 10%; border-radius: 20px 0 0 0; background-color: #CEF; }
-.mylists .listBlock2 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
-.mylists .listBlock, .mylists .listBlock2 { display: inline-block; position: absolute; height: 50%; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
+.mylists .listBlock2, .mylists .listBlock3 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
+.mylists .listBlock, .mylists .listBlock2, .mylists .listBlock3 { display: inline-block; position: absolute; height: 50%; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
+.mylists .listBlock3 { background-color: #fff; }
+.mylists .listBlock3 .listPerms { height: 100%; width: 100%; position: relative; overflow: hidden; background-color: #AEF; }
+.mylists .listBlock3 .back { text-align: left; position: relative; width: 50%; height: 0.8em; padding: 0.5em 1em 0.7em 2em; border-radius: 20px; background-color: rgba(255, 255, 255, 0.2); }
+.mylists .listBlock3 .icon-container { width: 2em; height: 100%; position: absolute; left: 0; }
+.mylists .listBlock3 .icon-container .icon-back, .mylists .listBlock3 .icon-container .icon-share, .mylists .listBlock3 .icon-container .icon-edit, .mylists .listBlock3 .icon-container .icon-view, .mylists .listBlock3 .icon-container .icon-trash, .mylists .listBlock3 .icon-container .icon-link, .mylists .listBlock3 .icon-container .icon-link-2 { display: block; position: relative; background-position: -3em 0; top: 3em; }
+.mylists .listBlock3 .icon-container .icon-share { background-position: -12em 0; top: 0.5em; }
+.mylists .listBlock3 .icon-container .icon-edit { background-position: -13.5em 0; top: 1em; }
+.mylists .listBlock3 .icon-container .icon-view { background-position: -16.5em 0; top: 1.5em; }
+.mylists .listBlock3 .icon-container .icon-trash { background-position: -15em 0; top: 2.5em; }
+.mylists .listBlock3 .icon-container .icon-link { background-position: -9em 0; top: 2em; }
+.mylists .listBlock3 .icon-container .icon-link-2 { background-position: -9em 0; top: 1em; }
+.mylists .listBlock3 .options { width: calc(100% - 2em); height: calc(100% - .2em); padding-top: 0.2em; display: inline-block; position: absolute; left: 2em; }
+.mylists .listBlock3 .options tr { height: 1.9em; text-align: left; }
+.mylists .listBlock3 .options input { width: calc(100% - 2em); height: 2em; display: inline-block; position: relative; top: -2.5em; right: -1em; color: #666; font-size: 16px; border: 0; outline: none; padding: 0 0.5em; background-color: #AEF; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
 .mylists .hideOverflow { overflow: scroll; height: 100%; }
 .mylists .scrollWrapper { overflow: auto; height: 100%; }
 .mylists .blockTitle { position: absolute; width: 100%; top: 0; height: 2em; padding-top: 1em; background-color: rgba(0, 0, 0, 0.1); color: #FFF; text-align: center; font-weight: bold; letter-spacing: 2px; }
@@ -163,9 +177,9 @@ input { outline: none; }
 .mylists .listWrapper .mylist { height: 1em; width: calc(100% - 2em); background-color: rgba(255, 255, 255, 0.2); border-radius: 0; padding: 0.8em 1em 0.5em; margin: 0; display: block; }
 .mylists .listWrapper .mylist:hover { background-color: rgba(255, 255, 255, 0.5); }
 .mylists .listWrapper .mylist .listTitle, .mylists .listWrapper .mylist .listTitle a, .mylists .listWrapper .mylist .listTime, .mylists .listWrapper .mylist .listTime a { width: 50%; display: inline-block; color: #666; text-decoration: none; text-align: center; font-weight: normal; overflow-x: scroll; white-space: nowrap; }
-@media (max-width: 800px) { .mylists .listBlock, .mylists .listBlock2 { display: block; position: relative; left: 10%; height: 30%; width: 80%; overflow: hidden; }
+@media (max-width: 800px) { .mylists .listBlock, .mylists .listBlock2, .mylists .listBlock3 { display: block; position: relative; left: 10%; height: 30%; width: 80%; overflow: hidden; }
   .mylists .listBlock { border-radius: 20px 20px 0 0; }
-  .mylists .listBlock2 { border-radius: 0; margin-top: 1.5em; top: 0; } }
+  .mylists .listBlock2, .mylists .listBlock3 { border-radius: 0; margin-top: 1.5em; top: 0; } }
 .mylists iframe { display: block; border: none; height: 100%; }
 .mylists .icon-container { display: inline-block; width: 1.5em; padding-left: 0.5em; height: 100%; position: relative; left: -0.5em; overflow: hidden; }
 .mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2 { background-position: -12em 0; position: relative; }
