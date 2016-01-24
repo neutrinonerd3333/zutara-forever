@@ -73,8 +73,12 @@ $(document).ready(function() {
         // to up arrow
         if (isArrowUp($(this))) {
             var attrs = $(this).next(".attributes");
-            $(attrs).slideUp(500);
+            var that = $(this);
+            $(attrs).slideUp(500, function(){
+                that.prev(".itemTitle").find("input").css("border-radius", "20px");
+            });
             $(this).css("background-position", "0 0");
+
             $(this).prev(".itemTitle").find("input").css("border-radius", "20px");
             $(this).mouseenter(function() {
                 $(this).css("background-position-y", "-3em");
@@ -82,6 +86,7 @@ $(document).ready(function() {
             $(this).mouseleave(function() {
                 $(this).css("background-position-y", "0");
             });
+
 
             var nums = $(this).closest(".listItem").find(".attribute").length;
             // if more than one entry, check if any are empty
@@ -398,6 +403,7 @@ function addVote(that) {
         },
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-10.5em 0");
+
             $(that).mouseenter(function() {
                 $(that).css("background-position-y", "-3em");
             });
@@ -406,6 +412,7 @@ function addVote(that) {
             });
 
             console.log("Current score is " + data.score);
+
             loadVotes($(item));
             return true;
         },
@@ -442,7 +449,7 @@ function deleteVote(that) {
         },
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-6em 0");
-            console.log("Current score is " + data.score);
+            // console.log("Current score is " + data.score);
             loadVotes($(item));
             return true;
         },
@@ -472,7 +479,7 @@ function getPermissions(listid) {
         method: 'POST',
         success: function(data, status, jqxhr) {
             // logged in if true, guest if false
-            console.log(data.permission);
+            // console.log(data.permission);
         }
     });
 }

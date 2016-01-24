@@ -392,9 +392,7 @@ def userlists():
                     "Would you like to create one?")
 
     lists = lists.order_by('-last_visited').all()
-    return render_template('mylists.html',
-                            lists=[x for x in lists],
-                            host=HOSTNAME)
+    return render_template('mylists.html', lists=lists, host=HOSTNAME)
 
 
 @app.route("/preview/<listid>", methods=['GET'])
@@ -446,26 +444,30 @@ def index():
 
 @app.errorhandler(403)
 def forbidden(e):
-    return render_template('403.html'), 403
+    return render_template('error/403.html'), 403
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('error/404.html'), 404
 
 @app.errorhandler(405)
 def method_not_found(e):
     return render_template('404.html'), 405
 
 
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return render_template('error/405.html'), 405
+
 @app.errorhandler(410)
 def page_gone(e):
-    return render_template('410.html'), 410
+    return render_template('error/410.html'), 410
 
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html'), 500
+    return render_template('error/500.html'), 500
 
 
 class InvalidAPIUsage(Exception):
@@ -491,7 +493,7 @@ class InvalidAPIUsage(Exception):
 
 @app.errorhandler(InvalidAPIUsage)
 def handle_invalid_usage(error):
-    print("{} -- {}".format(error.status_code, error.message))
+    print("\033[93m{} -- {}\033[0m".format(error.status_code, error.message))
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
@@ -830,7 +832,6 @@ def vote():
     {
         listid: <listid>,
         entryind: <entryind>,
-        userid: <userid>,
         vote: {1 (upvote) | 0 (no vote) |
                -1 (downvote) | 100 (get the current vote)}
     }
@@ -847,10 +848,7 @@ def vote():
     """
 
     listid = request.form["listid"]
-    print(listid)
     entryind = int(request.form["entryind"])
-    print(entryind)
-    # uid = request.form["userid"]
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
         headers = {'Content-Type': 'text/html'}
@@ -925,15 +923,6 @@ def my_lists_interact(listid, addQ):
                     1 to add, -1 to remove
     """
 
-    # four cases:
-    # in mylists because permission
-    # in because added
-    # in because both
-
-
-
-    # validation
-
     if addQ not in (-1, 1):
         raise InvalidAPIUsage("Invalid arguments")
     try:
@@ -960,8 +949,6 @@ def my_lists_interact(listid, addQ):
         cur_user.my_custom_lists.remove(the_list)
     elif cur_state == -1:
         cur_user.anti_my_lists.remove(the_list)
-
-
 
     # else append/pop as required
     if addQ == 1:
@@ -1030,7 +1017,7 @@ def permissions_set():
     print(target)
     if target == '':
         target = uname
-    
+
     try:
         the_list = Catalist.objects.get(listid=listid)
     except DoesNotExist:

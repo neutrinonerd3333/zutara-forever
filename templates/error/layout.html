@@ -1,0 +1,6 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="error-container">
+<h3>{% block message %} {% endblock %} Click <a href="{{ url_for('index') }}">here</a> to return home.</h3></div>
+{% endblock %}

@@ -23,7 +23,7 @@ $(document).ready(function() {
 
 function previewLink() {
     var url = $(this).find("input").next().attr("value");
-    var preview = $(this).parent().parent().parent().parent().find("iframe");
+    var preview = $("iframe");
     // don't want the preview to keep flickering if same link
     if ($(preview).attr("src") !== url) {
         $(preview).attr("src", url);
@@ -40,8 +40,9 @@ function showToolbox(perm) {
     var n = url.indexOf('/list/');
     // cut out "/list/"
     listid = url.slice(n + 6);
+
     if ($(permInput).val() === '') {
-        console.log(listid);
+        // console.log(listid);
         $.ajax({
             data: {
                 listid: listid,
@@ -101,7 +102,6 @@ function setPublicPermission(listid, permission) {
 
 function saveSettings() {
     // if user types delete, list will be deleted
-    
     // can reuse this bit for set public perm
     /*if ($(this).attr("id") === "delete") {
         // setPublicPermission(listid, $(this).val());
@@ -124,10 +124,11 @@ function saveSettings() {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
-        console.log(listid);
+
+        // console.log(listid);
 
         for (var i = 0; i < n; i++) {
-            console.log(all[i]);
+            // console.log(all[i]);
             setPermissions(listid, all[i], "edit");
         }
     }
