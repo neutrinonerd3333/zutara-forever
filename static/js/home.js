@@ -112,6 +112,9 @@ $(document).ready(function() {
     });
     // clicking heart will add a vote to the item (or remove it if existing)
     $(".list").on("click", ".icon-heart", vote);
+    
+    // clicking a specific item's trash will delete that item
+    $(".list").on("click", ".icon-trash-2", deleteEntry);
 
     // clicking minus will delete the current key-value pair
     $(".list").on("click", ".icon-minus", function() {
@@ -139,10 +142,37 @@ $(document).ready(function() {
 
             $(this).closest(".attribute").remove();
         } else {
-            $("#link").html("Oops! you can't delete the last entry!");
+            $("#link").html("Oops! you can't delete the last item!");
         }
     });
 });
+
+function deleteEntry() {
+    var entry = $(this).parent();
+    
+    var totalItems = $(this).closest(".list").find(".listItem").length;
+    if (totalItems > 1) {
+        var eind = $(".list .listItem").index(entry);
+
+        // delete from database
+        $.ajax({
+            url: "/api/deleteentry",
+            method: 'POST',
+            data: {
+                listid: listid,
+                entryind: eind,
+            },
+            success: function(data, status, jqxhr) {
+                console.log("deleted entry");
+            }
+        });
+            $(entry).remove();
+        }
+    else {
+        $("#link").html("Oops! you can't delete the last entry!");
+        $("#link").show();
+    }
+}
 
 function votesVisible() {
     $(".votes").show();
@@ -330,7 +360,6 @@ function saveKeyOrValue(that, toSave) {
         }
     })
 }
-
 
 function vote() {
     var that = $(this);
