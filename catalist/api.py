@@ -179,6 +179,10 @@ def key_val_save(req_form, key_or_val):
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
+    if eind < 0 or ind < 0:
+        i = min(eind, ind)
+        raise InvalidAPIUsage("Invalid index value {}".format(i))
+
     # pad the_list.contents if index eind out of bounds
     pad_len = eind - len(the_list.contents) + 1
     the_list.contents.extend([CatalistEntry() for i in xrange(pad_len)])
@@ -246,6 +250,9 @@ def entry_title_save():
 
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
+
+    if eind < 0:
+        raise InvalidAPIUsage("Invalid index value {}".format(eind))
 
     pad_len = eind - len(the_list.contents) + 1
     the_list.contents += [CatalistEntry() for i in xrange(pad_len)]
@@ -413,6 +420,9 @@ def vote():
 
     listid = request.form["listid"]
     entryind = int(request.form["entryind"])
+    if entryind < 0:
+        raise InvalidAPIUsage("Invalid entry index {}".format(entryind))
+
     current_user = flask_security.core.current_user
     if not current_user.is_authenticated:
         headers = {'Content-Type': 'text/html'}
