@@ -1,7 +1,7 @@
 /* SASS VARIABLES */
-@font-face { font-family: "Helvetica Neue"; src: url("catalist/static/font/HelveticaNeue.ttf"); font-weight: normal; }
-@font-face { font-family: "Helvetica Neue"; src: url("catalist/static/font/HelveticaNeue-UltraLight.ttf"); font-weight: lighter; }
-@font-face { font-family: "Helvetica Neue"; src: url("catalist/static/font/HelveticaNeue-Bold.ttf"); font-weight: bold; }
+@font-face { font-family: "Helvetica Neue"; src: url_for("static", filename="font/HelveticaNeue.ttf"); font-weight: normal; }
+@font-face { font-family: "Helvetica Neue"; src: url_for("static", filename="font/HelveticaNeue-UltraLight.ttf"); font-weight: lighter; }
+@font-face { font-family: "Helvetica Neue"; src: url_for("static", filename="font/HelveticaNeue-Bold.ttf"); font-weight: bold; }
 /* SASS EXTENSIONS AND MIXINS */
 .absolute-center, .relative-center, #link input, #welcome, .errormsg, .errormsg-show, .register input, .list, .error-container, .bubble-2, .bubble, .bubble-4, .bubble-3, .user-form-container, .register input[type="submit"], .register input[type="button"], .textcontainer, #popup, #popup div { position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
 
