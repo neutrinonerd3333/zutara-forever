@@ -748,6 +748,7 @@ input
                     background-color: $color-transparent-medium
         .title
             padding: .5em 0
+            background-color: $color-bright-light
     .hideOverflow
         overflow: scroll
         height: 100%
@@ -779,8 +780,12 @@ input
             color: $color-gray-dark
             background-color: $color-bright-light
             margin: 0
+        .times
+            padding-right: 1.8em
+            width: calc(50% - 1.8em)
     .listWrapper
         margin: 0
+        margin-top: -1.5em
         overflow: auto
         .mylist
             height: 1em    
@@ -804,6 +809,11 @@ input
                 font-weight: normal
                 overflow-x: scroll
                 white-space: nowrap
+                position: relative
+                font-size: 0.8em
+            .listTime
+                padding-right: 1.8em
+                width: calc(50% - 1.8em)
 
     @media (max-width: 800px)
         .listBlock,
@@ -870,6 +880,16 @@ input
         @extend .icon2
         background-position: -9em 0
         top: 1em
+        
+    .icon-settings
+        @extend .icon
+        position: relative
+        background-position: -7.5em 0
+        display: block
+        top: 2em
+        left: calc(100% - 1.8em)
+        margin: 0
+        width: 1.5em
 
     .toolbox 
         width: 100%

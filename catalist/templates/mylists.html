@@ -22,13 +22,14 @@ my lists
         <div class="listBlock2">
             <div class="blockTitle">Lists</div>
             <div class="listHead">
-                <div class="titles">Titles</div
+                <div class="titles">&nbsp;&nbsp;Title</div
                 ><div class="times">Last Modified</div>
             </div>
             <div class="hideOverflow">
             <div class="scrollWrapper">
                 {% for catalist in lists %}
                 <div class="listWrapper">
+                    <div class='icon-settings'></div>
                     <div class="mylist">
                         <input type="hidden" value={{ host + "/list/" + catalist.listid }}>
                         <input type="hidden" value={{ "/preview/" + catalist.listid }}>
@@ -38,17 +39,16 @@ my lists
                         ></a
                         ><div class="listTime">{{ human_readable_time_since(catalist.last_visited) }}</div
                     ></div
-                    ><div class="toolbox"
-                        ><input type="hidden" value=''
-                    ></div
-                ></div>
+                        >
+                    <div class="toolbox"
+                        ><input type="hidden" value=''></div>
+                </div>
                 {% endfor %}
             </div>
             </div>
         </div>
         
-        <div class="listBlock3">
-            <div class="blockTitle">Lists</div>
+        <div class="listBlock3" id='hidden'>
             <div class="title">Listname</div>
             <div class="listPerms">
                 <div class="icon-container">
