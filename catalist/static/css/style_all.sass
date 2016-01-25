@@ -662,12 +662,14 @@ input
         @extend .listBlock2
         color: $color-gray-dark
         display: none
+        overflow: scroll
         .listPerms
+            overflow: auto
             height: 100%
             width: 100%
             
             position: relative
-            overflow: hidden
+            // overflow: hidden
             background-color: $color-transparent-light
         .back
             text-align: left
@@ -866,6 +868,7 @@ input
             border-radius: 0
             margin-top: 0
             top: 0
+            min-height: 40em
             .blockTitle
                 background-color: $color-gray-transparent-medium
         .listBlock3
