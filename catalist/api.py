@@ -617,6 +617,10 @@ def permissions_set():
     listid = request.form["listid"]
     perm = request.form["permission"]
     target = request.form["target"]
+    
+    if target == uname:
+        raise InvalidAPIUsage("Cannot set self")
+    
     if target == '':
         target = uname
 
