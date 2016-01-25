@@ -1,3 +1,15 @@
+"""
+    catalist.api
+    ~~~~~~~~~~~~
+
+    This module implements our web app's API. All operations
+    we'll probably need are here (however poorly written they
+    may be). Relevant permissions are required everywhere.
+
+    :copyright: (c) 2016 Rachel Wu, Tony Zhang
+    :license: lol don't steal this code
+"""
+
 # Good luck brought to you by Safety Pig
 # http://qr.ae/RgLMU8
 #

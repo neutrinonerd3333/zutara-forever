@@ -1,3 +1,14 @@
+"""
+    catalist.permissions
+    ~~~~~~~~~~~~~~~~~~~~
+
+    This module implements handy utilities for working
+    with user permissions.
+
+    :copyright: (c) 2016 Rachel Wu, Tony Zhang
+    :license: lol don't steal this code pls
+"""
+
 from flask import Flask
 import flask.ext.security as flask_security
 

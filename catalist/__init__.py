@@ -1,3 +1,13 @@
+"""
+	catalist
+	~~~~~~~~
+
+	This package implements our web app ^_^
+
+    :copyright: (c) 2016 Rachel Wu, Tony Zhang
+    :license: lol don't steal this code pls
+"""
+
 # Good luck brought to you by Safety Pig
 # http://qr.ae/RgLMU8
 #

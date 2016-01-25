@@ -1,10 +1,15 @@
+"""
+	catalist.errorviews
+	~~~~~~~~~~~~~~~~~~~
+
+	This module contains error handlers for HTTP errors.
+
+    :copyright: (c) 2016 Rachel Wu, Tony Zhang
+    :license: lol don't steal this code pls
+"""
+
 from catalist import app
 from flask import render_template
-
-
-# **********************************************************
-# Error Handlers
-# **********************************************************
 
 
 @app.errorhandler(403)

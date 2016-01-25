@@ -1,3 +1,13 @@
+"""
+    catalist.database
+    ~~~~~~~~~~~~~~~~~
+
+    This module defines our database schemata.
+
+    :copyright: (c) 2016 Rachel Wu, Tony Zhang
+    :license: lol don't steal this code pls
+"""
+
 from catalist import app, db
 from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required
