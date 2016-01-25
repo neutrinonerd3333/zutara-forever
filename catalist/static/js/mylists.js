@@ -11,7 +11,6 @@ $(document).ready(function() {
     // hide toolbox on clicking back
     $(".listBlock3").on("click", ".icon-back", hideSettings);   
 
-
     // copy url to clipboard upon clicking in it
     $(".listBlock3").on("click", "input", useButtons);
     
@@ -20,6 +19,9 @@ $(document).ready(function() {
 
     // focusout saves permissions
     $(".listBlock3").on("focusout", "input", saveSettings);
+    
+    // change public permission on selecting different one
+    $(".listBlock3").on("change", "select", setPublicPermission);
 });
 
 function previewLink() {
@@ -117,16 +119,20 @@ function buttonListener() {
     deleteList(listid);
 }
 
-function setPublicPermission(listid, permission) {
-    if(!(permission==="view" || permission==="edit")) {
-        return false;
-    }
+// select has 3 built in permission levels, so
+// should be no exception here
+function setPublicPermission() {
+    var perm = $("select").val()
+    
     $.ajax({
         url: "/api/setpubliclevel",
         method: "POST",
         data: {
             listid: listid,
-            permission: permission
+            permission: perm
+        },
+        success: function(data, status, jqxhr) {
+            console.log("success " + data);
         }
     });
 }
@@ -139,7 +145,7 @@ function getPublicPermission(listid) {
         url: "/api/getpubliclevel",
         method: "POST",
         success: function(data, status, jqxhr) {
-            // $(".listBlock3").find("#permlvl").html(data);
+            $(".listBlock3").find("select").val(data);
         }
     });
 }

@@ -650,9 +650,11 @@ def permissions_set():
 
     # if target user is currently on own/edit/view, remove user from that
     if target_cur_perm in ["own", "view"]:
-        getattr(the_list, target_cur_perm + "ers").remove(the_target)
+        if the_target in getattr(the_list, target_cur_perm + "ers"):
+            getattr(the_list, target_cur_perm + "ers").remove(the_target)
     elif target_cur_perm == "edit":
-        the_list.editors.remove(the_target)
+        if the_target in the_list.editors:
+            the_list.editors.remove(the_target)
 
     # add target user to appropriate new privilege lists
     if perm in ["own", "view"]:
