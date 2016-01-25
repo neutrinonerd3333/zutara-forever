@@ -90,6 +90,7 @@ function openSettings() {
         });
     }
     loadSettings();
+    getPublicPermission(listid);
 
     // actually show everything
     $(".listBlock3").fadeIn(500);
@@ -130,6 +131,19 @@ function setPublicPermission(listid, permission) {
     });
 }
 
+function getPublicPermission(listid) {
+    $.ajax({
+        data: {
+            listid: listid
+        },
+        url: "/api/getpubliclevel",
+        method: "POST",
+        success: function(data, status, jqxhr) {
+            // $(".listBlock3").find("#permlvl").html(data);
+        }
+    });
+}
+
 function loadSettings() {
     $.ajax({
             data: {
@@ -155,14 +169,14 @@ function saveSettings() {
     // if user types in names, add them as viewers
     // or editors, as specified
     // names delimited by whitespace
-    if ($(this).attr("id") === "view") {
+    if ($(this).attr("id") === "viewers") {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
         for (var i = 0; i < n; i++) {
             setPermissions(listid, all[i], "view");
         }
-    } else if ($(this).attr("id") === "edit") {
+    } else if ($(this).attr("id") === "editors") {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
