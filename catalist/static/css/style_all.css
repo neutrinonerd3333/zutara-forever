@@ -154,7 +154,7 @@ input { outline: none; }
 .mylists #wrapper { height: 80%; overflow: hidden; position: relative; }
 .mylists .listBlock { left: 10%; border-radius: 20px 0 0 0; background-color: #CEF; }
 .mylists .listBlock2, .mylists .listBlock3 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
-.mylists .listBlock, .mylists .listBlock2, .mylists .listBlock3 { display: inline-block; position: absolute; height: 55%; min-height: 15em; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
+.mylists .listBlock, .mylists .listBlock2, .mylists .listBlock3 { display: inline-block; position: absolute; height: 65%; min-height: 10em; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
 .mylists .listBlock3 { color: #666; display: none; }
 .mylists .listBlock3 .listPerms { height: 100%; width: 100%; position: relative; overflow: hidden; background-color: rgba(255, 255, 255, 0.2); }
 .mylists .listBlock3 .back { text-align: left; position: relative; width: 50%; height: 0.8em; padding: 0.5em 1em 0.7em 2em; border-radius: 20px; background-color: rgba(255, 255, 255, 0.2); }
@@ -168,7 +168,7 @@ input { outline: none; }
 .mylists .listBlock3 .icon-container .icon-link-2 { background-position: -9em 0; top: 1em; }
 .mylists .listBlock3 .options { width: calc(100% - 2em); height: calc(100% - .2em); padding-top: 0.6em; display: inline-block; position: absolute; left: 2em; }
 .mylists .listBlock3 .options table { border-collapse: collapse; border-spacing: 0; cell-spacing: 0; width: 100%; height: 100%; font-size: 0.8em; }
-.mylists .listBlock3 .options tr { width: 100%; height: 2em; padding: 0; margin: 0; display: block; }
+.mylists .listBlock3 .options tr { width: 100%; height: 2em; padding: 4px 0 4px 0; margin: 0; display: block; }
 .mylists .listBlock3 .options td { height: 2em; width: 100%; text-align: left; display: block; }
 .mylists .listBlock3 .options div { position: relative; padding: 0 0.5em; display: block; }
 .mylists .listBlock3 .options input { width: calc(100% - 1.2em); left: 0.5em; margin-top: -0.2em; height: 1.5em; display: block; position: relative; color: #666; font-size: inherit; border: 0; outline: none; padding: 0 0.5em 0 0.2; background-color: transparent; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }

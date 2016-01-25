@@ -15,7 +15,8 @@ $(document).ready(function() {
 
     $("body").on('click', "input[type='url']", function() {
         $(this).select();
-        document.execCommand("copy");
+        // no need to copy for now
+        // document.execCommand("copy");
         // alert("Link copied to clipboard!");
     });
 
@@ -213,6 +214,10 @@ function buttonsHidden() {
 
 function authenticated() {
     loggedIn = true;
+    if($("#newuser").length > 0) {
+        askForTutorial();
+    }
+    
     if (listid !== null) {
         // if this is route /list/<listid>, bind listeners
         enableLiveSave();

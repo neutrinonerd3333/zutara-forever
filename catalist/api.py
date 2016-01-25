@@ -770,6 +770,35 @@ def permissions_forfeit():
 
     return "OK"  # 200
 
+@api_blueprint.route("/permissions/listperms", methods=['POST'])
+def get_list_perms():
+    """
+    Returns a list of editors and viewers for the current list.
+    
+    GET: {
+        listid: <listid>
+    }
+    """
+    try:
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
+    
+    # check permissions
+    if cmp_permission(query_cur_perm(the_list), "view") <= 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
+    viewers = the_list.viewers
+    editors = the_list.editors
+    view = ""
+    edit = ""
+
+    for viewer in viewers:
+        view.append(viewer.uid + " ")
+    for editor in editors:
+        edit.append(editor.uid + " ")
+
+    return jsonify(viewers=view, editors=edit)
 
 # # # # # # # # # # # # # #
 # CUSTOMIZATION

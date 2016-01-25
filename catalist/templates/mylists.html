@@ -31,7 +31,8 @@ my lists
                 <div class="listWrapper">
                     <div class='icon-settings'></div>
                     <div class="mylist">
-                        <input type="hidden" value={{ host + "/list/" + catalist.listid }}>
+                        <input type="hidden" value="" id="perm">
+                        <input type="hidden" id="url" value={{ host + "/list/" + catalist.listid }}>
                         <input type="hidden" value={{ "/preview/" + catalist.listid }}>
 
                         <a href={{ "/list/" + catalist.listid }}
@@ -62,14 +63,14 @@ my lists
                 </div>
                 <div class="options">
                     <table>
-                        <tr><td><div>Permission Level</div></td></tr>
+                        <tr><td><div id="permlvl"></div></td></tr>
                         <tr><td>
-                            <input type='text' id='editors' placeholder='Editors'></td></tr>
+                            <input type='text' id='editors' placeholder='Oops! No editors yet.'></td></tr>
                         <tr><td>
-                            <input type='text' id='Viewers' placeholder='Viewers'></td></tr>
+                            <input type='text' id='viewers' placeholder='Oops! No viewers yet.'></td></tr>
                         <tr><td><input type='text' id='url' placeholder='URL'></td></tr>
-                        <tr><td><div>Delete List</div></td></tr>
-                        <tr><td><div>Save and Return</div></td></tr>
+                        <tr><td><div id="deletelist">You may not delete this list.</div></td></tr>
+                        <tr><td><div>Click arrow to save and return.</div></td></tr>
                     </table>
                 </div>
             </div>
