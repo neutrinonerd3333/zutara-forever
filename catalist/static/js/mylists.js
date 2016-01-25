@@ -23,7 +23,7 @@ $(document).ready(function() {
 });
 
 function previewLink() {
-    var url = $(this).find("input").next().attr("value");
+    var url = $(this).find("#preview").attr("value");
     var preview = $("iframe");
     // don't want the preview to keep flickering if same link
     if ($(preview).attr("src") !== url) {
