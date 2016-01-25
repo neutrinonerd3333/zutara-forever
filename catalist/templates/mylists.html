@@ -22,15 +22,17 @@ my lists
         <div class="listBlock2">
             <div class="blockTitle">Lists</div>
             <div class="listHead">
-                <div class="titles">Titles</div
+                <div class="titles">&nbsp;&nbsp;Title</div
                 ><div class="times">Last Modified</div>
             </div>
             <div class="hideOverflow">
             <div class="scrollWrapper">
                 {% for catalist in lists %}
                 <div class="listWrapper">
+                    <div class='icon-settings'></div>
                     <div class="mylist">
-                        <input type="hidden" value={{ host + "/list/" + catalist.listid }}>
+                        <input type="hidden" value="" id="perm">
+                        <input type="hidden" id="url" value={{ host + "/list/" + catalist.listid }}>
                         <input type="hidden" value={{ "/preview/" + catalist.listid }}>
 
                         <a href={{ "/list/" + catalist.listid }}
@@ -38,19 +40,21 @@ my lists
                         ></a
                         ><div class="listTime">{{ human_readable_time_since(catalist.last_visited) }}</div
                     ></div
-                    ><div class="toolbox"
-                        ><input type="hidden" value=''
-                    ></div
-                ></div>
+                        >
+                    <div class="toolbox"
+                        ><input type="hidden" value=''></div>
+                </div>
                 {% endfor %}
             </div>
             </div>
         </div>
         
-        <div class="listBlock3" id='hidden'>
+        <div class="listBlock3">
             <div class="blockTitle">Lists</div>
+            <div class="title">Listname</div>
             <div class="listPerms">
                 <div class="icon-container">
+                    <div class="icon-settings-2"></div>
                     <div class="icon-share"></div>
                     <div class="icon-edit"></div>
                     <div class="icon-view"></div>
@@ -60,12 +64,21 @@ my lists
                 </div>
                 <div class="options">
                     <table>
-                        <tr><td>Permission Level</td></tr>
-                        <tr><td>Editors</td></tr>
-                        <tr><td>Viewers</td></tr>
-                        <tr><td>URL</td></tr>
-                        <tr><td>Delete List</td></tr>
-                        <tr><td>Save and Return</td></tr>
+                        <tr><td><div id="publvl">
+                        <select>
+                            <option value="edit">Public can edit.</option>
+                            <option value="view">Public can view.</option>
+                            <option value="none">List is private.</option>
+                        </select>
+                        </div></td></tr>
+                        <tr><td><div id="permlvl"></div></td></tr>
+                        <tr><td>
+                            <input type='text' id='editors' placeholder='Oops! No editors yet.'></td></tr>
+                        <tr><td>
+                            <input type='text' id='viewers' placeholder='Oops! No viewers yet.'></td></tr>
+                        <tr><td><input type='text' id='url' placeholder='URL'></td></tr>
+                        <tr><td><div id="deletelist">You may not delete this list.</div></td></tr>
+                        <tr><td><div>Click arrow to save and return.</div></td></tr>
                     </table>
                 </div>
             </div>

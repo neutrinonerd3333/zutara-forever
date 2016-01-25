@@ -54,6 +54,7 @@ import uuid as uuid_module
 from permissions import *
 from database import Role, User, Catalist, CatalistEntry, CatalistKVP
 import database as dbase
+from views import get_id
 
 # **********************************************************
 # THE API!!!
@@ -728,6 +729,22 @@ def public_level_set():
     the_list.save()
     return "set"
 
+@api_blueprint.route("/permissions/public-get", methods=['POST'])
+@api_blueprint.route("/getpubliclevel", methods=['POST'])
+def public_level_get():
+    """
+        Get the permission level for a list for the public at-large.
+        
+        POST: {
+        listid: <the listid>,
+        }
+        """
+    try:
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
+    
+    return the_list.public_level
 
 @api_blueprint.route("/permissions/forfeit", methods=['POST'])
 def permissions_forfeit():
@@ -754,6 +771,35 @@ def permissions_forfeit():
 
     return "OK"  # 200
 
+@api_blueprint.route("/permissions/listperms", methods=['POST'])
+def get_list_perms():
+    """
+    Returns a list of editors and viewers for the current list.
+    
+    GET: {
+        listid: <listid>
+    }
+    """
+    try:
+        the_list = Catalist.objects.get(listid=request.form["listid"])
+    except DoesNotExist:
+        raise InvalidAPIUsage("List does not exist")
+    
+    # check permissions
+    if cmp_permission(query_cur_perm(the_list), "view") <= 0:
+        raise InvalidAPIUsage("Forbidden", status_code=403)
+
+    viewers = the_list.viewers
+    editors = the_list.editors
+    view = ""
+    edit = ""
+
+    for viewer in viewers:
+        view.append(viewer.uid + " ")
+    for editor in editors:
+        edit.append(editor.uid + " ")
+
+    return jsonify(viewers=view, editors=edit)
 
 # # # # # # # # # # # # # #
 # CUSTOMIZATION

@@ -3,21 +3,22 @@ $(document).ready(function() {
 
     // expands preview on click (should I make it click?) over url
     $(".listBlock2").on("mouseenter", ".mylist", previewLink);
+    
+    // view toolbox on clicking settings
+    $(".listWrapper").on("click", ".icon-settings", openSettings);
+    
+    // hide toolbox on clicking back
+    $(".listBlock3").on("click", ".icon-back", hideSettings);   
 
-    // view toolbox on hover
-    $(".listWrapper").on("mouseenter", showToolbox);
-
-    // hide toolbox on leave
-    $(".listWrapper").on("mouseleave", hideToolbox);
 
     // copy url to clipboard upon clicking in it
-    $(".toolbox").on("click", "input", useButtons);
+    $(".listBlock3").on("click", "input", useButtons);
     
     // on click delete, delete
-    $(".toolbox").on("click", ".icon-trash", buttonListener);
+    $(".listBlock3").on("click", ".icon-trash", buttonListener);
 
-    // focusout saves permissions and checks for delete
-    $(".toolbox").on("focusout", "input", saveSettings);
+    // focusout saves permissions
+    $(".listBlock3").on("focusout", "input", saveSettings);
 
 });
 
@@ -30,17 +31,26 @@ function previewLink() {
     }
 }
 
-function showToolbox(perm) {
-    var tools = $(this).find(".toolbox");
-    var permInput = $(tools).find("input");
-    tools.show();
-
-    $(this).find(".mylist").css("background-color", "rgba(255, 255, 255, 0.5)");
-    var url = $(this).find(".mylist input").val();
+function openSettings() {
+    // get the actual list entry following button
+    var mylist = $(this).next();
+    // permission in hidden input
+    var title = $(mylist).find(".listTitle").text();
+    // console.log(title);
+    $(".listBlock3").find(".title").html(title);
+    
+    var permInput = $(mylist).find("#perm");
+    var url = $(mylist).find("#url").val();
+    
+    // set values to corresponding list
+    $(".listBlock3").find("#url").val(url);
+    
     var n = url.indexOf('/list/');
     // cut out "/list/"
     listid = url.slice(n + 6);
-
+    
+    // if first time loading settings, get permission
+    // level from db
     if ($(permInput).val() === '') {
         // console.log(listid);
         $.ajax({
@@ -50,37 +60,55 @@ function showToolbox(perm) {
             url: "/api/getpermissions",
             method: 'POST',
             success: function(data, status, jqxhr) {
-                // logged in if true, guest if false
                 var perm = data.permission;
                 $(permInput).val(perm);
-
-                if (perm === "own") {
-                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div>  <div class="icon-edit"></div> <div class="icon-view"></div> <div class="icon-link"></div> <div class="icon-trash"></div> </div> <div class="permissions"> <div class="line">You are the owner of this list.</div> <input class="editors" id="edit" placeholder="Editors" type="text"> <input class="editors" id="view" placeholder="Viewers" type="text"> <input class="editors" id="url" type="text" value=' + url + '> <div class="line">Click icon to delete list.</div> </div>');
-                    $(tools).css("height", "11em");
-                } else if (perm === "edit") {
-                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div></div> <div class="permissions"> <div class="line">You may edit and view this list.</div><input class="editors" id="url" type="text" value=' + url + '> </div>');
-                    $(tools).css("height", "5em");
-                } else if (perm === "view") {
-                    $(tools).html('<div class="icon-container"> <div class="icon-share"></div> <div class="icon-link-2"></div> </div> <div class="permissions"> <div class="line">You may view this list.</div> <input class="editors" id="url" type="text" value=' + url + '> </div>');
-                    $(tools).css("height", "5em");
+                
+                var msg = ""
+                // default delete msg is no permission
+                // can only add permissions below your own
+                if(perm==="own"){
+                    msg = "You are the owner of the list."
+                    $(".listBlock3").find("#deletelist").html("Click trash to permanently delete list.");
                 }
+                else if(perm==="edit") {
+                    msg = "You can edit and view this list."
+                    $(".listBlock3").find("#viewers").prop('disabled', true);
+                }
+                else if(perm==="view") {
+                    msg = "You can view this list."
+                    $(".listBlock3").find("#viewers").prop('disabled', true);
+                    $(".listBlock3").find("#editors").prop('disabled', true);
+                }
+                else if(perm==="admin") {
+                    msg = "Tony why you snooping on people's lists?"
+                }
+                else {
+                    msg = "You do not have access to this list."
+                }
+                $(".listBlock3").find("#permlvl").html(msg);
             }
         });
     }
+    loadSettings();
+    getPublicPermission(listid);
+
+    // actually show everything
+    $(".listBlock3").fadeIn(500);
+    $(".listBlock2").fadeOut(500);
 }
 
-function hideToolbox() {
-    $(this).find(".mylist").css("background-color", "rgba(255, 255, 255, 0.2)");
-    var tools = $(this).find(".toolbox");
-    tools.hide();
+function hideSettings() {
+    $(".listBlock2").fadeIn(500);
+    $(".listBlock3").fadeOut(500);
 }
 
 function useButtons() {
     // url gets copied to clipboard every time
     if ($(this).attr("id") === "url") {
         $(this).select();
-        document.execCommand("copy");
-        alert("Link copied to clipboard!");
+        // no need to copy for now
+        // document.execCommand("copy");
+        // alert("Link copied to clipboard!");
     }
 }
 
@@ -90,6 +118,9 @@ function buttonListener() {
 }
 
 function setPublicPermission(listid, permission) {
+    if(!(permission==="view" || permission==="edit")) {
+        return false;
+    }
     $.ajax({
         url: "/api/setpubliclevel",
         method: "POST",
@@ -100,32 +131,55 @@ function setPublicPermission(listid, permission) {
     });
 }
 
-function saveSettings() {
-    // if user types delete, list will be deleted
-    // can reuse this bit for set public perm
-    /*if ($(this).attr("id") === "delete") {
-        // setPublicPermission(listid, $(this).val());
-        if ($(this).val() === "delete") {
-
-            deleteList(listid);
+function getPublicPermission(listid) {
+    $.ajax({
+        data: {
+            listid: listid
+        },
+        url: "/api/getpubliclevel",
+        method: "POST",
+        success: function(data, status, jqxhr) {
+            // $(".listBlock3").find("#permlvl").html(data);
         }
-    }*/
+    });
+}
+
+function loadSettings() {
+    $.ajax({
+            data: {
+                listid: listid,
+            },
+            url: "api/permissions/listperms",
+            method: 'POST',
+            success: function(data, status, jqxhr) {
+                var editors = data.editors;
+                var viewers = data.viewers;
+                
+                if(editors.length > 0) {
+                    $(".listBlock3").find("#editors").html(editors);
+                }
+                if(viewers.length > 0) {
+                    $(".listBlock3").find("#viewers").html(viewers);
+                }
+            }
+    });
+}
+
+function saveSettings() {
     // if user types in names, add them as viewers
     // or editors, as specified
     // names delimited by whitespace
-    if ($(this).attr("id") === "view") {
+    if ($(this).attr("id") === "viewers") {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
         for (var i = 0; i < n; i++) {
             setPermissions(listid, all[i], "view");
         }
-    } else if ($(this).attr("id") === "edit") {
+    } else if ($(this).attr("id") === "editors") {
         var all = $(this).val();
         var all = all.split();
         var n = all.length;
-
-        // console.log(listid);
 
         for (var i = 0; i < n; i++) {
             // console.log(all[i]);

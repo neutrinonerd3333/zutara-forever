@@ -8,6 +8,7 @@ registration
 
 <section id="wrapper">
     <article>
+        {% if not (current_user.is_authenticated) %}
         <div class="errormsg-show">{{ success }}</div>
         <div class="errormsg"></div>
         <div class="user-form-container">
@@ -24,6 +25,10 @@ registration
                 </div>
             </form>
         </div>
+        {% endif %}
+        {% if (current_user.is_authenticated) %}
+    <div class="error-container"><h3>Oops! You've already logged in!<br>Click <a href='/'>here</a> to return to home or <a href='/mylists'>here</a> to manage your lists.</h3></div>
+{% endif %}
     </article>
 </section>
 {% endblock %}

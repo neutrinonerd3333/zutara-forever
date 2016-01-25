@@ -1,4 +1,5 @@
 /* SASS VARIABLES */
+
 $font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif
 
 $color-transparent-light: rgba(255, 255, 255, 0.2)
@@ -7,15 +8,13 @@ $color-transparent-dark: rgba(255, 255, 255, 0.7)
 
 $color-gray-transparent-lightest: rgba(100, 100, 100, 0.2)
 $color-gray-transparent-light: rgba(0, 0, 0, 0.1)
-$color-gray-transparent-medium: rgba(0, 0, 0, 0.3)
-$color-gray-transparent-dark: rgba(0, 0, 0, 0.5)
+$color-gray-transparent-medium: rgba(0, 0, 0, 0.2)
+$color-gray-transparent-dark: rgba(0, 0, 0, 0.4)
 
 $color-bright-lightest: #CEF
 $color-bright-light: #AEF
 $color-bright-medium: #5CE
 $color-bright-dark: #4BF
-
-$color-bright-transparent-matte: rgba(170, 240, 255, 0.8)
 
 $color-gray-light: #CCC
 $color-gray-medium: #999
@@ -82,13 +81,15 @@ $color-white: #FFF
 
 html
     height: 100%
-    min-height: 333px
+    min-height: 500px
     background: $color-bright-light
     overflow-x: hidden
+    overflow-y: scroll
     
 body
     font-family: $font-stack
     font-size: 20px
+    min-height: 500px
     height: calc(100% - 4em)
     margin: 0
     
@@ -96,7 +97,7 @@ body
     background: -webkit-linear-gradient(top, $color-bright-dark 2em, $color-bright-medium calc(60% - 4em), $color-bright-light calc(100% - 8em))
     background: linear-gradient(to bottom, $color-bright-dark 2em, $color-bright-medium calc(60% - 4em), $color-bright-light calc(100% - 8em))
     
-    background-attachment: fixed
+    background-attachment: scroll
     background-size: 100% 100%
     background-repeat: no-repeat
     background-position: left top
@@ -127,6 +128,7 @@ h3, h3 a
     display: inline-block
 h3 a
     font-weight: normal
+    color: $color-white
 
 a
     font-weight: normal
@@ -148,7 +150,7 @@ a
     margin: 0 1em 2em 0
     position: absolute
     top: 9%
-    right: 20%
+    right: 15%
     color: $color-bright-lightest
     font-weight: normal
     letter-spacing: 0.2px
@@ -160,6 +162,7 @@ a
             background-color: $color-transparent-light
             border-radius: 1em
             padding: .3em .8em
+            +transition(background, .25s, ease-in-out)
             &:hover
                 background-color: $color-bright-lightest
                 color: $color-bright-dark
@@ -170,7 +173,7 @@ a
     .no
         font-size: 1em
 
-@media (max-width: 850px)
+@media (max-width: 800px)
     .login-container
         top: 1%
         height: 2em
@@ -224,7 +227,7 @@ a
     width: 40%
     min-width: 300px
     color: $color-white
-    background-color: $color-gray-transparent-light
+    background-color: $color-gray-transparent-medium
     #newb,
     #pro
         font-size: 0.8em
@@ -236,6 +239,7 @@ a
         padding: 0.5em
         border-radius: 20px
         cursor: pointer
+        +transition(background, .25s, ease-in-out)
     #newb:hover,
     #pro:hover
         background-color: $color-bright-lightest
@@ -244,7 +248,7 @@ a
 .bubble-2,
 .bubble-3
     @extend .absolute-center
-    top: 53%
+    top: 24em
     width: 50%
     min-width: 300px
     height: 1em
@@ -260,14 +264,14 @@ a
 
 .bubble
     @extend .bubble-2
-    top: 35%
+    top: 18em
     
 .bubble-2
     height: 3em
 
 .bubble-4
     @extend .bubble
-    top: 60%
+    top: 28em
     height: 3em
 
 @media (min-width: 900px)
@@ -291,7 +295,7 @@ a
     
 .bubble-3:after
     @extend .bubble:after
-    left: 90%
+    left: 85%
 
 .bubble-4:after
     @extend .bubble:after
@@ -382,10 +386,13 @@ input
         text-align: center
         height: 30px
         width: 100px
-        background-color: $color-transparent-light
-        color: $color-gray-medium
+        background-color: $color-gray-transparent-light
+        border-radius: 20px
+        color: $color-white
         &:hover,
             background-color: $color-transparent-dark
+            color: $color-bright-dark
+            cursor: pointer
 
 .header
     margin: 2em 3em 1em 3em
@@ -416,7 +423,7 @@ input
     min-height: 300px
     display: block
     color: $color-white
-    background-color: rgba(150,230,255,0.5)
+    background-color: $color-gray-transparent-light
     overflow: auto
     border-radius: 20px
     p
@@ -515,9 +522,9 @@ input
             font-size: 1em
             position: absolute
             padding-top: 15%
-            padding-left: 15%
-            padding-right: 15%
-            left: 10%
+            padding-left: 20%
+            //padding-right: 15%
+            //left: 10%
             letter-spacing: 0.8px
             font-weight: lighter
             
@@ -619,9 +626,10 @@ input
 
 /* MY LISTS INTERFACE */
 .mylists
-    height: calc(100% - 8em)
+    height: 80%
+    min-height: 550px
     #wrapper
-        height: 100%
+        height: 80%
         overflow: hidden
         position: relative
     .listBlock
@@ -639,7 +647,8 @@ input
     .listBlock2
         display: inline-block
         position: absolute
-        height: 55%
+        height: 65%
+        min-height: 10em
         width: 40%
         background-color: transparent
         border: 0px
@@ -651,14 +660,15 @@ input
         overflow: hidden
     .listBlock3
         @extend .listBlock2
-        background-color: #fff
+        color: $color-gray-dark
+        display: none
         .listPerms
             height: 100%
             width: 100%
             
             position: relative
             overflow: hidden
-            background-color: $color-bright-light
+            background-color: $color-transparent-light
         .back
             text-align: left
             position: relative
@@ -678,56 +688,101 @@ input
                 display: block
                 position: relative
                 background-position: -3em 0
-                top: 3em
+                top: 3.5em
+            .icon-settings-2
+                @extend .icon-back
+                top: .5em
+                background-position: -7.5em 0
             .icon-share
                 @extend .icon-back
                 background-position: -12em 0
-                top: .5em
+                top: 1em
             .icon-edit
                 @extend .icon-back
                 background-position: -13.5em 0
-                top: 1em
+                top: 1.5em
             .icon-view
                 @extend .icon-back
                 background-position: -16.5em 0
-                top: 1.5em
-            .icon-trash
-                @extend .icon-back
-                background-position: -15em 0
-                top: 2.5em
+                top: 2em
             .icon-link
                 @extend .icon-back
                 background-position: -9em 0
-                top: 2em
-            .icon-link-2
+                top: 2.5em
+            .icon-trash
                 @extend .icon-back
-                background-position: -9em 0
-                top: 1em
+                background-position: -15em 0
+                top: 3em
+            
         .options
             width: calc(100% - 2em)
             height: calc(100% - .2em)
-            padding-top: .2em
+            padding-top: .6em
             
             display: inline-block
             position: absolute
             left: 2em
+            table
+                border-collapse: collapse
+                border-spacing: 0
+                cell-spacing: 0
+                width: 100%
+                height: 100%
+                font-size: 0.8em
             tr
-                height: 1.9em
-                text-align: left
-            input
-                width: calc(100% - 2em)
+                width: 100%
                 height: 2em
-                display: inline-block
+                padding: 4px 0 4px 0
+                margin: 0
+                display: block
+            td
+                height: 2em
+                width: 100%
+                text-align: left
+                display: block
+            div
                 position: relative
-                top: -2.5em
-                right: -1em
-                color: $color-gray-dark
-                font-size: 16px
-                border: 0
-                outline: none
                 padding: 0 .5em
-                background-color: $color-bright-light
+                display: block
+            input
+                width: calc(100% - 1.2em)
+                height: 1.5em
+                display: block
+                position: relative
+                left: .5em
+                
+                color: $color-gray-dark
+                font-size: inherit
+                
+                outline: none
+                border: 0
+                margin-top: -.2em
+                padding: 0 .5em 0 .2
+                
+                background-color: transparent
                 +transition(background, .25s, ease-in-out)
+                &:hover,
+                &:focus
+                    background-color: $color-transparent-medium
+            select
+                outline: none
+                border: none
+                padding: 0
+                margin-left: -.5em
+                height: 1.5em
+                width: 100%
+                
+                font-size: inherit
+                background-color: transparent
+                color: $color-gray-dark
+                &:hover
+                    background-color: $color-transparent-light
+                option
+                    height: 1.5em
+                    background-color: $color-transparent-medium
+        .title
+            padding: .5em 0
+            background-color: $color-bright-light
     .hideOverflow
         overflow: scroll
         height: 100%
@@ -759,8 +814,12 @@ input
             color: $color-gray-dark
             background-color: $color-bright-light
             margin: 0
+        .times
+            padding-right: 1.8em
+            width: calc(50% - 1.8em)
     .listWrapper
         margin: 0
+        margin-top: -1.5em
         overflow: auto
         .mylist
             height: 1em    
@@ -784,6 +843,11 @@ input
                 font-weight: normal
                 overflow-x: scroll
                 white-space: nowrap
+                position: relative
+                font-size: 0.8em
+            .listTime
+                padding-right: 1.8em
+                width: calc(50% - 1.8em)
 
     @media (max-width: 800px)
         .listBlock,
@@ -794,140 +858,37 @@ input
             height: 30%
             width: 80%
             overflow: hidden
+            min-height: 10em
         .listBlock
             border-radius: 20px 20px 0 0
         .listBlock2
             border-radius: 0
-            margin-top: 1.5em
+            margin-top: 0
             top: 0
+            .blockTitle
+                background-color: $color-gray-transparent-medium
+        .listBlock3
+            display: none
+            
     iframe
         display: block
         border: none
         height: 100%
-
-    /* ICONS FOR PERMISSIONS */
-    .icon-container
-        display: inline-block
-        width: 1.5em
-        padding-left: .5em
-        height: 100%
-        position: relative
-        left: -.5em
-        overflow: hidden
-
-    .icon2
-        @extend .icon
-        background-position: -12em 0
-        position: relative
-        &:hover
-            background-position-y: -3em
-
-    .icon-share
-        @extend .icon2
-        top: .5em
-
-    .icon-edit
-        @extend .icon2
-        background-position: -13.5em 0
-        top: 1em
-
-    .icon-view
-        @extend .icon2
-        background-position: -16.5em 0
-        top: 1.5em
-
-    .icon-trash
-        @extend .icon2
-        background-position: -15em 0
-        top: 2.5em
-
-    .icon-link
-        @extend .icon2
-        background-position: -9em 0
-        top: 2em
-
-    .icon-link-2
-        @extend .icon2
-        background-position: -9em 0
-        top: 1em
-
-    .toolbox 
-        width: 100%
-        height: 11em
-        overflow: hidden
-        background-color: $color-bright-light
-        display: none
-        input
-            width: calc(100% - 5em)
-            height: 2em
-            display: inline-block
-            position: relative
-            top: -2.5em
-            right: -1em
-            color: $color-gray-dark
-            font-size: 16px
-            border: 0
-            outline: none
-            padding: 0 .5em
-            background-color: $color-bright-light
-            +transition(background, .25s, ease-in-out)
-        * input:hover,
-        * input:focus
-            background-color: $color-white
-        .permissions
-            width: calc(100% - 4em)
-            height: calc(100% - .5em)
-            position: relative
-            left: -.5em
-            top: -1.6em
-            display: inline-block
-            outline: none
-            padding: 0em .2em 0
-            .editors
-                height: 2em
-                width: calc(100% - 2em)
-                margin-bottom: .5em
-                display: block
-                position: relative
-                top: .5em
-                left: 0
-                color: $color-gray-dark
-                font-size: 16px
-                text-align: left
-        * .line
-            height: 1em
-            width: calc(100% - 2em)
-            padding-left: .5em
-            padding-top: 1em
-            margin-bottom: 0
-            margin-top: 0
-            display: block
-            color: $color-gray-dark
-            font-size: 16px
-            text-align: left
-            overflow-x: scroll
-            
-#popup
-    @extend .absolute-center
-    top: 30%
-    width: 50%
-    height: 30%
-    min-width: 200px
-    min-height: 200px
     
-    background-color: $color-bright-transparent-matte
-    border: 1em solid $color-bright-medium
-    border-left: none
-    border-right: none
-    z-index: 200
-    div
-        @extend .absolute-center
-        font-weight: normal
-        color: $color-gray-dark
-        text-align: center
-        letter-spacing: 3px
-        margin-top: 0.5em
-            
+    .icon-settings
+        @extend .icon
+        position: relative
+        background-position: -7.5em 0
+        display: block
+        top: 2em
+        left: calc(100% - 1.8em)
+        margin: 0
+        width: 1.5em
+        
+@media (max-width: 800px)
+    body
+        height: 100%
+        
 /* CLOUDS!! */
 #clouds
     padding: 100px 0

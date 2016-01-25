@@ -7,6 +7,8 @@ from catalist import app, db, HOSTNAME
 from database import Role, User, Catalist, CatalistEntry, CatalistKVP, user_datastore, security
 from permissions import cmp_permission, query_cur_perm
 
+from database import user_datastore
+from flask.ext.mongoengine import *
 
 # **********************************************************
 # User Interaction Section
@@ -49,7 +51,7 @@ def signup():
     flask_security.utils.login_user(user, remember=None)
 
     return render_template('home.html',
-                           message="Welcome to Catalist, " + user_id)
+                           message="Welcome to Catalist, " + user_id  + "!", newuser=1)
 
 
 @app.route("/signin", methods=['POST'])
