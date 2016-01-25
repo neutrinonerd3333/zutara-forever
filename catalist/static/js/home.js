@@ -610,6 +610,6 @@ function tutorial_4() {
 
 function tutorial_5() {
     $(".bubble-4").fadeOut();
-    $("#welcome").html("And that's it! Remember to register to manage your lists, and click hearts to vote!");
+    $("#welcome").html("And that's it! Remember to register to manage your lists and vote!");
     $("#welcome").fadeIn();
 }
