@@ -347,7 +347,6 @@ def list_delete():
     except DoesNotExist:
         raise InvalidAPIUsage("List {} does not exist".format(listid))
     if cmp_permission(query_cur_perm(the_list), "own") < 0:
-        print("User {} tried to delete list {}".format(flask_security.core.current_user.uid, listid))
         raise InvalidAPIUsage("Forbidden", status_code=403)
     the_list.delete()
     return 'OK'  # this should return a 200
@@ -729,22 +728,23 @@ def public_level_set():
     the_list.save()
     return "set"
 
+
 @api_blueprint.route("/permissions/public-get", methods=['POST'])
 @api_blueprint.route("/getpubliclevel", methods=['POST'])
 def public_level_get():
     """
         Get the permission level for a list for the public at-large.
-        
-        POST: {
-        listid: <the listid>,
-        }
+
+        POST:
+            listid: the listid
         """
     try:
         the_list = Catalist.objects.get(listid=request.form["listid"])
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
-    
+
     return the_list.public_level
+
 
 @api_blueprint.route("/permissions/forfeit", methods=['POST'])
 def permissions_forfeit():
@@ -771,20 +771,20 @@ def permissions_forfeit():
 
     return "OK"  # 200
 
+
 @api_blueprint.route("/permissions/listperms", methods=['POST'])
 def get_list_perms():
     """
     Returns a list of editors and viewers for the current list.
-    
-    GET: {
-        listid: <listid>
-    }
+
+    GET:
+        listid: the relevant listid
     """
     try:
         the_list = Catalist.objects.get(listid=request.form["listid"])
     except DoesNotExist:
         raise InvalidAPIUsage("List does not exist")
-    
+
     # check permissions
     if cmp_permission(query_cur_perm(the_list), "view") <= 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)

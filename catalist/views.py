@@ -1,10 +1,22 @@
+"""
+    catalist.views
+    ~~~~~~~~~~~~~~
+
+    This module contains most of the views (read: non-error views)
+    for our web app.
+
+    :copyright: (c) 2016 Rachel Wu, Tony Zhang
+    :license: lol don't steal this code pls
+"""
+
 from flask import render_template, request
 import flask.ext.security as flask_security
 from flask.ext import mongoengine
 from datetime import datetime, date, timedelta
 
 from catalist import app, db, HOSTNAME
-from database import Role, User, Catalist, CatalistEntry, CatalistKVP, user_datastore, security
+from database import Role, User, Catalist, CatalistEntry, \
+                     CatalistKVP, user_datastore, security
 from permissions import cmp_permission, query_cur_perm
 
 from database import user_datastore
@@ -51,7 +63,8 @@ def signup():
     flask_security.utils.login_user(user, remember=None)
 
     return render_template('home.html',
-                           message="Welcome to Catalist, " + user_id  + "!", newuser=1)
+                           message="Welcome to Catalist, {}!".format(user_id),
+                           newuser=1)
 
 
 @app.route("/signin", methods=['POST'])
