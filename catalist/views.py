@@ -100,7 +100,10 @@ def register():
 def getlist(listid):
     """ Display a list with given listid from our database. """
     url = request.base_url
-    the_list = Catalist.objects.get(listid=listid)
+    try:
+        the_list = Catalist.objects.get(listid=listid)
+    except DoesNotExist:
+        abort(404)
     if cmp_permission(query_cur_perm(the_list), "view") < 0:
         abort(403)
     msg = ('Access or share this list at:<br>'
