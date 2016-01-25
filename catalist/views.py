@@ -1,9 +1,10 @@
 from flask import render_template, request
 import flask.ext.security as flask_security
+from flask.ext import mongoengine
 from datetime import datetime, date, timedelta
 
 from catalist import app, db, HOSTNAME
-from database import Role, User, Catalist, CatalistEntry, CatalistKVP
+from database import Role, User, Catalist, CatalistEntry, CatalistKVP, user_datastore, security
 from permissions import cmp_permission, query_cur_perm
 
 

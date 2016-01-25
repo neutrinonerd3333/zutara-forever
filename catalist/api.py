@@ -281,7 +281,7 @@ def entry_title_save():
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List {} does not exist".foramt(lid))
+        raise InvalidAPIUsage("List {} does not exist".format(lid))
 
     if cmp_permission(query_cur_perm(the_list), "edit") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
@@ -344,8 +344,9 @@ def list_delete():
     except KeyError:
         raise InvalidAPIUsage("Invalid arguments")
     except DoesNotExist:
-        raise InvalidAPIUsage("List {} does not exist".foramt(listid))
+        raise InvalidAPIUsage("List {} does not exist".format(listid))
     if cmp_permission(query_cur_perm(the_list), "own") < 0:
+        print("User {} tried to delete list {}".format(flask_security.core.current_user.uid, listid))
         raise InvalidAPIUsage("Forbidden", status_code=403)
     the_list.delete()
     return 'OK'  # this should return a 200
@@ -610,7 +611,6 @@ def permissions_set():
         target: the username of the user whose permissions we'd
             like to change
         permission: one of {none | view | edit | own | admin}
-    }
     """
     uname = get_id()
     listid = request.form["listid"]
