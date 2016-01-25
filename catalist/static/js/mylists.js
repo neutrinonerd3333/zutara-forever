@@ -93,6 +93,7 @@ function openSettings() {
     }
     loadSettings();
     getPublicPermission(listid);
+    getCurrentPerms(listid);
 
     // actually show everything
     $(".listBlock3").fadeIn(500);
@@ -146,6 +147,20 @@ function getPublicPermission(listid) {
         method: "POST",
         success: function(data, status, jqxhr) {
             $(".listBlock3").find("select").val(data);
+        }
+    });
+}
+
+function getCurrentPerms(listid) {
+$.ajax({
+        data: {
+            listid: listid
+        },
+        url: "/api/permissions/listperms",
+        method: "POST",
+        success: function(data, status, jqxhr) {
+            $("#editors").val(data.editors);
+            $("#viewers").val(data.viewers);
         }
     });
 }

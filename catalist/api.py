@@ -797,9 +797,9 @@ def get_list_perms():
     edit = ""
 
     for viewer in viewers:
-        view.append(viewer.uid + " ")
+        view = view + viewer.uid + " "
     for editor in editors:
-        edit.append(editor.uid + " ")
+        edit = edit + editor.uid + " "
 
     return jsonify(viewers=view, editors=edit)
 
