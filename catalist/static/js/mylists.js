@@ -72,8 +72,8 @@ function openSettings() {
     getCurrentPerms(listid);
 
     // actually show everything
-    $(".listBlock3").fadeIn(500);
     $(".listBlock2").fadeOut(500);
+    $(".listBlock3").fadeIn(500);
 }
 
 function hideSettings() {
