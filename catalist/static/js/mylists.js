@@ -24,6 +24,8 @@ $(document).ready(function() {
 
 function previewLink() {
     var url = $(this).find("input").next().attr("value");
+    var n = url.indexOf("/list/");
+    url = "/preview/" + url.slice(n + 6);
     var preview = $("iframe");
     // don't want the preview to keep flickering if same link
     if ($(preview).attr("src") !== url) {
