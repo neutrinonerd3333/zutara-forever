@@ -109,11 +109,13 @@ function updatePerms(perm, permInput) {
     else if(perm==="edit") {
         msg = "You can edit and view this list."
         $(".listBlock3").find("#editors").prop('disabled', true);
+        $("select").prop('disabled', true);
     }
     else if(perm==="view") {
         msg = "You can view this list."
         $(".listBlock3").find("#viewers").prop('disabled', true);
         $(".listBlock3").find("#editors").prop('disabled', true);
+        $("select").prop('disabled', true);
     }
     else if(perm==="admin") {
         msg = "Tony why you snooping on people's lists?"
@@ -148,14 +150,20 @@ function updatePublicPermission(perm) {
     if(perm==="edit") {
         $(".listBlock3").find("#viewers").prop('disabled', true);
         $(".listBlock3").find("#editors").prop('disabled', true);
+        $(".listBlock3").find("#viewers").attr('placeholder', "Anyone can view.");
+        $(".listBlock3").find("#editors").attr('placeholder', "Anyone can edit.");
     }
     else if(perm==="view") {
         $(".listBlock3").find("#viewers").prop('disabled', true);
         $(".listBlock3").find("#editors").prop('disabled', false);
+        $(".listBlock3").find("#viewers").attr('placeholder', "Anyone can view.");
+        $(".listBlock3").find("#editors").attr('placeholder', "Oops! No editors yet.");
     }
     else if(perm==="none") {
         $(".listBlock3").find("#viewers").prop('disabled', false);
         $(".listBlock3").find("#editors").prop('disabled', false);
+        $(".listBlock3").find("#viewers").attr('placeholder', "Oops! No viewers yet.");
+        $(".listBlock3").find("#editors").attr('placeholder', "Oops! No editors yet.");
     }
 }
 
@@ -247,10 +255,16 @@ function setPermissions(listid, user, permission) {
         },
         error: function(jqxhr, error, exception) {
             getCurrentPerms(listid);
+            console.log(error);
             $("#link").html("Oops, that user doesn't exist!");
-            $("#link").fadeIn(500).fadeOut(500);
+            $("#link").fadeIn(500)
+            setTimeout(hideLink, 3000);
         }
     });
+}
+
+function hideLink() {
+    $("#link").fadeOut();
 }
 
 function deleteList(listid) {
