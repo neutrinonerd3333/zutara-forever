@@ -15,7 +15,8 @@ $(document).ready(function() {
 
     $("body").on('click', "input[type='url']", function() {
         $(this).select();
-        document.execCommand("copy");
+        // no need to copy for now
+        // document.execCommand("copy");
         // alert("Link copied to clipboard!");
     });
 
@@ -32,9 +33,6 @@ $(document).ready(function() {
             }
         }
     });
-
-    $(".list").on('mouseenter', ".listItem", buttonsVisible);
-    $(".list").on('mouseleave', ".listItem", buttonsHidden);
 
     // save
     $(".list").on('focusin', ".itemTitle input", function() {
@@ -178,7 +176,7 @@ function deleteEntry() {
                 entryind: eind,
             },
             success: function(data, status, jqxhr) {
-                console.log("deleted entry");
+                // console.log("deleted entry");
             }
         });
         $(entry).remove();
@@ -191,6 +189,9 @@ function deleteEntry() {
 function votesVisible() {
     $(".votes").show();
     $(".listItem").css("width", "90%");
+    
+    $(".list").on('mouseenter', ".listItem", buttonsVisible);
+    $(".list").on('mouseleave', ".listItem", buttonsHidden);
 }
 
 function buttonsVisible() {
@@ -213,6 +214,10 @@ function buttonsHidden() {
 
 function authenticated() {
     loggedIn = true;
+    if($("#newuser").length > 0) {
+        askForTutorial();
+    }
+    
     if (listid !== null) {
         // if this is route /list/<listid>, bind listeners
         enableLiveSave();
@@ -425,8 +430,6 @@ function addVote(that) {
             });
 
             // console.log("Current score is " + data.score);
-
-            // loadVotes($(item));
             return true;
         },
         error: function(jqxhr, error, exception) {
@@ -472,7 +475,6 @@ function deleteVote(that) {
         success: function(data, status, jqxhr) {
             $(that).css("background-position", "-6em 0");
             // console.log("Current score is " + data.score);
-            // loadVotes($(item));
             return true;
         },
         error: function(jqxhr, error, exception) {
@@ -522,7 +524,6 @@ function loadVotes(that) {
 
     var item = $(voteBox).closest(".listItem");
     var eind = $(".list .listItem").index(item);
-    console.log(eind);
     $.ajax({
         url: "/api/vote",
         method: 'POST',
@@ -610,6 +611,6 @@ function tutorial_4() {
 
 function tutorial_5() {
     $(".bubble-4").fadeOut();
-    $("#welcome").html("And that's it! Remember to register to manage your lists and vote!");
+    $("#welcome").html("And that's it! Remember to log in to manage your lists and vote on items!");
     $("#welcome").fadeIn();
 }
