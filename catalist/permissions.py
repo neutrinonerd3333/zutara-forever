@@ -17,7 +17,7 @@ perm_list = ["none", "view", "edit", "own", "admin"]
 
 #: Currently admins are determined by residency on this list.
 #: Hacky, I know. .__.
-admin_unames = ['rmwu', 'txz']
+admin_unames = ['zutara']
 
 
 def cmp_permission(perm1, perm2):

@@ -1,5 +1,5 @@
 .. Catalist documentation master file, created by
-   sphinx-quickstart on Fri Jan 22 18:01:17 2016.
+   sphinx-quickstart on Sun Jan 24 23:43:54 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -9,10 +9,9 @@ Welcome to Catalist's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
-.. automodule:: routes
-   :members:
+   catalist
 
 
 Indices and tables
