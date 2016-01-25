@@ -22,9 +22,9 @@ input:focus:-moz-placeholder { color: transparent; }
 :focus:-ms-input-placeholder { color: transparent; }
 
 /* START OF CSS */
-html { height: 100%; min-height: 333px; background: #AEF; overflow-x: hidden; }
+html { height: 100%; min-height: 500px; background: #AEF; overflow-x: hidden; overflow-y: scroll; }
 
-body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; height: calc(100% - 4em); margin: 0; background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: fixed; background-size: 100% 100%; background-repeat: no-repeat; background-position: left top; }
+body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; min-height: 500px; height: calc(100% - 4em); margin: 0; background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: scroll; background-size: 100% 100%; background-repeat: no-repeat; background-position: left top; }
 
 h1 { font-size: 1.2em; font-weight: lighter; letter-spacing: 0.2px; text-align: center; color: #CEF; margin: 0; position: relative; left: -10%; }
 
@@ -107,7 +107,7 @@ input { outline: none; }
 #wrapper { height: calc(80% - 6em); padding: 50px; width: auto; }
 
 /* TEXT CONTAINER FOR ABOUT PAGE */
-.textcontainer { font-size: 18px; padding: 1em; margin-top: -4em; width: 50%; min-width: 400px; height: 40%; min-height: 300px; display: block; color: #FFF; background-color: rgba(150, 230, 255, 0.5); overflow: auto; border-radius: 20px; }
+.textcontainer { font-size: 18px; padding: 1em; margin-top: -4em; width: 50%; min-width: 400px; height: 40%; min-height: 300px; display: block; color: #FFF; background-color: rgba(0, 0, 0, 0.1); overflow: auto; border-radius: 20px; }
 .textcontainer p { font-weight: lighter; letter-spacing: 0.5px; }
 .textcontainer a { color: #FFF; font-weight: normal; }
 .textcontainer a:hover { color: #CEF; }
@@ -154,7 +154,7 @@ input { outline: none; }
 .mylists #wrapper { height: 100%; overflow: hidden; position: relative; }
 .mylists .listBlock { left: 10%; border-radius: 20px 0 0 0; background-color: #CEF; }
 .mylists .listBlock2, .mylists .listBlock3 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
-.mylists .listBlock, .mylists .listBlock2, .mylists .listBlock3 { display: inline-block; position: absolute; height: 55%; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
+.mylists .listBlock, .mylists .listBlock2, .mylists .listBlock3 { display: inline-block; position: absolute; height: 55%; min-height: 15em; width: 40%; background-color: transparent; border: 0px; padding: 3em 0 0 0; margin: -2em 0.5em 0.5em; color: #333; text-align: center; overflow: hidden; }
 .mylists .listBlock3 { color: #666; display: none; }
 .mylists .listBlock3 .listPerms { height: 100%; width: 100%; position: relative; overflow: hidden; background-color: rgba(255, 255, 255, 0.2); }
 .mylists .listBlock3 .back { text-align: left; position: relative; width: 50%; height: 0.8em; padding: 0.5em 1em 0.7em 2em; border-radius: 20px; background-color: rgba(255, 255, 255, 0.2); }
