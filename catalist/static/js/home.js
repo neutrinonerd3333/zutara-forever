@@ -234,9 +234,28 @@ function guest() {
     if (listid === null) {
         $(".list").one("mouseenter", askForTutorial);
     } else {
-        enableLiveSave();
-        $("#link input").show();
+        getPublicPermission(listid)
     }
+}
+
+function getPublicPermission(listid) {
+    $.ajax({
+        data: {
+            listid: listid
+        },
+        url: "/api/getpubliclevel",
+        method: "POST",
+        success: function(data, status, jqxhr) {
+            if(data==="edit") {
+                enableLiveSave();
+            }
+            else if(data==="view") {
+                $(".list").find("input").prop('disabled', true);
+            }
+            else { enableLiveSave(); } // idk??
+            $("#link input").show();
+        }
+    });
 }
 
 function askToMakeList() {
