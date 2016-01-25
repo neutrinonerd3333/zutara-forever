@@ -132,29 +132,31 @@ def human_readable_time_since(tiem):
 
     :param tiem: a :attr:`datetime` object representing the given time.
     """
-    today = datetime.utcnow().timetuple()
-    lv = tiem.timetuple()
-    # formatting last visited
-    if(lv[7] == today[7]):  # same day
-        timeSince = today[3] - lv[3]
-        if(timeSince == 0):  # same hour
-            timeSince = today[4] - lv[4]
-            if timeSince == 1:
-                since = "1 minute ago"
-            else:
-                since = str(timeSince) + " minutes ago"
-        elif (timeSince == 1):
-            since = "1 hour ago"
+    now = datetime.utcnow()
+    then = tiem
+    delta = now - then  # in units of seconds
+
+    # >10 days ago: just display the date instead.
+    if delta.days > 10:
+        yearQ = (then.timetuple()[0] != now.timetuple()[0])
+        if yearQ:
+            return then.strftime("%-* %Y %b %d")  # format as '1776 Jul 4'
         else:
-            since = str(timeSince) + " hours ago"
-    else:
-        # days since January 1
-        timeSince = today[7] - lv[7]
-        if timeSince == 1:
-            since = "1 day ago"
-        else:
-            since = str(timeSince) + " days ago"
-    return since
+            return then.strftime("%-* %b %d")  # format as 'Jul 4'
+
+    # resolution should be in days if within [1, 10] days
+    if delta.days > 0:
+        return "{} day{} ago".format(delta.days,
+                                     '' if delta.days == 1 else 's')
+
+    secs = delta.seconds
+    if secs < 60:
+        return "just now"
+    mins = secs / 60
+    if mins < 60:
+        return "{} minute{} ago".format(mins, '' if mins == 1 else 's')
+    hrs = mins / 60
+    return "{} hour{} ago".format(hrs, '' if hrs == 1 else 's')
 
 
 app.jinja_env.globals.update(
