@@ -1,4 +1,5 @@
 var listid = 0;
+
 $(document).ready(function() {
 
     // expands preview on click (should I make it click?) over url
@@ -19,7 +20,6 @@ $(document).ready(function() {
 
     // focusout saves permissions
     $(".listBlock3").on("focusout", "input", saveSettings);
-
 });
 
 function previewLink() {
