@@ -115,7 +115,7 @@ def logged_in():
 
 
 def create_list():
-    """ Create a new, empty list and return the assigned listid """
+    """ Create a new, empty list and return the assigned listid. """
     list_id = str(uuid_module.uuid4())
     title = ""
     time = datetime.utcnow()
@@ -139,8 +139,12 @@ def create_list():
 @api_blueprint.route("/makelist", methods=['GET'])
 def make_list():
     """
-    Upon making the first edit, an empty list will be
-    created for the insertion of more data
+    Create a new, blank list, initializing it with appropriate
+    values and assigning it a creator/owner, if the current
+    user is authenticated.
+
+    Returns:
+        A response containing a dict `{'listid': assigned-list-id}`
     """
     list_id = create_list()
     return jsonify(listid=list_id)
@@ -154,21 +158,13 @@ def list_save():
     created. In both cases the listid to which we saved the list
     is returned.
 
-    usage:
-    {
-        title: <thetitle>,
-        contents: [
-            [title, [
-                [attrname, attrval],
-                ...
-                ]
-            ],
-            ...
-        ]
-        (optionally) , listid: <the listid to save to>
-    }
+    POST:
+        title: the-title,
+        contents: [[entry-title-0, [[key, value], ... ]] ... ]
+        listid: the-listid-to-save-to (optional)
 
-    Returns: the given or assigned listid
+    Returns:
+        The given or assigned listid
     """
     the_listid = request.form.get("listid", create_list())
     the_list = Catalist.objects.get(listid=the_listid)
@@ -360,11 +356,9 @@ def entry_delete():
     """
     Delete an entry from a Catalist. Requires at least edit permission.
 
-    usage: POST a JSON associative array as follows:
-    {
-        listid: <the id of the Catalist>,
-        entryind: <the index of the entry to remove>
-    }
+    POST:
+        listid: the id of the Catalist
+        entryind: the index of the entry to remove
     """
     try:
         listid = request.form["listid"]
@@ -390,12 +384,10 @@ def kvp_delete():
     Delete a key-value pair from a Catalist entry.
     Requires at least edit permission.
 
-    usage: POST a JSON associative array as follows:
-    {
-        listid: <the id of the Catalist>,
-        entryind: <the index of the entry to remove>,
-        index: <the index of the kvp within the entry>
-    }
+    POST:
+        listid: the id of the Catalist
+        entryind: the index of the entry to remove
+        index: the index of the kvp within the entry
     """
     try:
         entryind = int(request.form["entryind"])
@@ -433,28 +425,23 @@ def kvp_delete():
 @api_blueprint.route("/vote", methods=['POST'])
 def vote():
     """
-    Two options:
-    1. Update the database to incorporate a user's vote on an entry.
-    2. Find the user's current vote and the current score of the entry.
-    Requires at least view permission
+    Query or submit vote information for a particular Catalist entry.
+    In the former mode of operation, return the user's current vote
+    and the entry's current score. In the latter, return the user's
+    new vote and the entry's new score.
 
-    usage: POST the following
-    {
-        listid: <listid>,
-        entryind: <entryind>,
-        vote: {1 (upvote) | 0 (no vote) |
-               -1 (downvote) | 100 (get the current vote)}
-    }
+    Requires at least view permission to the relevant Catalist.
 
-    :return: a response with the following forms:
-    if vote == 100 {
-        current_vote: <the user's current vote>,
-        score: <the entry's current score>
-    }
-    if vote != 100 {
-        current_vote: <the vote just made>,
-        score: <the entry's new score>
-    }
+    POST:
+        listid: the listid of the relevant Catalist
+        entryind: the index of the entry we're voting on
+        vote: either 0, 1, -1, or 100, depending on what we're doing--
+            100 to simply query vote information, -1, 0, or 1 for
+            downvote, no vote, or upvote, respectively
+
+    Returns:
+        current_vote: the user's current (or new) vote
+        score: the entry's current (or new) score
     """
 
     listid = request.form["listid"]
@@ -575,10 +562,10 @@ def my_lists_interact(listid, addQ):
 @api_blueprint.route("/mylists/add", methods=['POST'])
 def add_to_my_lists():
     """
-    Add a specified list to "My Lists". POST
-    {
+    Add a specified list to "My Lists".
+
+    POST:
         listid: <listid>
-    }
     """
     try:
         listid = request.form["listid"]
@@ -592,10 +579,10 @@ def add_to_my_lists():
 @api_blueprint.route("/mylists/remove", methods=['POST'])
 def remove_from_my_lists():
     """
-    Remove a specified list from "My Lists". POST
-    {
+    Remove a specified list from "My Lists".
+
+    POST:
         listid: <listid>
-    }
     """
     try:
         listid = request.form["listid"]
@@ -615,21 +602,20 @@ def remove_from_my_lists():
 @api_blueprint.route("/setpermissions", methods=['POST'])
 def permissions_set():
     """
-    {
-        Set permissions for a user. Requires at least own permission
+    Set permissions for a user. Requires at least own permission
+    on the relevant Catalist.
 
-        listid: <listid>,
-        target: <username of user to set perms with>,
-        permission: {none | view | edit | own | admin}
+    POST:
+        listid: the relevant listid
+        target: the username of the user whose permissions we'd
+            like to change
+        permission: one of {none | view | edit | own | admin}
     }
     """
     uname = get_id()
     listid = request.form["listid"]
     perm = request.form["permission"]
     target = request.form["target"]
-    print(listid)
-    print(perm)
-    print(target)
     if target == '':
         target = uname
 
@@ -647,7 +633,7 @@ def permissions_set():
     try:
         uperm = query_permission(User.objects.get(uid=uname), the_list)
     except DoesNotExist:
-        raise InvalidAPIUsage("No such user")
+        raise InvalidAPIUsage("User {} does not exist".format(uname))
     print (cmp_permission(uperm, "own"))
     if cmp_permission(uperm, "own") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
@@ -695,17 +681,13 @@ def permissions_set():
 @api_blueprint.route("/getpermissions", methods=['POST'])
 def permissions_get():
     """
-    Get the permission level a user has for a particular list.
+    Get the permission level the current user has for a particular list.
 
-    usage: POST the following:
-    {
-        listid: <the listid>
-    }
+    POST:
+        listid: the relevant listid
 
-    returns:
-    {
-        permission: <the current permission>
-    }
+    Returns:
+        permission: the user's current permission level for the list.
     """
     try:
         catalist = Catalist.objects.get(listid=request.form["listid"])
@@ -721,10 +703,9 @@ def public_level_set():
     Set the permission level for a list for the public at-large.
     Requires own permission.
 
-    POST: {
-        listid: <the listid>,
-        permission: {none | view | edit | own | admin}
-    }
+    POST:
+        listid: the relevant listid
+        permission: one of {none | view | edit}
     """
     try:
         the_list = Catalist.objects.get(listid=request.form["listid"])
@@ -739,6 +720,10 @@ def public_level_set():
     if perm not in perm_list:
         raise InvalidAPIUsage("Invalid arguments")
 
+    if cmp_permission(perm, "edit") > 0:
+        raise InvalidAPIUsage("Can't raise public level above edit",
+                              status_code=403)
+
     the_list.public_level = perm
     the_list.save()
     return "set"
@@ -747,12 +732,11 @@ def public_level_set():
 @api_blueprint.route("/permissions/forfeit", methods=['POST'])
 def permissions_forfeit():
     """
-    Forfeit permissions to a list. Effectively sets permission
-    to Catalist.public_level.
+    Forfeit permissions to a list. Effectively sets the user's
+    permission to `Catalist.public_level`.
 
-    POST: {
-        listid: <listid>
-    }
+    POST:
+        listid: the relevant listid
     """
     cur_user = flask_security.core.current_user
     try:
@@ -780,14 +764,10 @@ def permissions_forfeit():
 @api_blueprint.route("/customize", methods=['POST'])
 def get_pref():
     """
-    Get the preferred theme for the user
-    POST: {
-        uid: <uid>,
-    }
-    returns:
-    {
-        theme: <preferred theme [0, 1, ..]>
-    }
+    Get the preferred theme for the current user.
+
+    Returns:
+        theme: the preferred theme [0, 1, ..]
     """
     # login required, so user must exist
     uid = flask_security.core.current_user.uid
