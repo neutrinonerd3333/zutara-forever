@@ -620,10 +620,12 @@ def permissions_set():
 
     POST:
         listid: the relevant listid
-        target: the username of the user whose permissions we'd
-            like to change
+        [target]: the username of the user whose permissions we'd
+            like to change. Defaults to current user if not specified.
         permission: one of {none | view | edit | own | admin}
     """
+    if not flask_security.core.current_user.is_authenticated:
+        raise InvalidAPIUsage("Forbidden; please log in!", status_code=403)
     uname = get_id()
     listid = request.form["listid"]
     perm = request.form["permission"]
@@ -639,16 +641,15 @@ def permissions_set():
     if perm not in perm_list:
         raise InvalidAPIUsage("Invalid arguments")
 
-    if cmp_permission(the_list.public_level, perm) >= 0:
-        raise InvalidAPIUsage("Higher public level")
-
     try:
         uperm = query_permission(User.objects.get(uid=uname), the_list)
     except DoesNotExist:
         raise InvalidAPIUsage("User {} does not exist".format(uname))
     print (cmp_permission(uperm, "own"))
     if cmp_permission(uperm, "own") < 0:
-        raise InvalidAPIUsage("Forbidden", status_code=403)
+        raise InvalidAPIUsage(
+            "Forbidden -- you don't own list {}".format(listid),
+            status_code=403)
 
     try:
         the_target = User.objects.get(uid=target)
@@ -664,6 +665,12 @@ def permissions_set():
         getattr(the_list, target_cur_perm + "ers").remove(the_target)
     elif target_cur_perm == "edit":
         the_list.editors.remove(the_target)
+
+    if cmp_permission(the_list.public_level, perm) >= 0:
+        return ("Warning: Public permission {} higher than {}, setting "
+                "{}'s permission to public level.").format(
+                    the_list.public_level, perm, target)
+        raise InvalidAPIUsage("Higher public level")
 
     # add target user to appropriate new privilege lists
     if perm in ["own", "view"]:
