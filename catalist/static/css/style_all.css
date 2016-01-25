@@ -24,7 +24,7 @@ input:focus:-moz-placeholder { color: transparent; }
 /* START OF CSS */
 html { height: 100%; min-height: 500px; background: #AEF; overflow-x: hidden; overflow-y: scroll; }
 
-body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; min-height: 500px; height: calc(100% - 4em); margin: 0; background: -moz-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #4BF 2em, #5CE calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: scroll; background-size: 100% 100%; background-repeat: no-repeat; background-position: left top; }
+body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; min-height: 500px; height: calc(100% - 4em); margin: 0; background: -moz-linear-gradient(top, #09F 2em, #4DF calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #09F 2em, #4DF calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #09F 2em, #4DF calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: scroll; background-size: 100% 100%; background-repeat: no-repeat; background-position: left top; }
 
 h1 { font-size: 1.2em; font-weight: lighter; letter-spacing: 0.2px; text-align: center; color: #CEF; margin: 0; position: relative; left: -10%; }
 
@@ -46,8 +46,8 @@ a:hover { color: #CEF; }
 .login-container { display: inline-block; margin: 0 1em 2em 0; position: absolute; top: 9%; right: 15%; color: #CEF; font-weight: normal; letter-spacing: 0.2px; }
 .login-container div { padding: 4px; text-align: right; font-size: 0.8em; }
 .login-container div a { background-color: rgba(255, 255, 255, 0.2); border-radius: 1em; padding: 0.3em 0.8em; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
-.login-container div a:hover { background-color: #CEF; color: #4BF; }
-.login-container div a:active { background-color: #CEF; color: #4BF; }
+.login-container div a:hover { background-color: #CEF; color: #09F; }
+.login-container div a:active { background-color: #CEF; color: #09F; }
 .login-container .yes, .login-container .no { font-size: 1em; }
 
 @media (max-width: 800px) { .login-container { top: 1%; height: 2em; overflow: hidden; } }
@@ -61,8 +61,8 @@ a:hover { color: #CEF; }
 
 /* TUTORIAL */
 #welcome { display: none; margin-top: 0em; margin-bottom: 0em; padding: 1em; border-radius: 20px; text-align: center; font-weight: normal; width: 40%; min-width: 300px; color: #FFF; background-color: rgba(0, 0, 0, 0.2); }
-#welcome #newb, #welcome #pro { font-size: 0.8em; background-color: #5CE; color: #FFF; width: 40%; display: inline-block; margin-top: 0.5em; padding: 0.5em; border-radius: 20px; cursor: pointer; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
-#welcome #newb:hover, #welcome #pro:hover { background-color: #CEF; color: #4BF; }
+#welcome #newb, #welcome #pro { font-size: 0.8em; background-color: #4DF; color: #FFF; width: 40%; display: inline-block; margin-top: 0.5em; padding: 0.5em; border-radius: 20px; cursor: pointer; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
+#welcome #newb:hover, #welcome #pro:hover { background-color: #CEF; color: #09F; }
 
 .bubble-2, .bubble, .bubble-4, .bubble-3 { top: 24em; width: 50%; min-width: 300px; height: 1em; display: none; z-index: 200; padding: 0.5em 0.5em 0.5em 1em; background: #CEF; color: #666; border-radius: 20px; font-size: 0.8em; }
 
@@ -82,11 +82,11 @@ a:hover { color: #CEF; }
 /* REGISTRATION */
 .user-form-container { color: #666; width: 100%; display: block; padding: 4px; align-items: center; }
 
-.topPlaceholder { position: absolute; top: 0; height: 2em; background-color: #4BF; width: 100%; min-width: 500px; }
+.topPlaceholder { position: absolute; top: 0; height: 2em; background-color: #09F; width: 100%; min-width: 500px; }
 
 .yes, .no { z-index: 10; display: inline; cursor: pointer; background-color: rgba(255, 255, 255, 0.2); color: #FFF; padding: 0.2em 0.5em; border-radius: 20px; }
 
-.yes:hover, .no:hover { font-weight: normal; background-color: #CEF; color: #4BF; }
+.yes:hover, .no:hover { font-weight: normal; background-color: #CEF; color: #09F; }
 
 input { outline: none; }
 
@@ -99,7 +99,7 @@ input { outline: none; }
 .register input[type="text"], .register input[type="email"], .register input[type="password"] { display: block; text-align: left; height: 1.8em; width: 10em; background-color: rgba(255, 255, 255, 0.7); margin-bottom: 10px; }
 .register input[type="text"]:hover, .register input[type="text"]:focus, .register input[type="email"]:hover, .register input[type="email"]:focus, .register input[type="password"]:hover, .register input[type="password"]:focus { background-color: rgba(255, 255, 255, 0.2); }
 .register input[type="submit"], .register input[type="button"] { text-align: center; height: 30px; width: 100px; background-color: rgba(0, 0, 0, 0.1); border-radius: 20px; color: #FFF; }
-.register input[type="submit"]:hover, .register input[type="button"]:hover { background-color: rgba(255, 255, 255, 0.7); color: #4BF; cursor: pointer; }
+.register input[type="submit"]:hover, .register input[type="button"]:hover { background-color: rgba(255, 255, 255, 0.7); color: #09F; cursor: pointer; }
 
 .header { margin: 2em 3em 1em 3em; width: auto; }
 .header img { display: block; position: relative; left: -20%; margin-left: auto; margin-right: auto; height: 3em; width: auto; }
@@ -113,7 +113,7 @@ input { outline: none; }
 .textcontainer a:hover { color: #CEF; }
 
 /* FOOTER DOES NOT CURRENTLY WORK */
-#footer { width: 200%; height: 5em; background-color: #4BF; height: 4em; width: 100%; display: block; position: absolute; margin: 3em 0 -5em 0; right: -50px; /* account for wrapper */ bottom: 0em; }
+#footer { width: 200%; height: 5em; background-color: #09F; height: 4em; width: 100%; display: block; position: absolute; margin: 3em 0 -5em 0; right: -50px; /* account for wrapper */ bottom: 0em; }
 
 .list { width: 50%; min-width: 300px; height: 100%; min-height: 200px; display: block; border-radius: 20px; padding: 1em; margin-top: -2em; margin-bottom: 4em; color: #666; background-color: rgba(255, 255, 255, 0.2); font-size: 18px; font-weight: normal; overflow: auto; }
 .list * input { color: #666; background-color: #CEF; font-size: 16px; border: 0; outline: none; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
