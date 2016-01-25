@@ -688,31 +688,32 @@ input
                 display: block
                 position: relative
                 background-position: -3em 0
-                top: 3em
+                top: 3.5em
+            .icon-settings-2
+                @extend .icon-back
+                top: .5em
+                background-position: -7.5em 0
             .icon-share
                 @extend .icon-back
                 background-position: -12em 0
-                top: .5em
+                top: 1em
             .icon-edit
                 @extend .icon-back
                 background-position: -13.5em 0
-                top: 1em
+                top: 1.5em
             .icon-view
                 @extend .icon-back
                 background-position: -16.5em 0
-                top: 1.5em
-            .icon-trash
-                @extend .icon-back
-                background-position: -15em 0
-                top: 2.5em
+                top: 2em
             .icon-link
                 @extend .icon-back
                 background-position: -9em 0
-                top: 2em
-            .icon-link-2
+                top: 2.5em
+            .icon-trash
                 @extend .icon-back
-                background-position: -9em 0
-                top: 1em
+                background-position: -15em 0
+                top: 3em
+            
         .options
             width: calc(100% - 2em)
             height: calc(100% - .2em)
@@ -745,20 +746,39 @@ input
                 display: block
             input
                 width: calc(100% - 1.2em)
-                left: .5em
-                margin-top: -.2em
                 height: 1.5em
                 display: block
                 position: relative
+                left: .5em
+                
                 color: $color-gray-dark
                 font-size: inherit
-                border: 0
+                
                 outline: none
+                border: 0
+                margin-top: -.2em
                 padding: 0 .5em 0 .2
+                
                 background-color: transparent
                 +transition(background, .25s, ease-in-out)
                 &:hover,
                 &:focus
+                    background-color: $color-transparent-medium
+            select
+                outline: none
+                border: none
+                padding: 0
+                margin-left: -.5em
+                height: 1.5em
+                width: 100%
+                
+                font-size: inherit
+                background-color: transparent
+                color: $color-gray-dark
+                &:hover
+                    background-color: $color-transparent-light
+                option
+                    height: 1.5em
                     background-color: $color-transparent-medium
         .title
             padding: .5em 0
@@ -854,53 +874,7 @@ input
         display: block
         border: none
         height: 100%
-
-    /* ICONS FOR PERMISSIONS */
-    .icon-container
-        display: inline-block
-        width: 1.5em
-        padding-left: .5em
-        height: 100%
-        position: relative
-        left: -.5em
-        overflow: hidden
-
-    .icon2
-        @extend .icon
-        background-position: -12em 0
-        position: relative
-        &:hover
-            background-position-y: -3em
-
-    .icon-share
-        @extend .icon2
-        top: .5em
-
-    .icon-edit
-        @extend .icon2
-        background-position: -13.5em 0
-        top: 1em
-
-    .icon-view
-        @extend .icon2
-        background-position: -16.5em 0
-        top: 1.5em
-
-    .icon-trash
-        @extend .icon2
-        background-position: -15em 0
-        top: 2.5em
-
-    .icon-link
-        @extend .icon2
-        background-position: -9em 0
-        top: 2em
-
-    .icon-link-2
-        @extend .icon2
-        background-position: -9em 0
-        top: 1em
-        
+    
     .icon-settings
         @extend .icon
         position: relative
@@ -910,63 +884,7 @@ input
         left: calc(100% - 1.8em)
         margin: 0
         width: 1.5em
-
-    .toolbox 
-        width: 100%
-        height: 11em
-        overflow: hidden
-        background-color: $color-bright-light
-        display: none
-        input
-            width: calc(100% - 5em)
-            height: 2em
-            display: inline-block
-            position: relative
-            top: -2.5em
-            right: -1em
-            color: $color-gray-dark
-            font-size: 16px
-            border: 0
-            outline: none
-            padding: 0 .5em
-            background-color: $color-bright-light
-            +transition(background, .25s, ease-in-out)
-        * input:hover,
-        * input:focus
-            background-color: $color-white
-        .permissions
-            width: calc(100% - 4em)
-            height: calc(100% - .5em)
-            position: relative
-            left: -.5em
-            top: -1.6em
-            display: inline-block
-            outline: none
-            padding: 0em .2em 0
-            .editors
-                height: 2em
-                width: calc(100% - 2em)
-                margin-bottom: .5em
-                display: block
-                position: relative
-                top: .5em
-                left: 0
-                color: $color-gray-dark
-                font-size: 16px
-                text-align: left
-        * .line
-            height: 1em
-            width: calc(100% - 2em)
-            padding-left: .5em
-            padding-top: 1em
-            margin-bottom: 0
-            margin-top: 0
-            display: block
-            color: $color-gray-dark
-            font-size: 16px
-            text-align: left
-            overflow-x: scroll
-   
+        
 @media (max-width: 800px)
     body
         height: 100%

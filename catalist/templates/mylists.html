@@ -54,6 +54,7 @@ my lists
             <div class="title">Listname</div>
             <div class="listPerms">
                 <div class="icon-container">
+                    <div class="icon-settings-2"></div>
                     <div class="icon-share"></div>
                     <div class="icon-edit"></div>
                     <div class="icon-view"></div>
@@ -63,6 +64,13 @@ my lists
                 </div>
                 <div class="options">
                     <table>
+                        <tr><td><div id="publvl">
+                        <select>
+                            <option value="edit">Public can edit.</option>
+                            <option value="view">Public can view.</option>
+                            <option value="none">List is private.</option>
+                        </select>
+                        </div></td></tr>
                         <tr><td><div id="permlvl"></div></td></tr>
                         <tr><td>
                             <input type='text' id='editors' placeholder='Oops! No editors yet.'></td></tr>

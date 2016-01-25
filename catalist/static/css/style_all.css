@@ -138,8 +138,8 @@ input { outline: none; }
 .listItem .attributes .attribute:last-child { border-radius: 0 0 20px 20px; }
 
 /* DEFAULT SPRITE IS DOWN ARROW */
-.icon, .icon-down, .icon-minus, .icon-heart, .icon-trash-2, .mylists .listBlock3 .icon-container .icon-back, .mylists .listBlock3 .icon-container .icon-share, .mylists .listBlock3 .icon-container .icon-edit, .mylists .listBlock3 .icon-container .icon-view, .mylists .listBlock3 .icon-container .icon-trash, .mylists .listBlock3 .icon-container .icon-link, .mylists .listBlock3 .icon-container .icon-link-2, .mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2, .mylists .icon-settings { background-image: url("/static/img/icons.svg"); background-size: 18em 4.5em; background-clip: border-box; background-repeat: no-repeat; background-position: 0 0; display: block; width: 1.5em; height: 1.5em; position: absolute; padding: 0; margin: 0; z-index: 100; }
-.icon:hover, .icon-down:hover, .icon-minus:hover, .icon-heart:hover, .icon-trash-2:hover, .mylists .listBlock3 .icon-container .icon-back:hover, .mylists .listBlock3 .icon-container .icon-share:hover, .mylists .listBlock3 .icon-container .icon-edit:hover, .mylists .listBlock3 .icon-container .icon-view:hover, .mylists .listBlock3 .icon-container .icon-trash:hover, .mylists .listBlock3 .icon-container .icon-link:hover, .mylists .listBlock3 .icon-container .icon-link-2:hover, .mylists .icon2:hover, .mylists .icon-share:hover, .mylists .icon-edit:hover, .mylists .icon-view:hover, .mylists .icon-trash:hover, .mylists .icon-link:hover, .mylists .icon-link-2:hover, .mylists .icon-settings:hover { background-position-y: -3em; }
+.icon, .icon-down, .icon-minus, .icon-heart, .icon-trash-2, .mylists .listBlock3 .icon-container .icon-back, .mylists .listBlock3 .icon-container .icon-settings-2, .mylists .listBlock3 .icon-container .icon-share, .mylists .listBlock3 .icon-container .icon-edit, .mylists .listBlock3 .icon-container .icon-view, .mylists .listBlock3 .icon-container .icon-link, .mylists .listBlock3 .icon-container .icon-trash, .mylists .icon-settings { background-image: url("/static/img/icons.svg"); background-size: 18em 4.5em; background-clip: border-box; background-repeat: no-repeat; background-position: 0 0; display: block; width: 1.5em; height: 1.5em; position: absolute; padding: 0; margin: 0; z-index: 100; }
+.icon:hover, .icon-down:hover, .icon-minus:hover, .icon-heart:hover, .icon-trash-2:hover, .mylists .listBlock3 .icon-container .icon-back:hover, .mylists .listBlock3 .icon-container .icon-settings-2:hover, .mylists .listBlock3 .icon-container .icon-share:hover, .mylists .listBlock3 .icon-container .icon-edit:hover, .mylists .listBlock3 .icon-container .icon-view:hover, .mylists .listBlock3 .icon-container .icon-link:hover, .mylists .listBlock3 .icon-container .icon-trash:hover, .mylists .icon-settings:hover { background-position-y: -3em; }
 
 .icon-down { right: 0.3em; top: 0.3em; }
 
@@ -150,7 +150,7 @@ input { outline: none; }
 .icon-trash-2 { background-position: -15em 0; top: 0.3em; right: 3.5em; display: none; }
 
 /* MY LISTS INTERFACE */
-.mylists { height: 80%; min-height: 550px; /* ICONS FOR PERMISSIONS */ }
+.mylists { height: 80%; min-height: 550px; }
 .mylists #wrapper { height: 80%; overflow: hidden; position: relative; }
 .mylists .listBlock { left: 10%; border-radius: 20px 0 0 0; background-color: #CEF; }
 .mylists .listBlock2, .mylists .listBlock3 { left: 50%; right: 20%; border-radius: 0 20px 0 0; overflow: hidden; }
@@ -159,20 +159,23 @@ input { outline: none; }
 .mylists .listBlock3 .listPerms { height: 100%; width: 100%; position: relative; overflow: hidden; background-color: rgba(255, 255, 255, 0.2); }
 .mylists .listBlock3 .back { text-align: left; position: relative; width: 50%; height: 0.8em; padding: 0.5em 1em 0.7em 2em; border-radius: 20px; background-color: rgba(255, 255, 255, 0.2); }
 .mylists .listBlock3 .icon-container { width: 2em; height: 100%; position: absolute; left: 0; }
-.mylists .listBlock3 .icon-container .icon-back, .mylists .listBlock3 .icon-container .icon-share, .mylists .listBlock3 .icon-container .icon-edit, .mylists .listBlock3 .icon-container .icon-view, .mylists .listBlock3 .icon-container .icon-trash, .mylists .listBlock3 .icon-container .icon-link, .mylists .listBlock3 .icon-container .icon-link-2 { display: block; position: relative; background-position: -3em 0; top: 3em; }
-.mylists .listBlock3 .icon-container .icon-share { background-position: -12em 0; top: 0.5em; }
-.mylists .listBlock3 .icon-container .icon-edit { background-position: -13.5em 0; top: 1em; }
-.mylists .listBlock3 .icon-container .icon-view { background-position: -16.5em 0; top: 1.5em; }
-.mylists .listBlock3 .icon-container .icon-trash { background-position: -15em 0; top: 2.5em; }
-.mylists .listBlock3 .icon-container .icon-link { background-position: -9em 0; top: 2em; }
-.mylists .listBlock3 .icon-container .icon-link-2 { background-position: -9em 0; top: 1em; }
+.mylists .listBlock3 .icon-container .icon-back, .mylists .listBlock3 .icon-container .icon-settings-2, .mylists .listBlock3 .icon-container .icon-share, .mylists .listBlock3 .icon-container .icon-edit, .mylists .listBlock3 .icon-container .icon-view, .mylists .listBlock3 .icon-container .icon-link, .mylists .listBlock3 .icon-container .icon-trash { display: block; position: relative; background-position: -3em 0; top: 3.5em; }
+.mylists .listBlock3 .icon-container .icon-settings-2 { top: 0.5em; background-position: -7.5em 0; }
+.mylists .listBlock3 .icon-container .icon-share { background-position: -12em 0; top: 1em; }
+.mylists .listBlock3 .icon-container .icon-edit { background-position: -13.5em 0; top: 1.5em; }
+.mylists .listBlock3 .icon-container .icon-view { background-position: -16.5em 0; top: 2em; }
+.mylists .listBlock3 .icon-container .icon-link { background-position: -9em 0; top: 2.5em; }
+.mylists .listBlock3 .icon-container .icon-trash { background-position: -15em 0; top: 3em; }
 .mylists .listBlock3 .options { width: calc(100% - 2em); height: calc(100% - .2em); padding-top: 0.6em; display: inline-block; position: absolute; left: 2em; }
 .mylists .listBlock3 .options table { border-collapse: collapse; border-spacing: 0; cell-spacing: 0; width: 100%; height: 100%; font-size: 0.8em; }
 .mylists .listBlock3 .options tr { width: 100%; height: 2em; padding: 4px 0 4px 0; margin: 0; display: block; }
 .mylists .listBlock3 .options td { height: 2em; width: 100%; text-align: left; display: block; }
 .mylists .listBlock3 .options div { position: relative; padding: 0 0.5em; display: block; }
-.mylists .listBlock3 .options input { width: calc(100% - 1.2em); left: 0.5em; margin-top: -0.2em; height: 1.5em; display: block; position: relative; color: #666; font-size: inherit; border: 0; outline: none; padding: 0 0.5em 0 0.2; background-color: transparent; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
+.mylists .listBlock3 .options input { width: calc(100% - 1.2em); height: 1.5em; display: block; position: relative; left: 0.5em; color: #666; font-size: inherit; outline: none; border: 0; margin-top: -0.2em; padding: 0 0.5em 0 0.2; background-color: transparent; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
 .mylists .listBlock3 .options input:hover, .mylists .listBlock3 .options input:focus { background-color: rgba(255, 255, 255, 0.5); }
+.mylists .listBlock3 .options select { outline: none; border: none; padding: 0; margin-left: -0.5em; height: 1.5em; width: 100%; font-size: inherit; background-color: transparent; color: #666; }
+.mylists .listBlock3 .options select:hover { background-color: rgba(255, 255, 255, 0.2); }
+.mylists .listBlock3 .options select option { height: 1.5em; background-color: rgba(255, 255, 255, 0.5); }
 .mylists .listBlock3 .title { padding: 0.5em 0; background-color: #AEF; }
 .mylists .hideOverflow { overflow: scroll; height: 100%; }
 .mylists .scrollWrapper { overflow: auto; height: 100%; }
@@ -191,22 +194,7 @@ input { outline: none; }
   .mylists .listBlock2 .blockTitle, .mylists .listBlock3 .blockTitle { background-color: rgba(0, 0, 0, 0.2); }
   .mylists .listBlock3 { display: none; } }
 .mylists iframe { display: block; border: none; height: 100%; }
-.mylists .icon-container { display: inline-block; width: 1.5em; padding-left: 0.5em; height: 100%; position: relative; left: -0.5em; overflow: hidden; }
-.mylists .icon2, .mylists .icon-share, .mylists .icon-edit, .mylists .icon-view, .mylists .icon-trash, .mylists .icon-link, .mylists .icon-link-2 { background-position: -12em 0; position: relative; }
-.mylists .icon2:hover, .mylists .icon-share:hover, .mylists .icon-edit:hover, .mylists .icon-view:hover, .mylists .icon-trash:hover, .mylists .icon-link:hover, .mylists .icon-link-2:hover { background-position-y: -3em; }
-.mylists .icon-share { top: 0.5em; }
-.mylists .icon-edit { background-position: -13.5em 0; top: 1em; }
-.mylists .icon-view { background-position: -16.5em 0; top: 1.5em; }
-.mylists .icon-trash { background-position: -15em 0; top: 2.5em; }
-.mylists .icon-link { background-position: -9em 0; top: 2em; }
-.mylists .icon-link-2 { background-position: -9em 0; top: 1em; }
 .mylists .icon-settings { position: relative; background-position: -7.5em 0; display: block; top: 2em; left: calc(100% - 1.8em); margin: 0; width: 1.5em; }
-.mylists .toolbox { width: 100%; height: 11em; overflow: hidden; background-color: #AEF; display: none; }
-.mylists .toolbox input { width: calc(100% - 5em); height: 2em; display: inline-block; position: relative; top: -2.5em; right: -1em; color: #666; font-size: 16px; border: 0; outline: none; padding: 0 0.5em; background-color: #AEF; transition: background 0.25s ease-in-out; -moz-transition: background 0.25s ease-in-out; -webkit-transition: background 0.25s ease-in-out; }
-.mylists .toolbox * input:hover, .mylists .toolbox * input:focus { background-color: #FFF; }
-.mylists .toolbox .permissions { width: calc(100% - 4em); height: calc(100% - .5em); position: relative; left: -0.5em; top: -1.6em; display: inline-block; outline: none; padding: 0em 0.2em 0; }
-.mylists .toolbox .permissions .editors { height: 2em; width: calc(100% - 2em); margin-bottom: 0.5em; display: block; position: relative; top: 0.5em; left: 0; color: #666; font-size: 16px; text-align: left; }
-.mylists .toolbox * .line { height: 1em; width: calc(100% - 2em); padding-left: 0.5em; padding-top: 1em; margin-bottom: 0; margin-top: 0; display: block; color: #666; font-size: 16px; text-align: left; overflow-x: scroll; }
 
 @media (max-width: 800px) { body { height: 100%; } }
 /* CLOUDS!! */
