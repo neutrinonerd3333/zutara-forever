@@ -236,11 +236,12 @@ function guest() {
     if (listid === null) {
         askForTutorial();
         // $(".list").one("mouseenter", askForTutorial);
+        $(".list").on('mouseenter', ".listItem", buttonsVisible);
+        $(".list").on('mouseleave', ".listItem", buttonsHidden);
     } else {
         getPublicPermission(listid)
     }
-    $(".list").on('mouseenter', ".listItem", buttonsVisible);
-    $(".list").on('mouseleave', ".listItem", buttonsHidden);
+    
 }
 
 function getPublicPermission(listid) {
@@ -253,6 +254,9 @@ function getPublicPermission(listid) {
         success: function(data, status, jqxhr) {
             if(data==="edit") {
                 enableLiveSave();
+                
+                $(".list").on('mouseenter', ".listItem", buttonsVisible);
+                $(".list").on('mouseleave', ".listItem", buttonsHidden);
             }
             else if(data==="view") {
                 $(".list").find("input").prop('disabled', true);
