@@ -117,7 +117,7 @@ function updatePerms(perm, permInput) {
     else if(perm==="edit") {
         msg = "You can edit and view this list.";
         $(".listBlock3").find("#editors").prop('disabled', true);
-        $(".listBlock3").find("#viewers").prop('disabled', false);
+        $(".listBlock3").find("#viewers").prop('disabled', true);
         $("select").prop('disabled', true);
     }
     else if(perm==="view") {
