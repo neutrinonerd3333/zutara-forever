@@ -193,9 +193,16 @@ a
     margin-bottom: -2em
     margin-top: 3em
     text-align: center
-    a:hover
-        font-weight: normal
-        color: $color-bright-light
+    a
+        border-radius: 20px
+        padding: 0 10px
+        background-color: $color-transparent-light
+        color: $color-white
+        +transition(background, .25s, ease-in-out)
+        &:hover
+            font-weight: normal
+            color: $color-bright-dark
+            background-color: $color-bright-light
     input
         display: none
         outline: none

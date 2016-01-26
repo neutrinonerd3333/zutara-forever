@@ -236,6 +236,8 @@ function guest() {
     } else {
         getPublicPermission(listid)
     }
+    $(".list").on('mouseenter', ".listItem", buttonsVisible);
+    $(".list").on('mouseleave', ".listItem", buttonsHidden);
 }
 
 function getPublicPermission(listid) {
