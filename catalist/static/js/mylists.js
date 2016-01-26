@@ -1,4 +1,5 @@
 var listid = 0;
+var uid = "";
 
 $(document).ready(function() {
 
@@ -103,25 +104,29 @@ function updatePerms(perm, permInput) {
     // default delete msg is no permission
     // can only add permissions below your own
     if(perm==="own"){
-        msg = "You are the owner of the list."
+        msg = "You are the owner of the list.";
         $(".listBlock3").find("#deletelist").html("Click trash to permanently delete list.");
+        $(".listBlock3").find("#editors").prop('disabled', false);
+        $(".listBlock3").find("#viewers").prop('disabled', false);
+        $("select").prop('disabled', false);
     }
     else if(perm==="edit") {
-        msg = "You can edit and view this list."
+        msg = "You can edit and view this list.";
         $(".listBlock3").find("#editors").prop('disabled', true);
+        $(".listBlock3").find("#viewers").prop('disabled', false);
         $("select").prop('disabled', true);
     }
     else if(perm==="view") {
-        msg = "You can view this list."
-        $(".listBlock3").find("#viewers").prop('disabled', true);
+        msg = "You can view this list.";
         $(".listBlock3").find("#editors").prop('disabled', true);
+        $(".listBlock3").find("#viewers").prop('disabled', true);
         $("select").prop('disabled', true);
     }
     else if(perm==="admin") {
-        msg = "Tony why you snooping on people's lists?"
+        msg = "Tony why you snooping on people's lists?";
     }
     else {
-        msg = "You do not have access to this list."
+        msg = "You do not have access to this list.";
     }
     $(".listBlock3").find("#permlvl").html(msg);
 }
