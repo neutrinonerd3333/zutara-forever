@@ -69,7 +69,7 @@ function validateEmail(em) {
     var email = em.value.toString();
     var len = email.length;
 
-    for (var i = 0; i < len; i++) {
+    /*for (var i = 0; i < len; i++) {
         code = email.charCodeAt(i);
         if (!(code > 47 && code < 58) && // 0-9
             !(code > 64 && code < 91) && // A-Z
@@ -77,7 +77,7 @@ function validateEmail(em) {
             !(code === 46 || code === 64)) { // . and @
             return false;
         }
-    }
+    }*/
     return true;
 };
 
