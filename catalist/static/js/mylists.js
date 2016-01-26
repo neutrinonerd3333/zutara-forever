@@ -1,5 +1,6 @@
 var listid = 0;
 var uid = "";
+var perm = "";
 
 $(document).ready(function() {
 
@@ -52,6 +53,9 @@ function openSettings() {
     // cut out "/list/"
     listid = url.slice(n + 6);
     
+    getPublicPermission(listid);
+    getCurrentPerms(listid);
+    
     // if first time loading settings, get permission
     // level from db
     if ($(permInput).val() === '') {
@@ -64,13 +68,13 @@ function openSettings() {
             method: 'POST',
             success: function(data, status, jqxhr) {
                 var perm = data.permission;
+        
                 updatePerms(perm, permInput);
             }
         });
     }
+    
     loadSettings();
-    getPublicPermission(listid);
-    getCurrentPerms(listid);
 
     // actually show everything
     $(".listBlock2").fadeOut(500);
@@ -203,7 +207,7 @@ $.ajax({
 function loadSettings() {
     $.ajax({
             data: {
-                listid: listid,
+                listid: listid
             },
             url: "api/permissions/listperms",
             method: 'POST',
