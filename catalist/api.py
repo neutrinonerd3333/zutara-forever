@@ -812,7 +812,7 @@ def get_list_perms():
         raise InvalidAPIUsage("List does not exist")
 
     # check permissions
-    if cmp_permission(query_cur_perm(the_list), "view") <= 0:
+    if cmp_permission(query_cur_perm(the_list), "view") < 0:
         raise InvalidAPIUsage("Forbidden", status_code=403)
 
     viewers = the_list.viewers
