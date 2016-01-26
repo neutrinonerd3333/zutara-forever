@@ -158,6 +158,8 @@ $(document).ready(function() {
             $("#link").html("Oops! you can't delete the last entry!");
         }
     });
+    
+    $("body").on("click", ".exit-tutorial", noTutorial);
 });
 
 function deleteEntry() {
@@ -595,16 +597,24 @@ function askForTutorial() {
 }
 
 function noTutorial() {
-    $("#welcome").html("No problem! Have fun creating! We'll auto-save your lists.");
+    $("#welcome").html("No problem! Have fun creating! We'll auto-save your lists. (Refresh if you made a mistake and want a tutorial!)");
     setTimeout(hideTutorial, 2000);
+    $(".bubble").hide();
+    $(".bubble-2").hide();
+    $(".bubble-3").hide();
+    $(".bubble-4").hide();
 }
 
 function hideTutorial() {
-    $("#welcome").fadeOut();
+    $("#welcome").fadeOut();   
+}
+
+function exitTutorial() {
+    $("#welcome").html("If you're secretly a pro,<div class='exit-tutorial'>Click Here To End Tutorial.</div>");
 }
 
 function tutorial() {
-    hideTutorial();
+    exitTutorial();
     setTimeout(tutorial_1, 300);
 }
 
