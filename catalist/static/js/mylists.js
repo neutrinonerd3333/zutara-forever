@@ -11,7 +11,6 @@ $(document).ready(function() {
     // hide toolbox on clicking back
     $(".listBlock3").on("click", ".icon-back", hideSettings);   
 
-
     // copy url to clipboard upon clicking in it
     $(".listBlock3").on("click", "input", useButtons);
     
@@ -20,12 +19,13 @@ $(document).ready(function() {
 
     // focusout saves permissions
     $(".listBlock3").on("focusout", "input", saveSettings);
+    
+    // change public permission on selecting different one
+    $(".listBlock3").on("change", "select", setPublicPermission);
 });
 
 function previewLink() {
-    var url = $(this).find("input").next().attr("value");
-    var n = url.indexOf("/list/");
-    url = "/preview/" + url.slice(n + 6);
+    var url = $(this).find("#preview").attr("value");
     var preview = $("iframe");
     // don't want the preview to keep flickering if same link
     if ($(preview).attr("src") !== url) {
@@ -63,40 +63,17 @@ function openSettings() {
             method: 'POST',
             success: function(data, status, jqxhr) {
                 var perm = data.permission;
-                $(permInput).val(perm);
-                
-                var msg = ""
-                // default delete msg is no permission
-                // can only add permissions below your own
-                if(perm==="own"){
-                    msg = "You are the owner of the list."
-                    $(".listBlock3").find("#deletelist").html("Click trash to permanently delete list.");
-                }
-                else if(perm==="edit") {
-                    msg = "You can edit and view this list."
-                    $(".listBlock3").find("#viewers").prop('disabled', true);
-                }
-                else if(perm==="view") {
-                    msg = "You can view this list."
-                    $(".listBlock3").find("#viewers").prop('disabled', true);
-                    $(".listBlock3").find("#editors").prop('disabled', true);
-                }
-                else if(perm==="admin") {
-                    msg = "Tony why you snooping on people's lists?"
-                }
-                else {
-                    msg = "You do not have access to this list."
-                }
-                $(".listBlock3").find("#permlvl").html(msg);
+                updatePerms(perm, permInput);
             }
         });
     }
     loadSettings();
     getPublicPermission(listid);
+    getCurrentPerms(listid);
 
     // actually show everything
-    $(".listBlock3").fadeIn(500);
     $(".listBlock2").fadeOut(500);
+    $(".listBlock3").fadeIn(500);
 }
 
 function hideSettings() {
@@ -119,18 +96,75 @@ function buttonListener() {
     deleteList(listid);
 }
 
-function setPublicPermission(listid, permission) {
-    if(!(permission==="view" || permission==="edit")) {
-        return false;
+function updatePerms(perm, permInput) {
+    $(permInput).val(perm);
+                
+    var msg = ""
+    // default delete msg is no permission
+    // can only add permissions below your own
+    if(perm==="own"){
+        msg = "You are the owner of the list."
+        $(".listBlock3").find("#deletelist").html("Click trash to permanently delete list.");
     }
+    else if(perm==="edit") {
+        msg = "You can edit and view this list."
+        $(".listBlock3").find("#editors").prop('disabled', true);
+        $("select").prop('disabled', true);
+    }
+    else if(perm==="view") {
+        msg = "You can view this list."
+        $(".listBlock3").find("#viewers").prop('disabled', true);
+        $(".listBlock3").find("#editors").prop('disabled', true);
+        $("select").prop('disabled', true);
+    }
+    else if(perm==="admin") {
+        msg = "Tony why you snooping on people's lists?"
+    }
+    else {
+        msg = "You do not have access to this list."
+    }
+    $(".listBlock3").find("#permlvl").html(msg);
+}
+
+// select has 3 built in permission levels, so
+// should be no exception here
+function setPublicPermission() {
+    var perm = $("select").val()
+    
     $.ajax({
         url: "/api/setpubliclevel",
         method: "POST",
         data: {
             listid: listid,
-            permission: permission
+            permission: perm
+        },
+        success: function(data, status, jqxhr) {
+            console.log("success " + data);
+            updatePublicPermission(perm) 
         }
     });
+}
+
+// disables or enables text box upon changing public permission
+function updatePublicPermission(perm) {
+    if(perm==="edit") {
+        $(".listBlock3").find("#viewers").prop('disabled', true);
+        $(".listBlock3").find("#editors").prop('disabled', true);
+        $(".listBlock3").find("#viewers").attr('placeholder', "Anyone can view.");
+        $(".listBlock3").find("#editors").attr('placeholder', "Anyone can edit.");
+    }
+    else if(perm==="view") {
+        $(".listBlock3").find("#viewers").prop('disabled', true);
+        $(".listBlock3").find("#editors").prop('disabled', false);
+        $(".listBlock3").find("#viewers").attr('placeholder', "Anyone can view.");
+        $(".listBlock3").find("#editors").attr('placeholder', "Oops! No editors yet.");
+    }
+    else if(perm==="none") {
+        $(".listBlock3").find("#viewers").prop('disabled', false);
+        $(".listBlock3").find("#editors").prop('disabled', false);
+        $(".listBlock3").find("#viewers").attr('placeholder', "Oops! No viewers yet.");
+        $(".listBlock3").find("#editors").attr('placeholder', "Oops! No editors yet.");
+    }
 }
 
 function getPublicPermission(listid) {
@@ -141,7 +175,22 @@ function getPublicPermission(listid) {
         url: "/api/getpubliclevel",
         method: "POST",
         success: function(data, status, jqxhr) {
-            // $(".listBlock3").find("#permlvl").html(data);
+            $(".listBlock3").find("select").val(data);
+            updatePublicPermission(data)
+        }
+    });
+}
+
+function getCurrentPerms(listid) {
+$.ajax({
+        data: {
+            listid: listid
+        },
+        url: "/api/permissions/listperms",
+        method: "POST",
+        success: function(data, status, jqxhr) {
+            $("#editors").val(data.editors);
+            $("#viewers").val(data.viewers);
         }
     });
 }
@@ -180,7 +229,7 @@ function saveSettings() {
         }
     } else if ($(this).attr("id") === "editors") {
         var all = $(this).val();
-        var all = all.split();
+        var all = all.split(" ");
         var n = all.length;
 
         for (var i = 0; i < n; i++) {
@@ -200,8 +249,22 @@ function setPermissions(listid, user, permission) {
             listid: listid,
             target: user,
             permission: permission
+        },
+        success: function(data, status, jqxhr) {
+            getCurrentPerms(listid);
+        },
+        error: function(jqxhr, error, exception) {
+            getCurrentPerms(listid);
+            console.log(error);
+            $("#link").html("Oops, that user doesn't exist!");
+            $("#link").fadeIn(500)
+            setTimeout(hideLink, 3000);
         }
     });
+}
+
+function hideLink() {
+    $("#link").fadeOut();
 }
 
 function deleteList(listid) {
@@ -232,15 +295,13 @@ function deleteList(listid) {
             }
             // else no permission to delete
             // and can only delete self
-            else {
+            /*else {
                 if (confirm("Are you sure you want to permanently remove yourself from this list?")) {
                     $.ajax({
-                        url: "/api/setpermissions",
+                        url: "/api/mylists/remove",
                         method: 'POST',
                         data: {
                             listid: listid,
-                            permission: 'none',
-                            target: ''
                         },
                         success: function(data, status, jqxhr) {
                             alert("You have removed list " + listid);
@@ -248,7 +309,7 @@ function deleteList(listid) {
                         }
                     });
                 }
-            }
+            }*/
         }
     });
 }

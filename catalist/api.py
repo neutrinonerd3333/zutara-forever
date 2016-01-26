@@ -630,6 +630,10 @@ def permissions_set():
     listid = request.form["listid"]
     perm = request.form["permission"]
     target = request.form["target"]
+    
+    if target == uname:
+        raise InvalidAPIUsage("Cannot set self")
+    
     if target == '':
         target = uname
 
@@ -662,9 +666,11 @@ def permissions_set():
 
     # if target user is currently on own/edit/view, remove user from that
     if target_cur_perm in ["own", "view"]:
-        getattr(the_list, target_cur_perm + "ers").remove(the_target)
+        if the_target in getattr(the_list, target_cur_perm + "ers"):
+            getattr(the_list, target_cur_perm + "ers").remove(the_target)
     elif target_cur_perm == "edit":
-        the_list.editors.remove(the_target)
+        if the_target in the_list.editors:
+            the_list.editors.remove(the_target)
 
     if cmp_permission(the_list.public_level, perm) >= 0:
         return ("Warning: Public permission {} higher than {}, setting "
@@ -814,9 +820,9 @@ def get_list_perms():
     edit = ""
 
     for viewer in viewers:
-        view.append(viewer.uid + " ")
+        view = view + viewer.uid + " "
     for editor in editors:
-        edit.append(editor.uid + " ")
+        edit = edit + editor.uid + " "
 
     return jsonify(viewers=view, editors=edit)
 

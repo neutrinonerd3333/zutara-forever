@@ -33,7 +33,7 @@ my lists
                     <div class="mylist">
                         <input type="hidden" value="" id="perm">
                         <input type="hidden" id="url" value={{ host + "/list/" + catalist.listid }}>
-                        <input type="hidden" value={{ "/preview/" + catalist.listid }}>
+                        <input type="hidden" id="preview" value={{ "/preview/" + catalist.listid }}>
 
                         <a href={{ "/list/" + catalist.listid }}
                             ><div class="listTitle">{{ catalist.title }}</div
@@ -52,6 +52,10 @@ my lists
         <div class="listBlock3">
             <div class="blockTitle">Lists</div>
             <div class="title">Listname</div>
+            
+            <div class="hideOverflow">
+            <div class="scrollWrapper">
+            
             <div class="listPerms">
                 <div class="icon-container">
                     <div class="icon-settings-2"></div>
@@ -82,6 +86,9 @@ my lists
                     </table>
                 </div>
             </div>
+                
+            </div></div>
+                
         </div>
 </div>
   

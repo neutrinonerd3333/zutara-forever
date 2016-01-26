@@ -13,8 +13,8 @@ $color-gray-transparent-dark: rgba(0, 0, 0, 0.4)
 
 $color-bright-lightest: #CEF
 $color-bright-light: #AEF
-$color-bright-medium: #5CE
-$color-bright-dark: #4BF
+$color-bright-medium: #4DF
+$color-bright-dark: #09F
 
 $color-gray-light: #CCC
 $color-gray-medium: #999
@@ -174,6 +174,10 @@ a
         font-size: 1em
 
 @media (max-width: 800px)
+    .login-container
+        right: 10%
+        
+@media (max-width: 700px)
     .login-container
         top: 1%
         height: 2em
@@ -494,6 +498,8 @@ input
             border-radius: 20px
             text-align: center
             font-size: 1.2em
+            &:hover
+                background-color: $color-transparent-light
             &:focus
                 background-color: $color-transparent-medium
     .listItem
@@ -548,6 +554,10 @@ input
             height: 100%
             width: calc(100% - 3.5em)
             //width: calc(100% - 6em)
+            &:hover,
+            &:focus
+                background-color: $color-transparent-light
+                background-color: $color-transparent-light
     .attributes
         border-radius: 0 0 20px 20px
         display: none
@@ -662,12 +672,14 @@ input
         @extend .listBlock2
         color: $color-gray-dark
         display: none
+        // overflow: scroll
         .listPerms
+            //overflow: auto
             height: 100%
             width: 100%
             
             position: relative
-            overflow: hidden
+            // overflow: hidden
             background-color: $color-transparent-light
         .back
             text-align: left
@@ -679,7 +691,8 @@ input
             border-radius: 20px
             background-color: $color-transparent-light
         .icon-container
-            width: 2em
+            width: 1.5em
+            padding-left: .5em
             height: 100%
             position: absolute
             left: 0
@@ -729,6 +742,7 @@ input
                 width: 100%
                 height: 100%
                 font-size: 0.8em
+                margin-bottom: 4em
             tr
                 width: 100%
                 height: 2em
@@ -851,7 +865,8 @@ input
 
     @media (max-width: 800px)
         .listBlock,
-        .listBlock2
+        .listBlock2,
+        .listBlock3
             display: block
             position: relative
             left: 10%
@@ -861,14 +876,15 @@ input
             min-height: 10em
         .listBlock
             border-radius: 20px 20px 0 0
-        .listBlock2
+        .listBlock2,
             border-radius: 0
-            margin-top: 0
             top: 0
+            margin-top: .5em
             .blockTitle
                 background-color: $color-gray-transparent-medium
         .listBlock3
             display: none
+            margin-top: .5em
             
     iframe
         display: block

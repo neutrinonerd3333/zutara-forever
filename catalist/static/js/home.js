@@ -234,9 +234,28 @@ function guest() {
     if (listid === null) {
         $(".list").one("mouseenter", askForTutorial);
     } else {
-        enableLiveSave();
-        $("#link input").show();
+        getPublicPermission(listid)
     }
+}
+
+function getPublicPermission(listid) {
+    $.ajax({
+        data: {
+            listid: listid
+        },
+        url: "/api/getpubliclevel",
+        method: "POST",
+        success: function(data, status, jqxhr) {
+            if(data==="edit") {
+                enableLiveSave();
+            }
+            else if(data==="view") {
+                $(".list").find("input").prop('disabled', true);
+            }
+            else { enableLiveSave(); } // idk??
+            $("#link input").show();
+        }
+    });
 }
 
 function askToMakeList() {
@@ -512,9 +531,9 @@ function resize() {
     $("body").css({
         "height": "100%",
         "background-size": "100% 100%",
-        "background": "linear-gradient(to bottom, #4BF 0%,#5CE 60%,#AEF 100%",
-        "background": "-moz-linear-gradient(top, #4BF 0%, #5CE 60%, #AEF 100%)",
-        "background": "-webkit-linear-gradient(top, #4BF 0%,#5CE 60%,#AEF 100%)",
+        /*"background": "linear-gradient(to bottom, #09F 0%, #4BF 40%,#AEF 100%",
+        "background": "-moz-linear-gradient(top, #09F 0%, #4BF 40%, #AEF 100%)",
+        "background": "-webkit-linear-gradient(top, #09F 0%,#4BF 40%,#AEF 100%)",*/
     });
 }
 

@@ -61,9 +61,9 @@ from __future__ import division, print_function
 from flask import Flask
 from flask.ext.mongoengine import MongoEngine
 
-# HOSTBASE = 'catalist.eastus2.cloudapp.azure.com'
-HOSTBASE = 'localhost'
-PORTNO = 6005
+HOSTBASE = 'catalist.eastus2.cloudapp.azure.com'
+# HOSTBASE = 'localhost'
+PORTNO = 80
 HOSTNAME = HOSTBASE + ((':' + str(PORTNO)) if PORTNO != 80 else '')
 
 # **********************************************************
