@@ -232,7 +232,8 @@ function authenticated() {
 function guest() {
     loggedIn = false;
     if (listid === null) {
-        $(".list").one("mouseenter", askForTutorial);
+        askForTutorial();
+        // $(".list").one("mouseenter", askForTutorial);
     } else {
         getPublicPermission(listid)
     }
