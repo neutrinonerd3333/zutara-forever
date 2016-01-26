@@ -38,8 +38,8 @@ def cmp_permission(perm1, perm2):
 
 def query_permission(user, catalist):
     """
-    Gives the permission level a user has for a list.
-    "None" represents an anonymous user.
+    Give the permission level `user` has for a list `catalist`.
+    Handles anonymous users.
     """
     # handle anonymous users
     if user.is_anonymous:
@@ -59,5 +59,5 @@ def query_permission(user, catalist):
 
 
 def query_cur_perm(catalist):
-    """ Finds the permission the current user has for list *catalist* """
+    """ Find the permission the current user has for list *catalist* """
     return query_permission(flask_security.core.current_user, catalist)

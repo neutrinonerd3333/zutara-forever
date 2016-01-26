@@ -116,7 +116,7 @@ def handle_invalid_usage(error):
 @api_blueprint.route("/loggedin", methods=['POST'])
 def logged_in():
     # print("hi")
-    """ Used for .js to call """
+    """ Return loggedin=1 if logged in, else 0. """
     if flask_security.core.current_user.is_authenticated:
         return jsonify(loggedin=1)
     return jsonify(loggedin=0)
@@ -128,12 +128,11 @@ def logged_in():
 
 
 def create_list():
-    """ Create a new, empty list and return the assigned listid. """
+    """ Initialize a new, empty list and return the assigned listid. """
     list_id = str(uuid_module.uuid4())
-    title = ""
     time = datetime.utcnow()
-
     current_user = flask_security.core.current_user
+
     if not current_user.is_authenticated:
         new_list = Catalist(listid=list_id, created=time,
                             last_visited=time)
@@ -141,10 +140,12 @@ def create_list():
         uid = current_user.uid
         new_list = Catalist(listid=list_id, created=time,
                             last_visited=time, creator=uid)
+        # this code is p inelegant but apparently removing it
+        # causes bugs, so keeping it here. -txz
         user = User.objects.get(uid=uid)
         new_list.owners.append(user)
 
-    new_list.last_visited = datetime.utcnow()
+    new_list.last_visited = time
     new_list.save()
     return list_id
 
