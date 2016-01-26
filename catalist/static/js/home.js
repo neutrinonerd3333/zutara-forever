@@ -535,7 +535,7 @@ function getPermissions(listid) {
 function resize() {
     $("body").css({
         "height": "100%",
-        "background-size": "100% 100%",
+        "background-size": "100% 100%"
         /*"background": "linear-gradient(to bottom, #09F 0%, #4BF 40%,#AEF 100%",
         "background": "-moz-linear-gradient(top, #09F 0%, #4BF 40%, #AEF 100%)",
         "background": "-webkit-linear-gradient(top, #09F 0%,#4BF 40%,#AEF 100%)",*/

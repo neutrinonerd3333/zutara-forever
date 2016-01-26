@@ -22,9 +22,10 @@ input:focus:-moz-placeholder { color: transparent; }
 :focus:-ms-input-placeholder { color: transparent; }
 
 /* START OF CSS */
-html { height: 100%; min-height: 500px; background: #AEF; overflow-x: hidden; overflow-y: scroll; }
+/*@media (max-width: 375px) html min-width: 100% .textcontainer min-width: 325px .list min-width: 325px */
+html { height: 100%; min-height: 500px; background: #7DF; overflow-x: hidden; overflow-y: scroll; }
 
-body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; min-height: 500px; height: calc(100% - 4em); margin: 0; background: -moz-linear-gradient(top, #09F 2em, #4DF calc(60% - 4em), #AEF calc(100% - 8em)); background: -webkit-linear-gradient(top, #09F 2em, #4DF calc(60% - 4em), #AEF calc(100% - 8em)); background: linear-gradient(to bottom, #09F 2em, #4DF calc(60% - 4em), #AEF calc(100% - 8em)); background-attachment: scroll; background-size: 100% 100%; background-repeat: no-repeat; background-position: left top; }
+body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 20px; min-height: 500px; height: calc(100% - 4em); margin: 0; background: -moz-linear-gradient(top, #09F 2em, #4DF calc(60% - 4em), #7DF calc(100% - 8em)); background: -webkit-linear-gradient(top, #09F 2em, #4DF calc(60% - 4em), #7DF calc(100% - 8em)); background: linear-gradient(to bottom, #09F 2em, #4DF calc(60% - 4em), #7DF calc(100% - 8em)); background-attachment: scroll; background-size: 100% 100%; background-repeat: no-repeat; background-position: left top; }
 
 h1 { font-size: 1.2em; font-weight: lighter; letter-spacing: 0.2px; text-align: center; color: #CEF; margin: 0; position: relative; left: -10%; }
 

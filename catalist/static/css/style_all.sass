@@ -13,6 +13,7 @@ $color-gray-transparent-dark: rgba(0, 0, 0, 0.4)
 
 $color-bright-lightest: #CEF
 $color-bright-light: #AEF
+$color-bright-medium-light: #7DF
 $color-bright-medium: #4DF
 $color-bright-dark: #09F
 
@@ -79,10 +80,18 @@ $color-white: #FFF
 
 /* START OF CSS */
 
+/*@media (max-width: 375px)
+    html
+        min-width: 100%
+    .textcontainer
+        min-width: 325px
+    .list
+        min-width: 325px*/
+
 html
     height: 100%
     min-height: 500px
-    background: $color-bright-light
+    background: $color-bright-medium-light
     overflow-x: hidden
     overflow-y: scroll
     
@@ -93,9 +102,9 @@ body
     height: calc(100% - 4em)
     margin: 0
     
-    background: -moz-linear-gradient(top, $color-bright-dark 2em, $color-bright-medium calc(60% - 4em), $color-bright-light calc(100% - 8em))
-    background: -webkit-linear-gradient(top, $color-bright-dark 2em, $color-bright-medium calc(60% - 4em), $color-bright-light calc(100% - 8em))
-    background: linear-gradient(to bottom, $color-bright-dark 2em, $color-bright-medium calc(60% - 4em), $color-bright-light calc(100% - 8em))
+    background: -moz-linear-gradient(top, $color-bright-dark 2em, $color-bright-medium calc(60% - 4em), $color-bright-medium-light calc(100% - 8em))
+    background: -webkit-linear-gradient(top, $color-bright-dark 2em, $color-bright-medium calc(60% - 4em), $color-bright-medium-light calc(100% - 8em))
+    background: linear-gradient(to bottom, $color-bright-dark 2em, $color-bright-medium calc(60% - 4em), $color-bright-medium-light calc(100% - 8em))
     
     background-attachment: scroll
     background-size: 100% 100%
