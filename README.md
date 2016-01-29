@@ -4,7 +4,7 @@ zutara-forever
 # Catalist
 
 A web app for making lists. Like, really nice lists.
-To use, first make sure `mongod` is running in another shell (or in the background). Then, run `sudo python routes.py` (`sudo` required since we're running on port 80).
+To use, first make sure `mongod` is running in another shell (or in the background). Then, run `sudo python runserver.py` (`sudo` required since we're running on port 80).
 
 Catalist was built at MIT for 6.148 by Rachel Wu '19 and Tony Zhang '19 with Flask and relies on MongoDB for data persistence.
 
